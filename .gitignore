@@ -82,3 +82,7 @@ $RECYCLE.BIN/
 #==============
 /.vs/
 build/
+*.iobj
+*.ipdb
+*.pdb
+*.ilk
