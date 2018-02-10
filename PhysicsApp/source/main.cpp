@@ -1,10 +1,10 @@
-#include "BreakoutApp.h"
+#include "PhysicsApp.h"
 
 int main()
 {
 	
 	// allocation
-	auto app = new BreakoutApp();
+	auto app = new PhysicsApp();
 
 	// initialise and loop
 	app->run("AIE", 1280, 720, false);

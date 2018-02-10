@@ -1,4 +1,4 @@
-#include "BreakoutApp.h"
+#include "PhysicsApp.h"
 #include "Texture.h"
 #include "Font.h"
 #include "Input.h"
@@ -12,17 +12,17 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-BreakoutApp::BreakoutApp()
+PhysicsApp::PhysicsApp()
 {
 
 }
 
-BreakoutApp::~BreakoutApp()
+PhysicsApp::~PhysicsApp()
 {
 
 }
 
-bool BreakoutApp::startup()
+bool PhysicsApp::startup()
 {
 	// increase the 2d line count to maximize the number of objects we can draw aie::Gizmos::create(255U, 255U, 65535U, 65535U);
 	aie::Gizmos::create(255U, 255U, 65535U, 65535U);
@@ -51,14 +51,14 @@ bool BreakoutApp::startup()
 	return true;
 }
 
-void BreakoutApp::shutdown()
+void PhysicsApp::shutdown()
 {
 
 	delete m_font;
 	delete m_2dRenderer;
 }
 
-void BreakoutApp::update(float deltaTime)
+void PhysicsApp::update(float deltaTime)
 {
 	// input example
 	aie::Input* input = aie::Input::getInstance();
@@ -75,7 +75,7 @@ void BreakoutApp::update(float deltaTime)
 	}
 }
 
-void BreakoutApp::draw()
+void PhysicsApp::draw()
 {
 
 	// wipe the screen to the background colour
@@ -94,4 +94,3 @@ void BreakoutApp::draw()
 	// done drawing sprites
 	m_2dRenderer->end();
 }
-

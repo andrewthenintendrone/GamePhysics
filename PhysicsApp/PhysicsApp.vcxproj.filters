@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\BreakoutApp.cpp">
+    <ClCompile Include="source\PhysicsApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\main.cpp">
@@ -41,7 +41,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\BreakoutApp.h">
+    <ClInclude Include="source\PhysicsApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\PhysicsScene.h">

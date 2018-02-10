@@ -5,12 +5,12 @@
 #include "PhysicsScene.h"
 #include "Sphere.h"
 
-class BreakoutApp : public aie::Application
+class PhysicsApp : public aie::Application
 {
 public:
 
-	BreakoutApp();
-	virtual ~BreakoutApp();
+	PhysicsApp();
+	virtual ~PhysicsApp();
 
 	virtual bool startup();
 	virtual void shutdown();
