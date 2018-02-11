@@ -57,9 +57,9 @@ void PhysicsScene::update(float dt)
 		}
 
 		accumulatedTime -= m_timeStep;
-	}
 
-	checkForCollison();
+		checkForCollison();
+	}
 }
 
 void PhysicsScene::updateGizmos()
@@ -179,7 +179,7 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* a, PhysicsObject* b)
 
 bool PhysicsScene::sphere2Box(PhysicsObject* a, PhysicsObject* b)
 {
-	return false;
+	return box2Sphere(b, a);
 }
 
 bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
@@ -219,6 +219,24 @@ bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
 
 bool PhysicsScene::box2Sphere(PhysicsObject* a, PhysicsObject* b)
 {
+	// try to cast objects to box and plane
+	Box* box = dynamic_cast<Box*>(a);
+	Sphere* sphere = dynamic_cast<Sphere*>(b);
+
+	// if we are successful then test for collision
+	if (box != nullptr && sphere != nullptr)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			glm::vec2 currentCorner = box->getCorner(i + 1);
+			if (glm::distance(currentCorner, sphere->getPosition()) <= sphere->getRadius())
+			{
+				box->setVelocity(glm::vec2(0, 0));
+				sphere->setVelocity(glm::vec2(0, 0));
+				return true;
+			}
+		}
+	}
 	return false;
 }
 

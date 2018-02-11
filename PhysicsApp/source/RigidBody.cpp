@@ -9,8 +9,8 @@ RigidBody::RigidBody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, 
 
 void RigidBody::fixedUpdate(glm::vec2 gravity, float timeStep)
 {
-	applyForce(gravity * m_mass * timeStep);
 	m_position += m_velocity * timeStep;
+	applyForce(gravity * m_mass * timeStep);
 }
 
 void RigidBody::debug()

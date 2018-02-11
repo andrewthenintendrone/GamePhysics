@@ -35,14 +35,22 @@ bool PhysicsApp::startup()
 	m_physicsScene->setGravity(glm::vec2(0, -9.81f));
 	m_physicsScene->setTimeStep(0.01f);
 
-	for (int x = 0; x < 10; x++)
+	for (int x = 0; x < 20; x++)
 	{
-		Box* box = new Box(glm::vec2(-50 + (x + 1) * 2, -50 + (x + 1) * 10), glm::vec2(0, 0), 1, 3, 3, glm::vec4(1.0f / 20 * x, 0, 1, 1));
-		m_physicsScene->addActor(box);
+		if (x % 2 == 0)
+		{
+			Box* box = new Box(glm::vec2(-50, -50 + (x + 1) * 15), glm::vec2(0, 0), 1, 2, 2, glm::vec4(1.0f / 40 * x, 0, 1, 1));
+			m_physicsScene->addActor(box);
+		}
+		else
+		{
+			Sphere* sphere = new Sphere(glm::vec2(-50, -50 + (x + 1) * 15), glm::vec2(0, 0), 2, 2, glm::vec4(1.0f / 40 * x, 0, 1, 1));
+			m_physicsScene->addActor(sphere);
+		}
 	}
 
 	// create floor
-	Plane* floor = new Plane(glm::vec2(0, -1), 50);
+	Plane* floor = new Plane(glm::normalize(glm::vec2(0, -1)), 50);
 	m_physicsScene->addActor(floor);
 
 	return true;
