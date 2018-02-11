@@ -13,6 +13,8 @@ public:
 
 	float getWidth() { return m_width; }
 	float getHeight() { return m_height; }
+
+	glm::vec2 getCorner(int corner);
 	
 
 protected:

@@ -41,26 +41,26 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\PhysicsApp.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\Box.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\PhysicsScene.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\PhysicsApp.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="source\PhysicsObject.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\RigidBody.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Sphere.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\PhysicsScene.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="source\Plane.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\Box.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\RigidBody.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Sphere.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Sphere.h"
 #include "Plane.h"
+#include "Box.h"
 #include <glm\ext.hpp>
 
 // function pointer array for doing our collisions
@@ -182,6 +183,51 @@ bool PhysicsScene::sphere2Box(PhysicsObject* a, PhysicsObject* b)
 
 bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
 {
+	// try to cast objects to box and plane
+	Box* box = dynamic_cast<Box*>(a);
+	Plane* plane = dynamic_cast<Plane*>(b);
+
+	// if we are successful then test for collision
+	if (box != nullptr && plane != nullptr)
+	{
+		glm::vec2 collisionNormal = plane->getNormal();
+
+		glm::vec2 topLeft = box->getCorner(1);
+		float cornerToPlane = glm::dot(
+			topLeft,
+			plane->getNormal()) - plane->getDistance();
+
+		if (cornerToPlane <= 0)
+		{
+			glm::vec2 bottomRight = box->getCorner(4);
+			cornerToPlane = glm::dot(
+				bottomRight,
+				plane->getNormal()) - plane->getDistance();
+			if (cornerToPlane >= 0)
+			{
+				box->setVelocity(glm::vec2(0, 0));
+				return true;
+			}
+		}
+
+		glm::vec2 topRight = box->getCorner(2);
+		cornerToPlane = glm::dot(
+			topRight,
+			plane->getNormal()) - plane->getDistance();
+
+		if (cornerToPlane <= 0)
+		{
+			glm::vec2 bottomLeft = box->getCorner(3);
+			cornerToPlane = glm::dot(
+				bottomLeft,
+				plane->getNormal()) - plane->getDistance();
+			if (cornerToPlane >= 0)
+			{
+				box->setVelocity(glm::vec2(0, 0));
+				return true;
+			}
+		}
+	}
 	return false;
 }
 

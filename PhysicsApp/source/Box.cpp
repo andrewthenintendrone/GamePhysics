@@ -18,3 +18,30 @@ bool Box::checkCollision(PhysicsObject* other)
 {
 	return false;
 }
+
+glm::vec2 Box::getCorner(int corner)
+{
+	glm::vec2 returnValue = m_position;
+
+	switch (corner)
+	{
+	case 1:
+		returnValue.x -= m_width;
+		returnValue.y -= m_height;
+		break;
+	case 2:
+		returnValue.x += m_width;
+		returnValue.y -= m_height;
+		break;
+	case 3:
+		returnValue.x -= m_width;
+		returnValue.y += m_height;
+		break;
+	case 4:
+		returnValue.x += m_width;
+		returnValue.y += m_height;
+		break;
+	}
+
+	return returnValue;
+}

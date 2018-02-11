@@ -40,13 +40,9 @@ bool PhysicsApp::startup()
 		m_physicsScene->addActor(box);
 	}
 
-	// create many balls
-	/*for (int x = 0; x < 3; x++)
-	{
-		Sphere* sphere = new Sphere(glm::vec2(-50 + (x + 1) * 30, 100 + (x * 1) * 30), glm::vec2(0, 0), 2, 8, glm::vec4(1, 1, 1, 1));
-
-		m_physicsScene->addActor(sphere);
-	}*/
+	// create floor
+	Plane* floor = new Plane(glm::vec2(0.707f, 0.707f), -40);
+	m_physicsScene->addActor(floor);
 
 	return true;
 }
