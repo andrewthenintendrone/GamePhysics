@@ -137,14 +137,14 @@ bool PhysicsScene::sphere2Plane(PhysicsObject* a, PhysicsObject* b)
 			plane->getNormal()) - plane->getDistance();
 
 		// if we are behind the plane then we flip the normal
-		if (sphereToPlane < 0)
+		if (sphereToPlane <= 0)
 		{
 			collisionNormal *= -1;
 			sphereToPlane *= -1;
 		}
 
-		float intersection = sphereToPlane - sphere->getRadius();
-		if (intersection < 0)
+		float intersection = sphere->getRadius() - sphereToPlane;
+		if (intersection >= 0)
 		{
 			// set sphere velocity to 0
 			sphere->setVelocity(glm::vec2(0, 0));
@@ -192,40 +192,26 @@ bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
 	{
 		glm::vec2 collisionNormal = plane->getNormal();
 
-		glm::vec2 topLeft = box->getCorner(1);
-		float cornerToPlane = glm::dot(
-			topLeft,
-			plane->getNormal()) - plane->getDistance();
+		float cornerDistances[4];
 
-		if (cornerToPlane <= 0)
+		// store each corners distance from the plane
+		for (int i = 1; i <= 4; i++)
 		{
-			glm::vec2 bottomRight = box->getCorner(4);
-			cornerToPlane = glm::dot(
-				bottomRight,
+			cornerDistances[i] = glm::dot(
+				box->getCorner(i),
 				plane->getNormal()) - plane->getDistance();
-			if (cornerToPlane >= 0)
-			{
-				box->setVelocity(glm::vec2(0, 0));
-				return true;
-			}
 		}
 
-		glm::vec2 topRight = box->getCorner(2);
-		cornerToPlane = glm::dot(
-			topRight,
-			plane->getNormal()) - plane->getDistance();
-
-		if (cornerToPlane <= 0)
+		// if the sign of two opposite sides are different there is a collision
+		if (std::signbit(cornerDistances[0]) != std::signbit(cornerDistances[3]))
 		{
-			glm::vec2 bottomLeft = box->getCorner(3);
-			cornerToPlane = glm::dot(
-				bottomLeft,
-				plane->getNormal()) - plane->getDistance();
-			if (cornerToPlane >= 0)
-			{
-				box->setVelocity(glm::vec2(0, 0));
-				return true;
-			}
+			box->setVelocity(glm::vec2(0, 0));
+			return true;
+		}
+		if (std::signbit(cornerDistances[1]) != std::signbit(cornerDistances[2]))
+		{
+			box->setVelocity(glm::vec2(0, 0));
+			return true;
 		}
 	}
 	return false;

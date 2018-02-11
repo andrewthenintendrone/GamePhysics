@@ -36,12 +36,12 @@ bool PhysicsApp::startup()
 
 	for (int x = 0; x < 10; x++)
 	{
-		Box* box = new Box(glm::vec2(-100 + (x + 1) * 10, 0), glm::vec2(0, 0), 1, 3, 3, glm::vec4(0, 0, 1, 1));
+		Box* box = new Box(glm::vec2(-100 + (x + 1) * 10, 40), glm::vec2(0, 0), 1, 3, 3, glm::vec4(0, 0, 1, 1));
 		m_physicsScene->addActor(box);
 	}
 
 	// create floor
-	Plane* floor = new Plane(glm::vec2(0.707f, 0.707f), -40);
+	Plane* floor = new Plane(glm::vec2(-0.707f, -0.707f), 40);
 	m_physicsScene->addActor(floor);
 
 	return true;

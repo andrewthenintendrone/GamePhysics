@@ -1,5 +1,6 @@
 #include "Box.h"
 #include <Gizmos.h>
+#include <iostream>
 
 Box::Box(glm::vec2 position, glm::vec2 velocity, float mass, float width, float height, glm::vec4 color) :
 	RigidBody(BOX, position, velocity, 0, mass)
@@ -21,27 +22,29 @@ bool Box::checkCollision(PhysicsObject* other)
 
 glm::vec2 Box::getCorner(int corner)
 {
-	glm::vec2 returnValue = m_position;
+	glm::vec2 cornerPos = m_position;
 
 	switch (corner)
 	{
 	case 1:
-		returnValue.x -= m_width;
-		returnValue.y -= m_height;
+		cornerPos.x -= m_width;
+		cornerPos.y += m_height;
 		break;
 	case 2:
-		returnValue.x += m_width;
-		returnValue.y -= m_height;
+		cornerPos.x += m_width;
+		cornerPos.y += m_height;
 		break;
 	case 3:
-		returnValue.x -= m_width;
-		returnValue.y += m_height;
+		cornerPos.x -= m_width;
+		cornerPos.y -= m_height;
 		break;
 	case 4:
-		returnValue.x += m_width;
-		returnValue.y += m_height;
+		cornerPos.x += m_width;
+		cornerPos.y -= m_height;
+		break;
+	default:
+		std::cout << "Tried to access corner " << corner << " of a box.\n";
 		break;
 	}
-
-	return returnValue;
+	return cornerPos;
 }
