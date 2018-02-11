@@ -159,6 +159,7 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* a, PhysicsObject* b)
 	// try to cast objects to sphere and sphere
 	Sphere* sphere1 = dynamic_cast<Sphere*>(a);
 	Sphere* sphere2 = dynamic_cast<Sphere*>(b);
+
 	// if we are successful then test for collision
 	if (sphere1 != nullptr && sphere2 != nullptr)
 	{
@@ -193,22 +194,21 @@ bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
 		glm::vec2 collisionNormal = plane->getNormal();
 
 		float cornerDistances[4];
+		bool signs[4];
 
-		// store each corners distance from the plane
-		for (int i = 1; i <= 4; i++)
+		// store the distance of each corner from the plane
+		for (int i = 0; i < 4; i++)
 		{
 			cornerDistances[i] = glm::dot(
-				box->getCorner(i),
+				box->getCorner(i + 1),
 				plane->getNormal()) - plane->getDistance();
+
+			// also store the signs of the distances
+			signs[i] = std::signbit(cornerDistances[i]);
 		}
 
 		// if the sign of two opposite sides are different there is a collision
-		if (std::signbit(cornerDistances[0]) != std::signbit(cornerDistances[3]))
-		{
-			box->setVelocity(glm::vec2(0, 0));
-			return true;
-		}
-		if (std::signbit(cornerDistances[1]) != std::signbit(cornerDistances[2]))
+		if(signs[0] != signs[3] || signs[1] != signs[2])
 		{
 			box->setVelocity(glm::vec2(0, 0));
 			return true;
@@ -224,5 +224,24 @@ bool PhysicsScene::box2Sphere(PhysicsObject* a, PhysicsObject* b)
 
 bool PhysicsScene::box2Box(PhysicsObject* a, PhysicsObject* b)
 {
+	// try to cast objects to box and box
+	Box* box1 = dynamic_cast<Box*>(a);
+	Box* box2 = dynamic_cast<Box*>(b);
+
+	// if we are successful then test for collision
+	if (box1 != nullptr && box2 != nullptr)
+	{
+		bool test1 = (box1->getCorner(4).x < box2->getCorner(1).x);
+		bool test2 = (box2->getCorner(4).x < box1->getCorner(1).x);
+		bool test3 = (box1->getCorner(4).y > box2->getCorner(1).y);
+		bool test4 = (box2->getCorner(4).y > box1->getCorner(1).y);
+
+		if (!(test1 || test2 || test3 || test4))
+		{
+			box1->setVelocity(glm::vec2(0, 0));
+			box2->setVelocity(glm::vec2(0, 0));
+			return true;
+		}
+	}
 	return false;
 }

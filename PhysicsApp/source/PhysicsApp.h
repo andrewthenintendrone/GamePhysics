@@ -23,4 +23,5 @@ protected:
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Font*			m_font;
 	PhysicsScene*		m_physicsScene;
+	aie::Texture*		m_diceTexture;
 };

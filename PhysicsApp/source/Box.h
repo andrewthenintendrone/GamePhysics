@@ -5,7 +5,7 @@
 class Box : public RigidBody
 {
 public:
-	Box(glm::vec2 position, glm::vec2 velocity, float mass, float length, float width, glm::vec4 color);
+	Box(glm::vec2 position, glm::vec2 velocity, float mass, float width, float height, glm::vec4 color);
 	~Box() {};
 
 	virtual void makeGizmo();
@@ -15,7 +15,6 @@ public:
 	float getHeight() { return m_height; }
 
 	glm::vec2 getCorner(int corner);
-	
 
 protected:
 	float m_width;

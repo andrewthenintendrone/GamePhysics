@@ -29,6 +29,7 @@ bool PhysicsApp::startup()
 
 	m_2dRenderer = new aie::Renderer2D();
 	m_font = new aie::Font("./font/consolas.ttf", 32);
+	m_diceTexture = new aie::Texture("./textures/dice_spritesheet.png");
 
 	m_physicsScene = new PhysicsScene();
 	m_physicsScene->setGravity(glm::vec2(0, -9.81f));
@@ -36,12 +37,12 @@ bool PhysicsApp::startup()
 
 	for (int x = 0; x < 10; x++)
 	{
-		Box* box = new Box(glm::vec2(-100 + (x + 1) * 10, 40), glm::vec2(0, 0), 1, 3, 3, glm::vec4(0, 0, 1, 1));
+		Box* box = new Box(glm::vec2(-50 + (x + 1) * 2, -50 + (x + 1) * 10), glm::vec2(0, 0), 1, 3, 3, glm::vec4(1.0f / 20 * x, 0, 1, 1));
 		m_physicsScene->addActor(box);
 	}
 
 	// create floor
-	Plane* floor = new Plane(glm::vec2(-0.707f, -0.707f), 40);
+	Plane* floor = new Plane(glm::vec2(0, -1), 50);
 	m_physicsScene->addActor(floor);
 
 	return true;
