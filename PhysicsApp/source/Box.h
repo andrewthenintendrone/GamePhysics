@@ -15,6 +15,7 @@ public:
 	float getHeight() { return m_height; }
 
 	glm::vec2 getCorner(int corner);
+	bool containsPoint(glm::vec2 point);
 
 protected:
 	float m_width;

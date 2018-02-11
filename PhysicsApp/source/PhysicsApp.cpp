@@ -39,12 +39,12 @@ bool PhysicsApp::startup()
 	{
 		if (x % 2 == 0)
 		{
-			Box* box = new Box(glm::vec2(-50, -50 + (x + 1) * 15), glm::vec2(0, 0), 1, 2, 2, glm::vec4(1.0f / 40 * x, 0, 1, 1));
+			Box* box = new Box(glm::vec2(-50, -50 + (x + 1) * 15), glm::vec2(0, 0), 1, 3, 1, glm::vec4(185.f / 255, 122.f / 255, 87.f / 255, 1));
 			m_physicsScene->addActor(box);
 		}
 		else
 		{
-			Sphere* sphere = new Sphere(glm::vec2(-50, -50 + (x + 1) * 15), glm::vec2(0, 0), 2, 2, glm::vec4(1.0f / 40 * x, 0, 1, 1));
+			Sphere* sphere = new Sphere(glm::vec2(-50, -50 + (x + 1) * 15), glm::vec2(0, 0), 1, 2, glm::vec4(1, 174.f / 255, 201.f / 255, 1));
 			m_physicsScene->addActor(sphere);
 		}
 	}

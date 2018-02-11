@@ -48,3 +48,12 @@ glm::vec2 Box::getCorner(int corner)
 	}
 	return cornerPos;
 }
+
+// returns true if the point is within the box
+bool Box::containsPoint(glm::vec2 point)
+{
+	return (point.x >= m_position.x - m_width &&
+		point.x <= m_position.x + m_width &&
+		point.y >= m_position.y - m_height &&
+		point.y <= m_position.y + m_height);
+}

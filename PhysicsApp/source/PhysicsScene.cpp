@@ -226,15 +226,15 @@ bool PhysicsScene::box2Sphere(PhysicsObject* a, PhysicsObject* b)
 	// if we are successful then test for collision
 	if (box != nullptr && sphere != nullptr)
 	{
-		for (int i = 0; i < 4; i++)
+		// find the closest point on the sphere to the box
+		glm::vec2 collisionPoint = sphere->getPosition() + glm::normalize(box->getPosition() - sphere->getPosition()) * sphere->getRadius();
+
+		// test if it is with the bounds of the box
+		if (box->containsPoint(collisionPoint))
 		{
-			glm::vec2 currentCorner = box->getCorner(i + 1);
-			if (glm::distance(currentCorner, sphere->getPosition()) <= sphere->getRadius())
-			{
-				box->setVelocity(glm::vec2(0, 0));
-				sphere->setVelocity(glm::vec2(0, 0));
-				return true;
-			}
+			box->setVelocity(glm::vec2(0, 0));
+			sphere->setVelocity(glm::vec2(0, 0));
+			return true;
 		}
 	}
 	return false;
