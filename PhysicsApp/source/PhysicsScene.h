@@ -24,13 +24,13 @@ public:
 	void checkForCollison();
 
 	static bool plane2Plane(PhysicsObject*, PhysicsObject*);
-	static bool plane2Sphere(PhysicsObject*, PhysicsObject*);
+	static bool plane2Circle(PhysicsObject*, PhysicsObject*);
 	static bool plane2Box(PhysicsObject*, PhysicsObject*);
-	static bool sphere2Plane(PhysicsObject*, PhysicsObject*);
-	static bool sphere2Sphere(PhysicsObject*, PhysicsObject*);
-	static bool sphere2Box(PhysicsObject*, PhysicsObject*);
+	static bool circle2Plane(PhysicsObject*, PhysicsObject*);
+	static bool circle2Circle(PhysicsObject*, PhysicsObject*);
+	static bool circle2Box(PhysicsObject*, PhysicsObject*);
 	static bool box2Plane(PhysicsObject*, PhysicsObject*);
-	static bool box2Sphere(PhysicsObject*, PhysicsObject*);
+	static bool box2Circle(PhysicsObject*, PhysicsObject*);
 	static bool box2Box(PhysicsObject*, PhysicsObject*);
 
 protected:

@@ -2,13 +2,13 @@
 #include "RigidBody.h"
 #include <glm\vec4.hpp>
 
-class Sphere : public RigidBody
+class Circle : public RigidBody
 {
 public:
-	Sphere(glm::vec2 position = glm::vec2(0, 0), glm::vec2 velocity = glm::vec2(0, 0),
+	Circle(glm::vec2 position = glm::vec2(0, 0), glm::vec2 velocity = glm::vec2(0, 0),
 		float mass = 1, float radius = 1, glm::vec4 color = glm::vec4(1));
 
-	~Sphere();
+	~Circle();
 
 	virtual void makeGizmo();
 	virtual bool checkCollision(PhysicsObject* pOther);

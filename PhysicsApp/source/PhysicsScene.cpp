@@ -3,7 +3,7 @@
 #include <list>
 #include "RigidBody.h"
 #include <iostream>
-#include "Sphere.h"
+#include "Circle.h"
 #include "Plane.h"
 #include "Box.h"
 #include <glm\ext.hpp>
@@ -13,9 +13,9 @@ typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 static fn collisionFunctionArray[] =
 {
-	PhysicsScene::plane2Plane, PhysicsScene::plane2Sphere, PhysicsScene::plane2Box,
-	PhysicsScene::sphere2Plane, PhysicsScene::sphere2Sphere, PhysicsScene::sphere2Box,
-	PhysicsScene::box2Plane, PhysicsScene::box2Sphere, PhysicsScene::box2Box
+	PhysicsScene::plane2Plane, PhysicsScene::plane2Circle, PhysicsScene::plane2Box,
+	PhysicsScene::circle2Plane, PhysicsScene::circle2Circle, PhysicsScene::circle2Box,
+	PhysicsScene::box2Plane, PhysicsScene::box2Circle, PhysicsScene::box2Box
 };
 
 PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0, 0))
@@ -110,9 +110,9 @@ bool PhysicsScene::plane2Plane(PhysicsObject* a, PhysicsObject* b)
 	return false;
 }
 
-bool PhysicsScene::plane2Sphere(PhysicsObject* a, PhysicsObject* b)
+bool PhysicsScene::plane2Circle(PhysicsObject* a, PhysicsObject* b)
 {
-	return sphere2Plane(b, a);
+	return circle2Plane(b, a);
 }
 
 bool PhysicsScene::plane2Box(PhysicsObject* a, PhysicsObject* b)
@@ -120,54 +120,54 @@ bool PhysicsScene::plane2Box(PhysicsObject* a, PhysicsObject* b)
 	return box2Plane(b, a);
 }
 
-bool PhysicsScene::sphere2Plane(PhysicsObject* a, PhysicsObject* b)
+bool PhysicsScene::circle2Plane(PhysicsObject* a, PhysicsObject* b)
 {
-	// try to cast objects to sphere and plane
-	Sphere* sphere = dynamic_cast<Sphere*>(a);
+	// try to cast objects to circle and plane
+	Circle* circle = dynamic_cast<Circle*>(a);
 	Plane* plane = dynamic_cast<Plane*>(b);
 
 	// if we are successful then check for collision
-	if (sphere != nullptr && plane != nullptr)
+	if (circle != nullptr && plane != nullptr)
 	{
 		glm::vec2 collisionNormal = plane->getNormal();
-		float sphereToPlane = glm::dot(
-			sphere->getPosition(),
+		float circleToPlane = glm::dot(
+			circle->getPosition(),
 			plane->getNormal()) - plane->getDistance();
 
 		// if we are behind the plane then we flip the normal
-		if (sphereToPlane <= 0)
+		if (circleToPlane <= 0)
 		{
 			collisionNormal *= -1;
-			sphereToPlane *= -1;
+			circleToPlane *= -1;
 		}
 
-		float intersection = sphere->getRadius() - sphereToPlane;
+		float intersection = circle->getRadius() - circleToPlane;
 		if (intersection >= 0)
 		{
 			// collision
-			glm::vec2 contact = sphere->getPosition() - (collisionNormal * sphere->getRadius());
+			glm::vec2 contact = circle->getPosition() - (collisionNormal * circle->getRadius());
 
-			plane->resolveCollision(sphere, contact);
+			plane->resolveCollision(circle, contact);
 			return true;
 		}
 	}
 	return false;
 }
 
-bool PhysicsScene::sphere2Sphere(PhysicsObject* a, PhysicsObject* b)
+bool PhysicsScene::circle2Circle(PhysicsObject* a, PhysicsObject* b)
 {
 	// try to cast objects to sphere and sphere
-	Sphere* sphere1 = dynamic_cast<Sphere*>(a);
-	Sphere* sphere2 = dynamic_cast<Sphere*>(b);
+	Circle* circle1 = dynamic_cast<Circle*>(a);
+	Circle* circle2 = dynamic_cast<Circle*>(b);
 
 	// if we are successful then test for collision
-	if (sphere1 != nullptr && sphere2 != nullptr)
+	if (circle1 != nullptr && circle2 != nullptr)
 	{
-		if (glm::distance(sphere1->getPosition(), sphere2->getPosition()) <= (sphere1->getRadius() + sphere2->getRadius()))
+		if (glm::distance(circle1->getPosition(), circle2->getPosition()) <= (circle1->getRadius() + circle2->getRadius()))
 		{
 			// collision
-			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() +
-				sphere2->getPosition()));
+			circle1->resolveCollision(circle2, 0.5f * (circle1->getPosition() +
+				circle2->getPosition()));
 
 			return true;
 		}
@@ -176,9 +176,9 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* a, PhysicsObject* b)
 	return false;
 }
 
-bool PhysicsScene::sphere2Box(PhysicsObject* a, PhysicsObject* b)
+bool PhysicsScene::circle2Box(PhysicsObject* a, PhysicsObject* b)
 {
-	return box2Sphere(b, a);
+	return box2Circle(b, a);
 }
 
 bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
@@ -225,7 +225,7 @@ bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
 	return false;
 }
 
-bool PhysicsScene::box2Sphere(PhysicsObject* a, PhysicsObject* b)
+bool PhysicsScene::box2Circle(PhysicsObject* a, PhysicsObject* b)
 {
 	return false;
 }

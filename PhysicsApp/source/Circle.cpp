@@ -1,21 +1,21 @@
-#include "Sphere.h"
+#include "Circle.h"
 #include <Gizmos.h>
 #include <glm\ext.hpp>
 
-Sphere::Sphere(glm::vec2 position, glm::vec2 velocity, float mass, float radius, glm::vec4 color) :
-RigidBody(ShapeType::SPHERE, position, velocity, 0, mass)
+Circle::Circle(glm::vec2 position, glm::vec2 velocity, float mass, float radius, glm::vec4 color) :
+RigidBody(ShapeType::CIRCLE, position, velocity, 0, mass)
 {
 	m_radius = radius;
 	m_color = color;
 	m_moment = 0.5f * mass * radius * radius;
 }
 
-Sphere::~Sphere()
+Circle::~Circle()
 {
 
 }
 
-void Sphere::makeGizmo()
+void Circle::makeGizmo()
 {
 	glm::vec2 end = glm::vec2(cos(m_rotation), sin(m_rotation)) *
 		m_radius;
@@ -24,7 +24,7 @@ void Sphere::makeGizmo()
 	aie::Gizmos::add2DLine(m_position, m_position + end, glm::vec4(1));
 }
 
-bool Sphere::checkCollision(PhysicsObject* pOther)
+bool Circle::checkCollision(PhysicsObject* pOther)
 {
 	// pOther is a sphere
 	/*Sphere* pSphere = dynamic_cast<Sphere*>(pOther);

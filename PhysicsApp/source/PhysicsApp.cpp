@@ -5,7 +5,7 @@
 #include "gl_core_4_4.h"
 #include <glm\ext.hpp>
 #include <Gizmos.h>
-#include "Sphere.h"
+#include "Circle.h"
 #include "Plane.h"
 #include "Box.h"
 #include <random>
