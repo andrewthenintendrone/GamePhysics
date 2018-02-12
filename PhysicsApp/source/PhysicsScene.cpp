@@ -5,7 +5,6 @@
 #include <iostream>
 #include "Sphere.h"
 #include "Plane.h"
-#include "Box.h"
 #include <glm\ext.hpp>
 
 // function pointer array for doing our collisions
@@ -13,9 +12,8 @@ typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 static fn collisionFunctionArray[] =
 {
-	PhysicsScene::plane2Plane, PhysicsScene::plane2Sphere, PhysicsScene::plane2Box,
-	PhysicsScene::sphere2Plane, PhysicsScene::sphere2Sphere, PhysicsScene::sphere2Box,
-	PhysicsScene::box2Plane, PhysicsScene::box2Sphere, PhysicsScene::box2Box
+	PhysicsScene::plane2Plane, PhysicsScene::plane2Sphere,
+	PhysicsScene::sphere2Plane, PhysicsScene::sphere2Sphere,
 };
 
 PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0, 0))
@@ -115,10 +113,10 @@ bool PhysicsScene::plane2Sphere(PhysicsObject* a, PhysicsObject* b)
 	return sphere2Plane(b, a);
 }
 
-bool PhysicsScene::plane2Box(PhysicsObject* a, PhysicsObject* b)
-{
-	return box2Plane(b, a);
-}
+//bool PhysicsScene::plane2Box(PhysicsObject* a, PhysicsObject* b)
+//{
+//	return box2Plane(b, a);
+//}
 
 bool PhysicsScene::sphere2Plane(PhysicsObject* a, PhysicsObject* b)
 {
@@ -145,7 +143,9 @@ bool PhysicsScene::sphere2Plane(PhysicsObject* a, PhysicsObject* b)
 		if (intersection >= 0)
 		{
 			// collision
-			plane->resolveCollision(sphere);
+			glm::vec2 contact = sphere->getPosition() - (collisionNormal * sphere->getRadius());
+
+			plane->resolveCollision(sphere, contact);
 			return true;
 		}
 	}
@@ -164,7 +164,8 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* a, PhysicsObject* b)
 		if (glm::distance(sphere1->getPosition(), sphere2->getPosition()) <= (sphere1->getRadius() + sphere2->getRadius()))
 		{
 			// collision
-			sphere1->resolveCollision(sphere2);
+			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() +
+				sphere2->getPosition()));
 
 			return true;
 		}
@@ -173,89 +174,89 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* a, PhysicsObject* b)
 	return false;
 }
 
-bool PhysicsScene::sphere2Box(PhysicsObject* a, PhysicsObject* b)
-{
-	return box2Sphere(b, a);
-}
+//bool PhysicsScene::sphere2Box(PhysicsObject* a, PhysicsObject* b)
+//{
+//	return box2Sphere(b, a);
+//}
 
-bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
-{
-	// try to cast objects to box and plane
-	Box* box = dynamic_cast<Box*>(a);
-	Plane* plane = dynamic_cast<Plane*>(b);
+//bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
+//{
+//	// try to cast objects to box and plane
+//	Box* box = dynamic_cast<Box*>(a);
+//	Plane* plane = dynamic_cast<Plane*>(b);
+//
+//	// if we are successful then test for collision
+//	if (box != nullptr && plane != nullptr)
+//	{
+//		glm::vec2 collisionNormal = plane->getNormal();
+//
+//		float cornerDistances[4];
+//		bool signs[4];
+//
+//		// store the distance of each corner from the plane
+//		for (int i = 0; i < 4; i++)
+//		{
+//			cornerDistances[i] = glm::dot(
+//				box->getCorner(i + 1),
+//				plane->getNormal()) - plane->getDistance();
+//
+//			// also store the signs of the distances
+//			signs[i] = std::signbit(cornerDistances[i]);
+//		}
+//
+//		// if the sign of two opposite sides are different there is a collision
+//		if(signs[0] != signs[3] || signs[1] != signs[2])
+//		{
+//			// collision
+//			//plane->resolveCollision(box);
+//			return true;
+//		}
+//	}
+//	return false;
+//}
 
-	// if we are successful then test for collision
-	if (box != nullptr && plane != nullptr)
-	{
-		glm::vec2 collisionNormal = plane->getNormal();
+//bool PhysicsScene::box2Sphere(PhysicsObject* a, PhysicsObject* b)
+//{
+//	// try to cast objects to box and plane
+//	Box* box = dynamic_cast<Box*>(a);
+//	Sphere* sphere = dynamic_cast<Sphere*>(b);
+//
+//	// if we are successful then test for collision
+//	if (box != nullptr && sphere != nullptr)
+//	{
+//		// find the closest point on the sphere to the box
+//		glm::vec2 collisionPoint = sphere->getPosition() + glm::normalize(box->getPosition() - sphere->getPosition()) * sphere->getRadius();
+//
+//		// test if it is with the bounds of the box
+//		if (box->containsPoint(collisionPoint))
+//		{
+//			// collision
+//			sphere->resolveCollision(box);
+//			return true;
+//		}
+//	}
+//	return false;
+//}
 
-		float cornerDistances[4];
-		bool signs[4];
-
-		// store the distance of each corner from the plane
-		for (int i = 0; i < 4; i++)
-		{
-			cornerDistances[i] = glm::dot(
-				box->getCorner(i + 1),
-				plane->getNormal()) - plane->getDistance();
-
-			// also store the signs of the distances
-			signs[i] = std::signbit(cornerDistances[i]);
-		}
-
-		// if the sign of two opposite sides are different there is a collision
-		if(signs[0] != signs[3] || signs[1] != signs[2])
-		{
-			// collision
-			plane->resolveCollision(box);
-			return true;
-		}
-	}
-	return false;
-}
-
-bool PhysicsScene::box2Sphere(PhysicsObject* a, PhysicsObject* b)
-{
-	// try to cast objects to box and plane
-	Box* box = dynamic_cast<Box*>(a);
-	Sphere* sphere = dynamic_cast<Sphere*>(b);
-
-	// if we are successful then test for collision
-	if (box != nullptr && sphere != nullptr)
-	{
-		// find the closest point on the sphere to the box
-		glm::vec2 collisionPoint = sphere->getPosition() + glm::normalize(box->getPosition() - sphere->getPosition()) * sphere->getRadius();
-
-		// test if it is with the bounds of the box
-		if (box->containsPoint(collisionPoint))
-		{
-			// collision
-			sphere->resolveCollision(box);
-			return true;
-		}
-	}
-	return false;
-}
-
-bool PhysicsScene::box2Box(PhysicsObject* a, PhysicsObject* b)
-{
-	// try to cast objects to box and box
-	Box* box1 = dynamic_cast<Box*>(a);
-	Box* box2 = dynamic_cast<Box*>(b);
-
-	// if we are successful then test for collision
-	if (box1 != nullptr && box2 != nullptr)
-	{
-		bool test1 = (box1->getCorner(4).x < box2->getCorner(1).x);
-		bool test2 = (box2->getCorner(4).x < box1->getCorner(1).x);
-		bool test3 = (box1->getCorner(4).y > box2->getCorner(1).y);
-		bool test4 = (box2->getCorner(4).y > box1->getCorner(1).y);
-
-		if (!(test1 || test2 || test3 || test4))
-		{
-			box1->resolveCollision(box2);
-			return true;
-		}
-	}
-	return false;
-}
+//bool PhysicsScene::box2Box(PhysicsObject* a, PhysicsObject* b)
+//{
+//	// try to cast objects to box and box
+//	Box* box1 = dynamic_cast<Box*>(a);
+//	Box* box2 = dynamic_cast<Box*>(b);
+//
+//	// if we are successful then test for collision
+//	if (box1 != nullptr && box2 != nullptr)
+//	{
+//		bool test1 = (box1->getCorner(4).x < box2->getCorner(1).x);
+//		bool test2 = (box2->getCorner(4).x < box1->getCorner(1).x);
+//		bool test3 = (box1->getCorner(4).y > box2->getCorner(1).y);
+//		bool test4 = (box2->getCorner(4).y > box1->getCorner(1).y);
+//
+//		if (!(test1 || test2 || test3 || test4))
+//		{
+//			box1->resolveCollision(box2);
+//			return true;
+//		}
+//	}
+//	return false;
+//}

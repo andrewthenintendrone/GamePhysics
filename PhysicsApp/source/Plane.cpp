@@ -38,11 +38,13 @@ void Plane::resetPosition()
 
 }
 
-void Plane::resolveCollision(RigidBody* actor2)
+void Plane::resolveCollision(RigidBody* actor2, glm::vec2 contact)
 {
-	float elasticity = actor2->getElasticity();
-	float j = glm::dot(actor2->getVelocity() - (1 + elasticity) * actor2->getVelocity(), m_normal);
+	// the plane isn't moving, so the relative velocity is just actor2's velocity
+	glm::vec2 vRel = actor2->getVelocity();
+	float e = actor2->getElasticity();
+	float j = glm::dot(-(1 + e) * (vRel), m_normal) / (1 / actor2->getMass());
 
 	glm::vec2 force = m_normal * j;
-	actor2->setVelocity(force);
+	actor2->applyForce(force, contact - actor2->getPosition());
 }

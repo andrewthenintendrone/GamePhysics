@@ -2,13 +2,14 @@
 #include <Gizmos.h>
 #include <iostream>
 
-Box::Box(glm::vec2 position, glm::vec2 velocity, float mass, float width, float height, glm::vec4 color) :
-	RigidBody(BOX, position, velocity, 0, mass)
-{
-	m_width = width;
-	m_height = height;
-	m_color = color;
-}
+//Box::Box(glm::vec2 position, glm::vec2 velocity, float mass, float width, float height, glm::vec4 color) :
+//	RigidBody(BOX, position, velocity, 0, mass)
+//{
+//	m_width = width;
+//	m_height = height;
+//	m_color = color;
+//	m_moment = 1.0f / 12.0f * m_mass * m_width * m_height;
+//}
 
 void Box::makeGizmo()
 {

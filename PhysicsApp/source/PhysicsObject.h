@@ -5,10 +5,9 @@ enum ShapeType
 {
 	PLANE = 0,
 	SPHERE,
-	BOX
 };
 
-const int SHAPE_COUNT = 3;
+const int SHAPE_COUNT = 2;
 
 class PhysicsObject
 {
