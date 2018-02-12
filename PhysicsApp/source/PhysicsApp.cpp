@@ -7,6 +7,7 @@
 #include <Gizmos.h>
 #include "Sphere.h"
 #include "Plane.h"
+#include "Box.h"
 #include <random>
 
 #define _USE_MATH_DEFINES
@@ -32,29 +33,14 @@ bool PhysicsApp::startup()
 	m_diceTexture = new aie::Texture("./textures/dice_spritesheet.png");
 
 	m_physicsScene = new PhysicsScene();
-	m_physicsScene->setGravity(glm::vec2(0, -9.81f));
+	m_physicsScene->setGravity(glm::vec2(0, 0));
 	m_physicsScene->setTimeStep(0.01f);
 
-	for (int x = 0; x < 5; x++)
-	{
-		for (int y = 0; y < 5; y++)
-		{
-			Sphere* ball = new Sphere(glm::vec2(-20 + x * 10, -20 + y * 10), glm::vec2(15, 0), 1, 2, glm::vec4(1, 0, 0, 1));
-			ball->setElasticity(0.8f);
-			m_physicsScene->addActor(ball);
-		}
-	}
+	Box* box = new Box(glm::vec2(-40, 0), glm::vec2(30, 0), 1, 5, 5, glm::vec4(1, 0, 0, 1));
+	Plane* wall = new Plane(glm::vec2(1, 0), 50);
 
-	// create walls
-	Plane* wall1 = new Plane(glm::normalize(glm::vec2(-1, -1)), 40);
-	Plane* wall2 = new Plane(glm::normalize(glm::vec2(-1, 1)), 40);
-	Plane* wall3 = new Plane(glm::normalize(glm::vec2(1, -1)), 40);
-	Plane* wall4 = new Plane(glm::normalize(glm::vec2(1, 1)), 40);
-
-	m_physicsScene->addActor(wall1);
-	m_physicsScene->addActor(wall2);
-	m_physicsScene->addActor(wall3);
-	m_physicsScene->addActor(wall4);
+	m_physicsScene->addActor(box);
+	m_physicsScene->addActor(wall);
 
 	return true;
 }
