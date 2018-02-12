@@ -8,6 +8,7 @@
 #include "Sphere.h"
 #include "Plane.h"
 #include "Box.h"
+#include <random>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -35,18 +36,8 @@ bool PhysicsApp::startup()
 	m_physicsScene->setGravity(glm::vec2(0, -9.81f));
 	m_physicsScene->setTimeStep(0.01f);
 
-	// ball
-	/*for (int x = 0; x < 20; x++)
-	{
-		for (int y = 0; y < 20; y++)
-		{
-			Sphere* ball = new Sphere(glm::vec2(-40 + x * 3, -40 + y * 3), glm::vec2(0, 0), 1, 1, glm::vec4(1, 0, 0, 1));
-			m_physicsScene->addActor(ball);
-		}
-	}*/
-
-	Sphere* ball = new Sphere(glm::vec2(0, 0), glm::vec2(10, 0), 1, 1, glm::vec4(1, 0, 0, 1));
-	m_physicsScene->addActor(ball);
+	Box* box = new Box(glm::vec2(0, 0), glm::vec2(10, 0), 1, 3, 3, glm::vec4(1, 1, 0, 1));
+	m_physicsScene->addActor(box);
 
 	// create walls
 	Plane* wall1 = new Plane(glm::vec2(-1, 0), 50);

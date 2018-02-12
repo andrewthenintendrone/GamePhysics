@@ -206,7 +206,8 @@ bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
 		// if the sign of two opposite sides are different there is a collision
 		if(signs[0] != signs[3] || signs[1] != signs[2])
 		{
-			box->setVelocity(glm::vec2(0, 0));
+			// collision
+			plane->resolveCollision(box);
 			return true;
 		}
 	}
@@ -228,8 +229,8 @@ bool PhysicsScene::box2Sphere(PhysicsObject* a, PhysicsObject* b)
 		// test if it is with the bounds of the box
 		if (box->containsPoint(collisionPoint))
 		{
-			box->setVelocity(glm::vec2(0, 0));
-			sphere->setVelocity(glm::vec2(0, 0));
+			// collision
+			sphere->resolveCollision(box);
 			return true;
 		}
 	}
@@ -252,8 +253,7 @@ bool PhysicsScene::box2Box(PhysicsObject* a, PhysicsObject* b)
 
 		if (!(test1 || test2 || test3 || test4))
 		{
-			box1->setVelocity(glm::vec2(0, 0));
-			box2->setVelocity(glm::vec2(0, 0));
+			box1->resolveCollision(box2);
 			return true;
 		}
 	}
