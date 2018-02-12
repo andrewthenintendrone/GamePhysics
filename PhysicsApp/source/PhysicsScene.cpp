@@ -43,8 +43,6 @@ void PhysicsScene::removeActor(PhysicsObject* actor)
 
 void PhysicsScene::update(float dt)
 {
-	static std::list<PhysicsObject*> dirty;
-
 	// update physics at a fixed time step
 	static float accumulatedTime = 0.0f;
 	accumulatedTime += dt;
@@ -117,9 +115,9 @@ bool PhysicsScene::plane2Sphere(PhysicsObject* a, PhysicsObject* b)
 	return sphere2Plane(b, a);
 }
 
-bool PhysicsScene::plane2Box(PhysicsObject*, PhysicsObject*)
+bool PhysicsScene::plane2Box(PhysicsObject* a, PhysicsObject* b)
 {
-	return false;
+	return box2Plane(b, a);
 }
 
 bool PhysicsScene::sphere2Plane(PhysicsObject* a, PhysicsObject* b)
@@ -146,8 +144,8 @@ bool PhysicsScene::sphere2Plane(PhysicsObject* a, PhysicsObject* b)
 		float intersection = sphere->getRadius() - sphereToPlane;
 		if (intersection >= 0)
 		{
-			// set sphere velocity to 0
-			sphere->setVelocity(glm::vec2(0, 0));
+			// collision
+			plane->resolveCollision(sphere);
 			return true;
 		}
 	}
@@ -165,10 +163,8 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* a, PhysicsObject* b)
 	{
 		if (glm::distance(sphere1->getPosition(), sphere2->getPosition()) <= (sphere1->getRadius() + sphere2->getRadius()))
 		{
-			// collision has occurred
-			// TODO: collision resolution
-			sphere1->setVelocity(glm::vec2(0, 0));
-			sphere2->setVelocity(glm::vec2(0, 0));
+			// collision
+			sphere1->resolveCollision(sphere2);
 
 			return true;
 		}

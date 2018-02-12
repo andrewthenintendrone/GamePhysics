@@ -1,5 +1,6 @@
 #include "Plane.h"
 #include <Gizmos.h>
+#include <glm\ext.hpp>
 
 Plane::Plane() :
 	PhysicsObject(ShapeType::PLANE)
@@ -35,4 +36,16 @@ void Plane::makeGizmo()
 void Plane::resetPosition()
 {
 
+}
+
+void Plane::resolveCollision(RigidBody* actor2)
+{
+	//glm::vec2 normal = glm::normalize(actor2->getPosition() - m_position);
+	//glm::vec2 relativeVelocity = actor2->getVelocity() - m_velocity;
+
+	float elasticity = 1;
+	float j = glm::dot(actor2->getVelocity() - (1 + elasticity) * actor2->getVelocity(), m_normal);
+
+	glm::vec2 force = m_normal * j;
+	actor2->setVelocity(force);
 }

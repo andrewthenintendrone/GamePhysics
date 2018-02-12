@@ -35,23 +35,29 @@ bool PhysicsApp::startup()
 	m_physicsScene->setGravity(glm::vec2(0, -9.81f));
 	m_physicsScene->setTimeStep(0.01f);
 
-	for (int x = 0; x < 20; x++)
+	// ball
+	/*for (int x = 0; x < 20; x++)
 	{
-		if (x % 2 == 0)
+		for (int y = 0; y < 20; y++)
 		{
-			Box* box = new Box(glm::vec2(-50, -50 + (x + 1) * 15), glm::vec2(0, 0), 1, 3, 1, glm::vec4(185.f / 255, 122.f / 255, 87.f / 255, 1));
-			m_physicsScene->addActor(box);
+			Sphere* ball = new Sphere(glm::vec2(-40 + x * 3, -40 + y * 3), glm::vec2(0, 0), 1, 1, glm::vec4(1, 0, 0, 1));
+			m_physicsScene->addActor(ball);
 		}
-		else
-		{
-			Sphere* sphere = new Sphere(glm::vec2(-50, -50 + (x + 1) * 15), glm::vec2(0, 0), 1, 2, glm::vec4(1, 174.f / 255, 201.f / 255, 1));
-			m_physicsScene->addActor(sphere);
-		}
-	}
+	}*/
 
-	// create floor
-	Plane* floor = new Plane(glm::normalize(glm::vec2(0, -1)), 50);
-	m_physicsScene->addActor(floor);
+	Sphere* ball = new Sphere(glm::vec2(0, 0), glm::vec2(10, 0), 1, 1, glm::vec4(1, 0, 0, 1));
+	m_physicsScene->addActor(ball);
+
+	// create walls
+	Plane* wall1 = new Plane(glm::vec2(-1, 0), 50);
+	Plane* wall2 = new Plane(glm::vec2(1, 0), 50);
+	Plane* wall3 = new Plane(glm::vec2(0, -1), 50);
+	Plane* wall4 = new Plane(glm::vec2(0, 1), 50);
+
+	m_physicsScene->addActor(wall1);
+	m_physicsScene->addActor(wall2);
+	m_physicsScene->addActor(wall3);
+	m_physicsScene->addActor(wall4);
 
 	return true;
 }
