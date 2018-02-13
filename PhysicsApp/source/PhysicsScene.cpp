@@ -145,7 +145,7 @@ bool PhysicsScene::circle2Plane(PhysicsObject* a, PhysicsObject* b)
 		if (intersection >= 0)
 		{
 			// collision
-			glm::vec2 contact = circle->getPosition() - (collisionNormal * circle->getRadius());
+			glm::vec2 contact = circle->getPosition() + (collisionNormal * -circle->getRadius());
 
 			plane->resolveCollision(circle, contact);
 			return true;
@@ -169,6 +169,7 @@ bool PhysicsScene::circle2Circle(PhysicsObject* a, PhysicsObject* b)
 		{
 			std::cout << "there was a collision.\n";
 			glm::vec2 contact = (circle1->getPosition() + circle2->getPosition()) * 0.5f;
+
 			circle1->resolveCollision(circle2, contact);
 			return true;
 		}
@@ -212,7 +213,7 @@ bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
 				float distFromPlane = glm::dot(p - planeOrigin, plane->getNormal());
 
 				// this is the total velocity of the point
-				float velocityIntoPlane = glm::dot(box->getVelocity() + box->getRotation() *
+				float velocityIntoPlane = glm::dot(box->getVelocity() + box->getAngularVelocity() *
 					(-y * box->getLocalX() + x * box->getLocalY()), plane->getNormal());
 
 				// if this corner is on the opposite side from the COM,
@@ -241,14 +242,16 @@ bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
 			// and the average position at which we'll apply the force
 			// (corner or edge centre)
 			glm::vec2 localContact = (contact / (float)numContacts) - box->getPosition();
+
 			// this is the perpendicular distance we apply the force at relative to
 			// the COM, so Torque = F*r
 			float r = glm::dot(localContact, glm::vec2(plane->getNormal().y,
 				-plane->getNormal().x));
+
 			// work out the "effective mass" - this is a combination of moment of
 			// inertia and mass, and tells us how much the contact point velocity
 			// will change with the force we're applying
-			float mass0 = 1.0f / (1.0f / box->getMass() + (r*r) / box->getMoment());
+			float mass0 = 1.0f / (1.0f / box->getMass() + (r * r) / box->getMoment());
 
 			// and apply the force
 			box->applyForce(acceleration * mass0, localContact);
@@ -264,7 +267,69 @@ bool PhysicsScene::box2Circle(PhysicsObject* a, PhysicsObject* b)
 
 	if (box != nullptr && circle != nullptr)
 	{
-		
+		glm::vec2 circlePos = circle->getPosition() - box->getPosition();
+		float w2 = box->getWidth() / 2, h2 = box->getHeight() / 2;
+
+		int numContacts = 0;
+
+		glm::vec2 contact(0, 0); // contact is in our box coordinates
+
+		// check the four corners to see if any of them are inside the circle
+		for (float x = -w2; x <= w2; x += box->getWidth())
+		{
+			for (float y = -h2; y <= h2; y += box->getHeight())
+			{
+				glm::vec2 p = x * box->getLocalX() + y * box->getLocalY();
+				glm::vec2 dp = p - circlePos;
+				if (dp.x * dp.x + dp.y * dp.y < circle->getRadius() * circle->getRadius())
+				{
+					numContacts++;
+					contact += glm::vec2(x, y);
+				}
+			}
+		}
+		glm::vec2* direction = nullptr;
+		// get the local position of the circle centre
+		glm::vec2 localPos(glm::dot(box->getLocalX(), circlePos),
+			glm::dot(box->getLocalY(), circlePos));
+		if (localPos.y < h2 && localPos.y > -h2)
+		{
+			if (localPos.x > 0 && localPos.x < w2 + circle->getRadius())
+			{
+				numContacts++;
+				contact += glm::vec2(w2, localPos.y);
+				direction = new glm::vec2(box->getLocalX());
+			}
+			if (localPos.x < 0 && localPos.x > -(w2 + circle->getRadius()))
+			{
+				numContacts++;
+				contact += glm::vec2(-w2, localPos.y);
+				direction = new glm::vec2(-box->getLocalX());
+			}
+		}
+		if (localPos.x < w2 && localPos.x > -w2)
+		{
+			if (localPos.y > 0 && localPos.y < h2 + circle->getRadius())
+			{
+				numContacts++;
+				contact += glm::vec2(localPos.x, h2);
+				direction = new glm::vec2(box->getLocalY());
+			}
+			if (localPos.y < 0 && localPos.y > -(h2 + circle->getRadius()))
+			{
+				numContacts++;
+				contact += glm::vec2(localPos.x, -h2);
+				direction = new glm::vec2(-box->getLocalY());
+			}
+		}
+		if (numContacts > 0)
+		{
+			// average, and convert back into world coords
+			contact = box->getPosition() + (1.0f / numContacts) *
+				(box->getLocalX() * contact.x + box->getLocalY() * contact.y);
+			box->resolveCollision(circle, contact, direction);
+		}
+		delete direction;
 	}
 	return false;
 }
@@ -285,8 +350,6 @@ bool PhysicsScene::box2Box(PhysicsObject* a, PhysicsObject* b)
 
 		if (!(test1 || test2 || test3 || test4))
 		{
-			box1->setVelocity(glm::vec2(0, 0));
-			box2->setVelocity(glm::vec2(0, 0));
 			return true;
 		}
 	}

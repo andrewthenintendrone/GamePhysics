@@ -7,7 +7,7 @@ Box::Box(glm::vec2 position, glm::vec2 velocity, float mass, glm::vec2 extents, 
 {
 	m_extents = extents;
 	m_color = color;
-	m_moment = 1.0f / 12.0f * m_mass * extents.x * m_extents.y;
+	m_moment = 1.0f / 12.0f * m_mass * (extents.x * 2) * (m_extents.y * 2);
 }
 
 glm::vec2 Box::getCorner(int corner)
