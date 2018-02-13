@@ -24,15 +24,3 @@ void Circle::makeGizmo()
 	aie::Gizmos::add2DLine(m_position, m_position + end, glm::vec4(1));
 }
 
-bool Circle::checkCollision(PhysicsObject* pOther)
-{
-	// pOther is a sphere
-	/*Sphere* pSphere = dynamic_cast<Sphere*>(pOther);
-
-	if (glm::distance(m_position, pSphere->getPosition()) <= (m_radius + pSphere->getRadius()))
-	{
-		return true;
-	}*/
-
-	return false;
-}

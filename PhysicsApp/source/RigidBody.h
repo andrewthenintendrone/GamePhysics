@@ -15,8 +15,6 @@ public:
 	void resolveCollision(RigidBody* actor2, glm::vec2 contact, glm::vec2*
 	collisionNormal = nullptr);
 
-	virtual bool checkCollision(PhysicsObject* pOther) = 0;
-
 	glm::vec2 getPosition() { return m_position; }
 	glm::vec2 getVelocity() { return m_velocity; }
 	float getMass() { return m_mass; }
@@ -25,13 +23,14 @@ public:
 	float getElasticity() { return m_elasticity; }
 	float getRotation() { return m_rotation; }
 	float getAngularVelocity() { return m_angularVelocity; }
-	float getmoment() { return m_moment; }
+	float getMoment() { return m_moment; }
 
 	void setVelocity(glm::vec2 velocity) { m_velocity = velocity; }
 	void setMass(float mass) { m_mass = mass; }
 	void setLinearDrag(float linearDrag) { m_linearDrag = linearDrag; }
 	void setAngularDrag(float angularDrag) { m_linearDrag = angularDrag; }
 	void setElasticity(float elasticity) { m_elasticity = elasticity; }
+	void setRotation(float rotation) { m_rotation = rotation; }
 
 protected:
 	bool m_isKinematic = false;
@@ -40,8 +39,8 @@ protected:
 	glm::vec2 m_position;
 	glm::vec2 m_velocity;
 	float m_mass;
-	float m_linearDrag = 0.3f;
-	float m_angularDrag = 0.3f;
+	float m_linearDrag = 0.1f;
+	float m_angularDrag = 0.1f;
 	float m_elasticity = 1;
 
 	// angular
@@ -49,6 +48,6 @@ protected:
 	float m_angularVelocity = 0;
 	float m_moment = 0;
 
-	const float MIN_LINEAR_THRESHOLD = 0.5f;
-	const float MIN_ROTATION_THRESHOLD = 0.05f;
+	const float MIN_LINEAR_THRESHOLD = 0.1f;
+	const float MIN_ROTATION_THRESHOLD = 0.01f;
 };

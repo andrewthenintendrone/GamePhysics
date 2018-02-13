@@ -3,17 +3,19 @@
 #include <glm\ext.hpp>
 
 Plane::Plane() :
-	PhysicsObject(ShapeType::PLANE)
+	RigidBody(ShapeType::PLANE, glm::vec2(0), glm::vec2(0), 0, 1)
 {
 	m_distanceToOrigin = 0;
 	m_normal = glm::vec2(0, 1);
+	m_isKinematic = true;
 }
 
 Plane::Plane(glm::vec2 normal, float distance) :
-	PhysicsObject(ShapeType::PLANE)
+	RigidBody(ShapeType::PLANE, glm::vec2(0), glm::vec2(0), 0, 1)
 {
 	m_normal = normal;
 	m_distanceToOrigin = distance;
+	m_isKinematic = true;
 }
 
 void Plane::fixedUpdate(glm::vec2 gravity, float timeStep)
@@ -43,7 +45,7 @@ void Plane::resolveCollision(RigidBody* actor2, glm::vec2 contact)
 	// the plane isn't moving, so the relative velocity is just actor2's velocity
 	glm::vec2 vRel = actor2->getVelocity();
 	float e = actor2->getElasticity();
-	float j = glm::dot(-(1 + e) * (vRel), m_normal) / (1 / actor2->getMass());
+	float j = glm::dot(-(1 + e) * vRel, m_normal) * actor2->getMass();
 
 	glm::vec2 force = m_normal * j;
 	actor2->applyForce(force, contact - actor2->getPosition());

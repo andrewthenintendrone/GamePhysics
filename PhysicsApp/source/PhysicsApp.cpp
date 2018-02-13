@@ -33,14 +33,16 @@ bool PhysicsApp::startup()
 	m_diceTexture = new aie::Texture("./textures/dice_spritesheet.png");
 
 	m_physicsScene = new PhysicsScene();
-	m_physicsScene->setGravity(glm::vec2(0, 0));
+	m_physicsScene->setGravity(glm::vec2(0));
 	m_physicsScene->setTimeStep(0.01f);
 
-	Box* box = new Box(glm::vec2(-40, 0), glm::vec2(30, 0), 1, 5, 5, glm::vec4(1, 0, 0, 1));
-	Plane* wall = new Plane(glm::vec2(1, 0), 50);
+	Box* box1 = new Box(glm::vec2(-20, -5), glm::vec2(20, 0), 1, glm::vec2(5), glm::vec4(0.5f, 0, 1, 1));
+	box1->setElasticity(1);
+	m_physicsScene->addActor(box1);
 
-	m_physicsScene->addActor(box);
-	m_physicsScene->addActor(wall);
+	Box* box2 = new Box(glm::vec2(20, 0), glm::vec2(0, 0), 1, glm::vec2(5), glm::vec4(0.5f, 0, 1, 1));
+	box2->setElasticity(1);
+	m_physicsScene->addActor(box2);
 
 	return true;
 }
@@ -66,6 +68,10 @@ void PhysicsApp::update(float deltaTime)
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 	{
 		quit();
+	}
+	if (input->isKeyDown(aie::INPUT_KEY_SPACE))
+	{
+		m_physicsScene->setGravity(glm::vec2(0, -9.81f));
 	}
 }
 

@@ -11,7 +11,6 @@ public:
 	~Circle();
 
 	virtual void makeGizmo();
-	virtual bool checkCollision(PhysicsObject* pOther);
 
 	float getRadius() { return m_radius; }
 

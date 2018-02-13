@@ -81,7 +81,7 @@ void PhysicsScene::debugScene()
 
 void PhysicsScene::checkForCollison()
 {
-	int actorCount = m_actors.size();
+	int actorCount = (int)m_actors.size();
 
 	// need to check for collisions against all objects except this one
 	for (int outer = 0; outer < actorCount - 1; outer++)
@@ -156,19 +156,20 @@ bool PhysicsScene::circle2Plane(PhysicsObject* a, PhysicsObject* b)
 
 bool PhysicsScene::circle2Circle(PhysicsObject* a, PhysicsObject* b)
 {
-	// try to cast objects to sphere and sphere
+	// try to cast objects to circle and circle
 	Circle* circle1 = dynamic_cast<Circle*>(a);
 	Circle* circle2 = dynamic_cast<Circle*>(b);
 
 	// if we are successful then test for collision
 	if (circle1 != nullptr && circle2 != nullptr)
 	{
-		if (glm::distance(circle1->getPosition(), circle2->getPosition()) <= (circle1->getRadius() + circle2->getRadius()))
-		{
-			// collision
-			circle1->resolveCollision(circle2, 0.5f * (circle1->getPosition() +
-				circle2->getPosition()));
+		float r = circle1->getRadius() + circle2->getRadius();
 
+		if (glm::distance(circle1->getPosition(), circle2->getPosition()) < r)
+		{
+			std::cout << "there was a collision.\n";
+			glm::vec2 contact = (circle1->getPosition() + circle2->getPosition()) * 0.5f;
+			circle1->resolveCollision(circle2, contact);
 			return true;
 		}
 	}
@@ -183,43 +184,74 @@ bool PhysicsScene::circle2Box(PhysicsObject* a, PhysicsObject* b)
 
 bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
 {
-	Box* box = dynamic_cast<Box*>(a);
-	Plane* plane = dynamic_cast<Plane*>(b);
+	Box *box = dynamic_cast<Box*>(a);
+	Plane *plane = dynamic_cast<Plane*>(b);
 
+	//if we are successful then test for collision
 	if (box != nullptr && plane != nullptr)
 	{
-		glm::vec2 collisionNormal = plane->getNormal();
-		glm::vec2 min = box->getMin();
-		glm::vec2 max = box->getMax();
-		float cornerDistances[4];
+		int numContacts = 0;
+		glm::vec2 contact(0, 0);
+		float contactV = 0;
+		float radius = 0.5f * std::fminf(box->getWidth(), box->getHeight());
 
-		cornerDistances[0] = glm::dot(
-			glm::vec2(min.x, min.y),
-			collisionNormal) - plane->getDistance();
+		// which side is the centre of mass on?
+		glm::vec2 planeOrigin = plane->getNormal() * plane->getDistance();
+		float comFromPlane = glm::dot(box->getPosition() - planeOrigin,
+			plane->getNormal());
 
-		cornerDistances[1] = glm::dot(
-			glm::vec2(max.x, min.y),
-			collisionNormal) - plane->getDistance();
-
-		cornerDistances[2] = glm::dot(
-			glm::vec2(min.x, max.y),
-			collisionNormal) - plane->getDistance();
-
-		cornerDistances[3] = glm::dot(
-			glm::vec2(max.x, max.y),
-			collisionNormal) - plane->getDistance();
-
-		bool signs[4];
-
-		for (int i = 0; i < 4; i++)
+		// check all four corners to see if we've hit the plane
+		for (float x = -box->getExtents().x; x<box->getWidth(); x += box->getWidth())
 		{
-			signs[i] = std::signbit(cornerDistances[i]);
+			for (float y = -box->getExtents().y; y<box->getHeight(); y += box->getHeight())
+			{
+				// get the position of the corner in world space
+				glm::vec2 p = box->getPosition() + x * box->getLocalX() +
+					y * box->getLocalY();
+
+				float distFromPlane = glm::dot(p - planeOrigin, plane->getNormal());
+
+				// this is the total velocity of the point
+				float velocityIntoPlane = glm::dot(box->getVelocity() + box->getRotation() *
+					(-y * box->getLocalX() + x * box->getLocalY()), plane->getNormal());
+
+				// if this corner is on the opposite side from the COM,
+				// and moving further in, we need to resolve the collision
+				if ((distFromPlane > 0 && comFromPlane < 0 && velocityIntoPlane > 0) ||
+					(distFromPlane < 0 && comFromPlane > 0 && velocityIntoPlane < 0))
+				{
+					numContacts++;
+					contact += p;
+					contactV += velocityIntoPlane;
+				}
+			}
 		}
-
-		if (signs[0] != signs[3] || signs[1] != signs[2])
+		// we've had a hit - typically only two corners can contact
+		if (numContacts > 0)
 		{
-			plane->resolveCollision(box, box->getPosition());
-			return true;
+			// get the average collision velocity into the plane
+			// (covers linear and rotational velocity of all corners involved)
+			float collisionV = contactV / (float)numContacts;
+
+			// get the acceleration required to stop (restitution = 0) or reverse
+			// (restitution = 1) the average velocity into the plane
+			glm::vec2 acceleration = -plane->getNormal() *
+				((1.0f + box->getElasticity()) * collisionV);
+
+			// and the average position at which we'll apply the force
+			// (corner or edge centre)
+			glm::vec2 localContact = (contact / (float)numContacts) - box->getPosition();
+			// this is the perpendicular distance we apply the force at relative to
+			// the COM, so Torque = F*r
+			float r = glm::dot(localContact, glm::vec2(plane->getNormal().y,
+				-plane->getNormal().x));
+			// work out the "effective mass" - this is a combination of moment of
+			// inertia and mass, and tells us how much the contact point velocity
+			// will change with the force we're applying
+			float mass0 = 1.0f / (1.0f / box->getMass() + (r*r) / box->getMoment());
+
+			// and apply the force
+			box->applyForce(acceleration * mass0, localContact);
 		}
 	}
 	return false;
@@ -227,6 +259,13 @@ bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
 
 bool PhysicsScene::box2Circle(PhysicsObject* a, PhysicsObject* b)
 {
+	Box* box = dynamic_cast<Box*>(a);
+	Circle* circle = dynamic_cast<Circle*>(b);
+
+	if (box != nullptr && circle != nullptr)
+	{
+		
+	}
 	return false;
 }
 
@@ -239,20 +278,17 @@ bool PhysicsScene::box2Box(PhysicsObject* a, PhysicsObject* b)
 	// if we are successful then test for collision
 	if (box1 != nullptr && box2 != nullptr)
 	{
-		glm::vec2 aMin = box1->getMin();
-		glm::vec2 aMax = box1->getMax();
-		glm::vec2 bMin = box2->getMin();
-		glm::vec2 bMax = box2->getMax();
+		bool test1 = (box1->getCorner(4).x < box2->getCorner(1).x);
+		bool test2 = (box2->getCorner(4).x < box1->getCorner(1).x);
+		bool test3 = (box1->getCorner(4).y > box2->getCorner(1).y);
+		bool test4 = (box2->getCorner(4).y > box1->getCorner(1).y);
 
-		if (aMax.x < bMin.x || aMin.x > bMax.x)
+		if (!(test1 || test2 || test3 || test4))
 		{
-			return false;
+			box1->setVelocity(glm::vec2(0, 0));
+			box2->setVelocity(glm::vec2(0, 0));
+			return true;
 		}
-		if (aMax.y < bMin.y || aMin.y > bMax.y)
-		{
-			return false;
-		}
-		return true;
 	}
 	return false;
 }

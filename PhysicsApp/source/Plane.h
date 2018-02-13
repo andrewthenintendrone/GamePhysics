@@ -1,9 +1,8 @@
 #pragma once
-#include "PhysicsObject.h"
 #include <glm\vec4.hpp>
 #include "RigidBody.h"
 
-class Plane : public PhysicsObject
+class Plane : public RigidBody
 {
 public:
 	Plane();
