@@ -7,7 +7,7 @@ RigidBody(ShapeType::CIRCLE, position, velocity, 0, mass)
 {
 	m_radius = radius;
 	m_color = color;
-	m_moment = 0.5f * mass * radius * radius;
+	m_moment = 0.4f * mass * radius * radius;
 }
 
 Circle::~Circle()
@@ -17,10 +17,10 @@ Circle::~Circle()
 
 void Circle::makeGizmo()
 {
-	glm::vec2 end = glm::vec2(cos(m_rotation), sin(m_rotation)) *
+	glm::vec2 end = glm::vec2(std::cosf(m_rotation), std::sinf(m_rotation)) *
 		m_radius;
 
-	aie::Gizmos::add2DCircle(m_position, m_radius, 36, m_color);
+	aie::Gizmos::add2DCircle(m_position, m_radius, 12, m_color);
 	aie::Gizmos::add2DLine(m_position, m_position + end, glm::vec4(1));
 }
 

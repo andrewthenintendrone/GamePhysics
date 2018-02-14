@@ -19,14 +19,14 @@ void RigidBody::fixedUpdate(glm::vec2 gravity, float timeStep)
 	// remember when applying the force of gravity, mass cancels out
 	m_velocity += gravity * timeStep;
 	m_position += m_velocity * timeStep;
+	m_rotation += m_angularVelocity * timeStep;
 
 	m_velocity -= m_velocity * m_linearDrag * timeStep;
-	m_rotation += m_angularVelocity * timeStep;
 	m_angularVelocity -= m_angularVelocity * m_angularDrag * timeStep;
 
 	if (glm::length(m_velocity) < MIN_LINEAR_THRESHOLD)
 	{
-		m_velocity = glm::vec2(0, 0);
+		m_velocity = glm::vec2(0);
 	}
 	if (abs(m_angularVelocity) < MIN_ROTATION_THRESHOLD)
 	{
@@ -48,7 +48,7 @@ void RigidBody::applyForce(glm::vec2 force, glm::vec2 pos)
 void RigidBody::resolveCollision(RigidBody* actor2, glm::vec2 contact,
 	glm::vec2* collisionNormal)
 {
-	// find the vector between their centres, or use the provided direction
+	// find the vector between their centers, or use the provided direction
 	// of force
 	glm::vec2 normal = collisionNormal ? *collisionNormal : glm::normalize(
 		actor2->m_position - m_position);
@@ -62,6 +62,7 @@ void RigidBody::resolveCollision(RigidBody* actor2, glm::vec2 contact,
 	// 'r' is the radius from axis to application of force
 	float r1 = glm::dot(contact - m_position, -perp);
 	float r2 = glm::dot(contact - actor2->m_position, perp);
+
 	// velocity of the contact point on this object
 	float v1 = glm::dot(m_velocity, normal) - r1 * m_angularVelocity;
 	// velocity of contact point on actor2
@@ -74,7 +75,7 @@ void RigidBody::resolveCollision(RigidBody* actor2, glm::vec2 contact,
 		float mass1 = 1.0f / (1.0f / m_mass + (r1 * r1) / m_moment);
 		float mass2 = 1.0f / (1.0f / actor2->m_mass + (r2 * r2) / actor2->m_moment);
 
-		float elasticity = (m_elasticity + actor2->getElasticity()) / 2.0f;
+		float elasticity = (m_elasticity + actor2->getElasticity()) * 0.5f;
 
 		glm::vec2 force = (1.0f + elasticity) * mass1 * mass2 /
 			(mass1 + mass2) * (v1 - v2) * normal;

@@ -15,16 +15,17 @@ public:
 	void resolveCollision(RigidBody* actor2, glm::vec2 contact, glm::vec2*
 	collisionNormal = nullptr);
 
-	glm::vec2 getPosition() { return m_position; }
-	glm::vec2 getVelocity() { return m_velocity; }
-	float getMass() { return m_mass; }
-	float getLinearDrag() { return m_linearDrag; }
-	float getAngularDrag() { return m_angularDrag; }
-	float getElasticity() { return m_elasticity; }
-	float getRotation() { return m_rotation; }
-	float getAngularVelocity() { return m_angularVelocity; }
-	float getMoment() { return m_moment; }
+	glm::vec2 getPosition() const { return m_position; }
+	glm::vec2 getVelocity() const { return m_velocity; }
+	float getMass() const { return m_mass; }
+	float getLinearDrag() const { return m_linearDrag; }
+	float getAngularDrag() const { return m_angularDrag; }
+	float getElasticity() const { return m_elasticity; }
+	float getRotation() const { return m_rotation; }
+	float getAngularVelocity() const { return m_angularVelocity; }
+	float getMoment() const { return m_moment; }
 
+	void setPosition(glm::vec2 position) { m_position = position; }
 	void setVelocity(glm::vec2 velocity) { m_velocity = velocity; }
 	void setMass(float mass) { m_mass = mass; }
 	void setLinearDrag(float linearDrag) { m_linearDrag = linearDrag; }
@@ -39,8 +40,8 @@ protected:
 	glm::vec2 m_position;
 	glm::vec2 m_velocity;
 	float m_mass;
-	float m_linearDrag = 0.1f;
-	float m_angularDrag = 0.1f;
+	float m_linearDrag = 0.3f;
+	float m_angularDrag = 0.3f;
 	float m_elasticity = 1;
 
 	// angular

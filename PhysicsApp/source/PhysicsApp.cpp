@@ -32,19 +32,25 @@ bool PhysicsApp::startup()
 	m_font = new aie::Font("./font/consolas.ttf", 32);
 
 	m_physicsScene = new PhysicsScene();
-	m_physicsScene->setGravity(glm::vec2(0));
+	m_physicsScene->setGravity(glm::vec2(0, -10));
 	m_physicsScene->setTimeStep(0.01f);
+
+	float force = 50;
 
 	for (int x = 0; x < 5; x++)
 	{
 		for (int y = 0; y < 5; y++)
 		{
-			
+			glm::vec4 randomColor = glm::vec4(rand() % 256 / 255.f, rand() % 256 / 255.f, rand() % 256 / 255.f, 1);
+			glm::vec2 randomDirection = glm::vec2(rand() % 1001 / 10.f - 50, rand() % 1001 / 10.f - 50);
+
+			Box* ball = new Box(glm::vec2(-25 + x * 10, -25 + y * 10), randomDirection, 1, glm::vec2(3), randomColor);
+			ball->setElasticity(0.3f);
+			m_physicsScene->addActor(ball);
 		}
 	}
 
 	Plane* floor = new Plane(glm::vec2(0, -1), 50);
-	floor->setElasticity(0);
 	m_physicsScene->addActor(floor);
 
 	return true;

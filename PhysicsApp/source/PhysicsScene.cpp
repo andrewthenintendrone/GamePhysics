@@ -142,8 +142,12 @@ bool PhysicsScene::circle2Plane(PhysicsObject* a, PhysicsObject* b)
 		}
 
 		float intersection = circle->getRadius() - circleToPlane;
-		if (intersection >= 0)
+		if (intersection > 0)
 		{
+			// contact force
+			circle->setPosition(circle->getPosition() -
+				plane->getNormal() * (circle->getRadius() - circleToPlane));
+
 			// collision
 			glm::vec2 contact = circle->getPosition() + (collisionNormal * -circle->getRadius());
 
@@ -163,14 +167,22 @@ bool PhysicsScene::circle2Circle(PhysicsObject* a, PhysicsObject* b)
 	// if we are successful then test for collision
 	if (circle1 != nullptr && circle2 != nullptr)
 	{
-		float r = circle1->getRadius() + circle2->getRadius();
+		glm::vec2 delta = circle2->getPosition() - circle1->getPosition();
+		float distance = glm::length(delta);
+		float intersection = circle1->getRadius() + circle2->getRadius() - distance;
 
-		if (glm::distance(circle1->getPosition(), circle2->getPosition()) < r)
+		if (intersection > 0)
 		{
-			std::cout << "there was a collision.\n";
-			glm::vec2 contact = (circle1->getPosition() + circle2->getPosition()) * 0.5f;
+			glm::vec2 contactForce = 0.5f * (distance - (circle1->getRadius() +
+				circle2->getRadius())) * delta / distance;
 
-			circle1->resolveCollision(circle2, contact);
+			circle1->setPosition(circle1->getPosition() + contactForce);
+			circle2->setPosition(circle2->getPosition() - contactForce);
+
+			// respond to the collision
+			circle1->resolveCollision(circle2, 0.5f * (circle1->getPosition() +
+				circle2->getPosition()));
+
 			return true;
 		}
 	}
@@ -183,10 +195,10 @@ bool PhysicsScene::circle2Box(PhysicsObject* a, PhysicsObject* b)
 	return box2Circle(b, a);
 }
 
-bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
+bool PhysicsScene::box2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 {
-	Box *box = dynamic_cast<Box*>(a);
-	Plane *plane = dynamic_cast<Plane*>(b);
+	Box* box = dynamic_cast<Box*>(obj1);
+	Plane* plane = dynamic_cast<Plane*>(obj2);
 
 	//if we are successful then test for collision
 	if (box != nullptr && plane != nullptr)
@@ -195,16 +207,17 @@ bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
 		glm::vec2 contact(0, 0);
 		float contactV = 0;
 		float radius = 0.5f * std::fminf(box->getWidth(), box->getHeight());
+		float penetration = 0;
 
-		// which side is the centre of mass on?
+		// which side is the center of mass on?
 		glm::vec2 planeOrigin = plane->getNormal() * plane->getDistance();
 		float comFromPlane = glm::dot(box->getPosition() - planeOrigin,
 			plane->getNormal());
 
 		// check all four corners to see if we've hit the plane
-		for (float x = -box->getExtents().x; x<box->getWidth(); x += box->getWidth())
+		for (float x = -box->getExtents().x; x < box->getWidth(); x += box->getWidth())
 		{
-			for (float y = -box->getExtents().y; y<box->getHeight(); y += box->getHeight())
+			for (float y = -box->getExtents().y; y < box->getHeight(); y += box->getHeight())
 			{
 				// get the position of the corner in world space
 				glm::vec2 p = box->getPosition() + x * box->getLocalX() +
@@ -218,12 +231,27 @@ bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
 
 				// if this corner is on the opposite side from the COM,
 				// and moving further in, we need to resolve the collision
-				if ((distFromPlane > 0 && comFromPlane < 0 && velocityIntoPlane > 0) ||
-					(distFromPlane < 0 && comFromPlane > 0 && velocityIntoPlane < 0))
+				if ((distFromPlane > 0 && comFromPlane < 0 && velocityIntoPlane >= 0) ||
+					(distFromPlane < 0 && comFromPlane > 0 && velocityIntoPlane <= 0))
 				{
 					numContacts++;
 					contact += p;
 					contactV += velocityIntoPlane;
+
+					if (comFromPlane >= 0)
+					{
+						if (penetration > distFromPlane)
+						{
+							penetration = distFromPlane;
+						}
+					}
+					else
+					{
+						if (penetration < distFromPlane)
+						{
+							penetration = distFromPlane;
+						}
+					}
 				}
 			}
 		}
@@ -255,6 +283,8 @@ bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
 
 			// and apply the force
 			box->applyForce(acceleration * mass0, localContact);
+
+			box->setPosition(box->getPosition() - plane->getNormal() * penetration);
 		}
 	}
 	return false;
@@ -336,20 +366,29 @@ bool PhysicsScene::box2Circle(PhysicsObject* a, PhysicsObject* b)
 
 bool PhysicsScene::box2Box(PhysicsObject* a, PhysicsObject* b)
 {
-	// try to cast objects to box and box
 	Box* box1 = dynamic_cast<Box*>(a);
 	Box* box2 = dynamic_cast<Box*>(b);
 
-	// if we are successful then test for collision
 	if (box1 != nullptr && box2 != nullptr)
 	{
-		bool test1 = (box1->getCorner(4).x < box2->getCorner(1).x);
-		bool test2 = (box2->getCorner(4).x < box1->getCorner(1).x);
-		bool test3 = (box1->getCorner(4).y > box2->getCorner(1).y);
-		bool test4 = (box2->getCorner(4).y > box1->getCorner(1).y);
+		glm::vec2 boxPos = box2->getCenter() - box1->getCenter();
+		glm::vec2 normal;
+		glm::vec2 contactForce1, contactForce2;
+		glm::vec2 contact(0, 0);
+		int numContacts = 0;
 
-		if (!(test1 || test2 || test3 || test4))
+		box1->checkBoxCorners(*box2, contact, numContacts, normal, contactForce1);
+		if (box2->checkBoxCorners(*box1, contact, numContacts,
+			normal, contactForce2))
 		{
+			normal = -normal;
+		}
+		if (numContacts > 0)
+		{
+			glm::vec2 contactForce = 0.5f * (contactForce1 - contactForce2);
+			box1->setPosition(box1->getPosition() - contactForce);
+			box2->setPosition(box2->getPosition() + contactForce);
+			box1->resolveCollision(box2, contact / float(numContacts), &normal);
 			return true;
 		}
 	}

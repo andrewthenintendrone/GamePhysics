@@ -13,7 +13,7 @@ Plane::Plane() :
 Plane::Plane(glm::vec2 normal, float distance) :
 	RigidBody(ShapeType::PLANE, glm::vec2(0), glm::vec2(0), 0, 1)
 {
-	m_normal = normal;
+	m_normal = glm::normalize(normal);
 	m_distanceToOrigin = distance;
 	m_isKinematic = true;
 }
@@ -49,5 +49,5 @@ void Plane::resolveCollision(RigidBody* actor2, glm::vec2 contact)
 
 	glm::vec2 force = m_normal * j;
 
-	actor2->applyForce(force, contact - actor2->getPosition());
+	actor2->applyForce(force, contact - actor2->getPosition());
 }
