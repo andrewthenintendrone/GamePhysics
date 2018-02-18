@@ -1,29 +1,36 @@
 #include "RigidBody.h"
 #include <glm\ext.hpp>
 
-RigidBody::RigidBody(ShapeType shapeID, glm::vec2 position,
-	glm::vec2 velocity, float rotation, float mass) : PhysicsObject(shapeID)
+RigidBody::RigidBody(ShapeTypes shapeID, glm::vec2 position,
+	glm::vec2 velocity, float rotation, float mass) :
+	PhysicsObject(shapeID)
 {
 	m_mass = mass;
 	m_velocity = velocity;
 	m_position = position;
 }
 
+// updates the RigidBody using a fixed timestep
 void RigidBody::fixedUpdate(glm::vec2 gravity, float timeStep)
 {
+	// ignore if kinimatic
 	if (m_isKinematic)
 	{
 		return;
 	}
 
-	// remember when applying the force of gravity, mass cancels out
+	// apply gravity
 	m_velocity += gravity * timeStep;
+
+	// update position and rotation
 	m_position += m_velocity * timeStep;
 	m_rotation += m_angularVelocity * timeStep;
 
+	// apply drag
 	m_velocity -= m_velocity * m_linearDrag * timeStep;
 	m_angularVelocity -= m_angularVelocity * m_angularDrag * timeStep;
 
+	// if velocity or angular velocity are less than a minimum threshold set them to 0
 	if (glm::length(m_velocity) < MIN_LINEAR_THRESHOLD)
 	{
 		m_velocity = glm::vec2(0);
@@ -39,12 +46,21 @@ void RigidBody::debug()
 
 }
 
+// apply force to the RigidBody at the specified position
 void RigidBody::applyForce(glm::vec2 force, glm::vec2 pos)
 {
+	// ignore if kinimatic
+	if (m_isKinematic)
+	{
+		return;
+	}
+	// F = m * a
+	// therefore a = F / m
 	m_velocity += force / m_mass;
 	m_angularVelocity += (force.y * pos.x - force.x * pos.y) / (m_moment);
 }
 
+// resolves a collision with another RigidBody
 void RigidBody::resolveCollision(RigidBody* actor2, glm::vec2 contact,
 	glm::vec2* collisionNormal)
 {

@@ -1,14 +1,15 @@
 #include "Box.h"
+#include <glm\ext.hpp>
 #include <Gizmos.h>
 #include <iostream>
 
-Box::Box(glm::vec2 position, glm::vec2 velocity, float mass, glm::vec2 extents, glm::vec4 color) :
-	RigidBody(BOX, position, velocity, 0, mass)
-{
-	m_extents = extents;
-	m_color = color;
-	m_moment = 1.0f / 6.0f * m_mass * (extents.x * 2) * (m_extents.y * 2);
-}
+//Box::Box(glm::vec2 position, glm::vec2 velocity, float mass, glm::vec2 extents, glm::vec4 color) :
+//	RigidBody(BOX, position, velocity, 0, mass)
+//{
+//	m_extents = extents;
+//	m_color = color;
+//	m_moment = 1.0f / 6.0f * m_mass * (extents.x * 2) * (m_extents.y * 2);
+//}
 
 glm::vec2 Box::getCenter() const
 {

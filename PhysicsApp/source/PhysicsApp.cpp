@@ -8,6 +8,7 @@
 #include "Circle.h"
 #include "Plane.h"
 #include "Box.h"
+#include "Aabb.h"
 #include <random>
 
 #define _USE_MATH_DEFINES
@@ -35,23 +36,28 @@ bool PhysicsApp::startup()
 	m_physicsScene->setGravity(glm::vec2(0, -10));
 	m_physicsScene->setTimeStep(0.01f);
 
-	float force = 50;
+	// create plane
+	Plane* floor = new Plane(glm::vec2(0, -1), 50);
+	floor->setKinematic(true);
+	m_physicsScene->addActor(floor);
+
 
 	for (int x = 0; x < 5; x++)
 	{
-		for (int y = 0; y < 5; y++)
+		for (int y = 0; y < 8; y++)
 		{
-			glm::vec4 randomColor = glm::vec4(rand() % 256 / 255.f, rand() % 256 / 255.f, rand() % 256 / 255.f, 1);
-			glm::vec2 randomDirection = glm::vec2(rand() % 1001 / 10.f - 50, rand() % 1001 / 10.f - 50);
-
-			Box* ball = new Box(glm::vec2(-25 + x * 10, -25 + y * 10), randomDirection, 1, glm::vec2(3), randomColor);
-			ball->setElasticity(0.3f);
-			m_physicsScene->addActor(ball);
+			if (y % 2 == 0)
+			{
+				Circle* ball = new Circle(glm::vec2(-60 + x * 24, -40 + y * 16), glm::vec2(0), 1, 3, glm::vec4(1, 0, 0, 1));
+				m_physicsScene->addActor(ball);
+			}
+			else
+			{
+				Aabb* aabb = new Aabb(glm::vec2(-60 + x * 24, -40 + y * 16), glm::vec2(0), 1, glm::vec2(3), glm::vec4(0, 0, 1, 1));
+				m_physicsScene->addActor(aabb);
+			}
 		}
 	}
-
-	Plane* floor = new Plane(glm::vec2(0, -1), 50);
-	m_physicsScene->addActor(floor);
 
 	return true;
 }

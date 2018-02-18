@@ -1,11 +1,12 @@
 #pragma once
 #include "RigidBody.h"
-#include <glm\ext.hpp>
+#include <glm\common.hpp>
 
 class Box : public RigidBody
 {
 public:
-	Box(glm::vec2 position = glm::vec2(0), glm::vec2 velocity = glm::vec2(0), float mass = 1, glm::vec2 extents = glm::vec2(1), glm::vec4 color = glm::vec4(1));
+	//Box(glm::vec2 position = glm::vec2(0), glm::vec2 velocity = glm::vec2(0), float mass = 1,
+		//glm::vec2 extents = glm::vec2(1), glm::vec4 color = glm::vec4(1));
 	~Box() {};
 
 	glm::vec2 getExtents() const { return m_extents; }

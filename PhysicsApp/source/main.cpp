@@ -2,7 +2,6 @@
 
 int main()
 {
-	
 	// allocation
 	auto app = new PhysicsApp();
 

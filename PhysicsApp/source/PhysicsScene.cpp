@@ -6,6 +6,7 @@
 #include "Circle.h"
 #include "Plane.h"
 #include "Box.h"
+#include "Aabb.h"
 #include <glm\ext.hpp>
 
 // function pointer array for doing our collisions
@@ -13,9 +14,9 @@ typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 static fn collisionFunctionArray[] =
 {
-	PhysicsScene::plane2Plane, PhysicsScene::plane2Circle, PhysicsScene::plane2Box,
-	PhysicsScene::circle2Plane, PhysicsScene::circle2Circle, PhysicsScene::circle2Box,
-	PhysicsScene::box2Plane, PhysicsScene::box2Circle, PhysicsScene::box2Box
+	PhysicsScene::plane2Plane, PhysicsScene::plane2Circle, PhysicsScene::plane2AABB,
+	PhysicsScene::circle2Plane, PhysicsScene::circle2Circle, PhysicsScene::circle2AABB,
+	PhysicsScene::AABB2Plane, PhysicsScene::AABB2Circle, PhysicsScene::AABB2AABB
 };
 
 PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0, 0))
@@ -51,7 +52,11 @@ void PhysicsScene::update(float dt)
 	{
 		for (auto pActor : m_actors)
 		{
-			pActor->fixedUpdate(m_gravity, m_timeStep);
+			RigidBody* pRigid = dynamic_cast<RigidBody*>(pActor);
+			if (pRigid != nullptr)
+			{
+				pActor->fixedUpdate(m_gravity, m_timeStep);
+			}
 		}
 
 		accumulatedTime -= m_timeStep;
@@ -94,7 +99,7 @@ void PhysicsScene::checkForCollison()
 			int shapeId2 = object2->getShapeID();
 
 			// using function pointers
-			int functionIdx = (shapeId1 * SHAPE_COUNT) + shapeId2;
+			int functionIdx = (shapeId1 * ShapeTypes::SHAPECOUNT) + shapeId2;
 			fn collisionFunctionPtr = collisionFunctionArray[functionIdx];
 			if (collisionFunctionPtr != nullptr)
 			{
@@ -105,21 +110,36 @@ void PhysicsScene::checkForCollison()
 	}
 }
 
+
+// ---------------------------------------------------------
+// colision detection functions
+// ---------------------------------------------------------
+
+// test collision between 2 planes
 bool PhysicsScene::plane2Plane(PhysicsObject* a, PhysicsObject* b)
 {
 	return false;
 }
 
+// test collision between a plane and a circle
 bool PhysicsScene::plane2Circle(PhysicsObject* a, PhysicsObject* b)
 {
 	return circle2Plane(b, a);
 }
 
+// test collision between a plane and a box
 bool PhysicsScene::plane2Box(PhysicsObject* a, PhysicsObject* b)
 {
 	return box2Plane(b, a);
 }
 
+// test collision between a plane and an axis aligned bounding box
+bool PhysicsScene::plane2AABB(PhysicsObject* a, PhysicsObject* b)
+{
+	return AABB2Plane(b, a);
+}
+
+// text collision between a circle and a plane
 bool PhysicsScene::circle2Plane(PhysicsObject* a, PhysicsObject* b)
 {
 	// try to cast objects to circle and plane
@@ -130,34 +150,25 @@ bool PhysicsScene::circle2Plane(PhysicsObject* a, PhysicsObject* b)
 	if (circle != nullptr && plane != nullptr)
 	{
 		glm::vec2 collisionNormal = plane->getNormal();
-		float circleToPlane = glm::dot(
-			circle->getPosition(),
-			plane->getNormal()) - plane->getDistance();
 
-		// if we are behind the plane then we flip the normal
-		if (circleToPlane <= 0)
+		float collisionDistance = glm::dot(circle->getPosition(), collisionNormal) - plane->getDistance();
+
+		// we have collidedwith the back side of the plane
+		if (collisionDistance < 0)
 		{
-			collisionNormal *= -1;
-			circleToPlane *= -1;
+			collisionDistance *= -1;
 		}
 
-		float intersection = circle->getRadius() - circleToPlane;
-		if (intersection > 0)
+		if (collisionDistance <= circle->getRadius())
 		{
-			// contact force
-			circle->setPosition(circle->getPosition() -
-				plane->getNormal() * (circle->getRadius() - circleToPlane));
-
-			// collision
-			glm::vec2 contact = circle->getPosition() + (collisionNormal * -circle->getRadius());
-
-			plane->resolveCollision(circle, contact);
+			circle->setVelocity(glm::vec2(0));
 			return true;
 		}
 	}
 	return false;
 }
 
+// test collision between 2 circles
 bool PhysicsScene::circle2Circle(PhysicsObject* a, PhysicsObject* b)
 {
 	// try to cast objects to circle and circle
@@ -167,22 +178,21 @@ bool PhysicsScene::circle2Circle(PhysicsObject* a, PhysicsObject* b)
 	// if we are successful then test for collision
 	if (circle1 != nullptr && circle2 != nullptr)
 	{
-		glm::vec2 delta = circle2->getPosition() - circle1->getPosition();
-		float distance = glm::length(delta);
-		float intersection = circle1->getRadius() + circle2->getRadius() - distance;
+		// find the offset of the two circles
+		glm::vec2 offset = circle1->getPosition() - circle2->getPosition();
 
-		if (intersection > 0)
+		// calculate the squared distance (avoids square root)
+		float squaredDistance = (offset.x * offset.x + offset.y * offset.y);
+
+		// combine the radii and square the result
+		float r = circle1->getRadius() + circle2->getRadius();
+		r *= r;
+
+		// if the squared distance is less than the squared radius
+		if (squaredDistance < r)
 		{
-			glm::vec2 contactForce = 0.5f * (distance - (circle1->getRadius() +
-				circle2->getRadius())) * delta / distance;
-
-			circle1->setPosition(circle1->getPosition() + contactForce);
-			circle2->setPosition(circle2->getPosition() - contactForce);
-
-			// respond to the collision
-			circle1->resolveCollision(circle2, 0.5f * (circle1->getPosition() +
-				circle2->getPosition()));
-
+			circle1->setVelocity(glm::vec2(0));
+			circle2->setVelocity(glm::vec2(0));
 			return true;
 		}
 	}
@@ -190,11 +200,19 @@ bool PhysicsScene::circle2Circle(PhysicsObject* a, PhysicsObject* b)
 	return false;
 }
 
+// test collision between a circle and a box
 bool PhysicsScene::circle2Box(PhysicsObject* a, PhysicsObject* b)
 {
 	return box2Circle(b, a);
 }
 
+// test collision between a circle and an axis aligned bounding box
+bool PhysicsScene::circle2AABB(PhysicsObject* a, PhysicsObject* b)
+{
+	return AABB2Circle(b, a);
+}
+
+// test collision between a box and a plane
 bool PhysicsScene::box2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 {
 	Box* box = dynamic_cast<Box*>(obj1);
@@ -290,6 +308,7 @@ bool PhysicsScene::box2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 	return false;
 }
 
+// test collision between a box and a circle
 bool PhysicsScene::box2Circle(PhysicsObject* a, PhysicsObject* b)
 {
 	Box* box = dynamic_cast<Box*>(a);
@@ -364,6 +383,7 @@ bool PhysicsScene::box2Circle(PhysicsObject* a, PhysicsObject* b)
 	return false;
 }
 
+// test collision between 2 boxes
 bool PhysicsScene::box2Box(PhysicsObject* a, PhysicsObject* b)
 {
 	Box* box1 = dynamic_cast<Box*>(a);
@@ -392,5 +412,98 @@ bool PhysicsScene::box2Box(PhysicsObject* a, PhysicsObject* b)
 			return true;
 		}
 	}
+	return false;
+}
+
+// test collision between a box and an axis aligned bounding box
+bool PhysicsScene::box2AABB(PhysicsObject* a, PhysicsObject* b)
+{
+	return false;
+}
+
+// test collision between an axis aligned bounding box and a plane
+bool PhysicsScene::AABB2Plane(PhysicsObject* a, PhysicsObject* b)
+{
+	// try to cast objects to Aabb and Plane
+	Aabb* aabb = dynamic_cast<Aabb*>(a);
+	Plane* plane = dynamic_cast<Plane*>(b);
+
+	// if we are successful then test for collision
+	if (aabb != nullptr && plane != nullptr)
+	{
+		glm::vec2 collisionNormal = plane->getNormal();
+
+		float cornerOffsets[4];
+		bool signs[4];
+
+		for (int i = 0; i < 4; i++)
+		{
+			cornerOffsets[i] = glm::dot(aabb->getCorner(i + 1), collisionNormal) - plane->getDistance();
+			signs[i] = std::signbit(cornerOffsets[i]);
+		}
+
+		if (signs[0] != signs[3] || signs[1] != signs[2])
+		{
+			aabb->setVelocity(glm::vec2(0));
+			return true;
+		}
+	}
+	return false;
+}
+
+// test collision between an axis aligned bounding box and a circle
+bool PhysicsScene::AABB2Circle(PhysicsObject* a, PhysicsObject* b)
+{
+	// try to cast objects to Aabb and circle
+	Aabb* aabb = dynamic_cast<Aabb*>(a);
+	Circle* circle = dynamic_cast<Circle*>(b);
+
+	// if we are successful then test for collision
+	if (aabb != nullptr && circle != nullptr)
+	{
+		glm::vec2 collisionPoint = circle->getPosition() + glm::normalize(aabb->getPosition() - circle->getPosition()) * circle->getRadius();
+
+		if (aabb->containsPoint(collisionPoint))
+		{
+			aabb->setVelocity(glm::vec2(0));
+			circle->setVelocity(glm::vec2(0));
+			return true;
+		}
+	}
+
+	return false;
+}
+
+// test collision between an axis aligned bounding box and a box
+bool PhysicsScene::AABB2Box(PhysicsObject* a, PhysicsObject* b)
+{
+	return false;
+}
+
+// test collision between 2 axis aligned bounding boxes
+bool PhysicsScene::AABB2AABB(PhysicsObject* a, PhysicsObject* b)
+{
+	Aabb* Aabb1 = dynamic_cast<Aabb*>(a);
+	Aabb* Aabb2 = dynamic_cast<Aabb*>(b);
+
+	if (Aabb1 != nullptr && Aabb2 != nullptr)
+	{
+		// get min / max for both Aabbs
+		glm::vec2 aMin = Aabb1->getMin();
+		glm::vec2 aMax = Aabb1->getMax();
+		glm::vec2 bMin = Aabb2->getMin();
+		glm::vec2 bMax = Aabb2->getMax();
+
+		// test for intersection
+		if (aMin.x <= bMax.x && aMax.x >= bMin.x && aMin.y <= bMax.y && aMax.y >= bMin.y)
+		{
+			// collision
+			Aabb1->setVelocity(glm::vec2(0));
+			Aabb2->setVelocity(glm::vec2(0));
+
+			return true;
+		}
+	}
+
 	return false;
 }

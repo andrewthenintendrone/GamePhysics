@@ -23,15 +23,23 @@ public:
 
 	void checkForCollison();
 
+	// collision detection funtions
 	static bool plane2Plane(PhysicsObject*, PhysicsObject*);
 	static bool plane2Circle(PhysicsObject*, PhysicsObject*);
 	static bool plane2Box(PhysicsObject*, PhysicsObject*);
+	static bool plane2AABB(PhysicsObject*, PhysicsObject*);
 	static bool circle2Plane(PhysicsObject*, PhysicsObject*);
 	static bool circle2Circle(PhysicsObject*, PhysicsObject*);
 	static bool circle2Box(PhysicsObject*, PhysicsObject*);
+	static bool circle2AABB(PhysicsObject*, PhysicsObject*);
 	static bool box2Plane(PhysicsObject*, PhysicsObject*);
 	static bool box2Circle(PhysicsObject*, PhysicsObject*);
 	static bool box2Box(PhysicsObject*, PhysicsObject*);
+	static bool box2AABB(PhysicsObject*, PhysicsObject*);
+	static bool AABB2Plane(PhysicsObject*, PhysicsObject*);
+	static bool AABB2Circle(PhysicsObject*, PhysicsObject*);
+	static bool AABB2Box(PhysicsObject*, PhysicsObject*);
+	static bool AABB2AABB(PhysicsObject*, PhysicsObject*);
 
 protected:
 

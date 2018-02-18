@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\shapes">
+      <UniqueIdentifier>{223fe334-5fab-4aa8-a838-c5e029a308dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\PhysicsApp.cpp">
@@ -27,39 +30,42 @@
     <ClCompile Include="source\RigidBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Plane.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\PhysicsObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\Box.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\shapes</Filter>
     </ClCompile>
     <ClCompile Include="source\Circle.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Plane.cpp">
+      <Filter>Source Files\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Aabb.cpp">
+      <Filter>Source Files\shapes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\Box.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\PhysicsApp.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\PhysicsObject.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="source\PhysicsScene.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\Plane.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\RigidBody.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\Box.h">
+      <Filter>Source Files\shapes</Filter>
+    </ClInclude>
     <ClInclude Include="source\Circle.h">
+      <Filter>Source Files\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Plane.h">
+      <Filter>Source Files\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Aabb.h">
+      <Filter>Source Files\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\PhysicsObject.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

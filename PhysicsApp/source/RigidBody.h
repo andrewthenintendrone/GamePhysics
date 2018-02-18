@@ -4,7 +4,7 @@
 class RigidBody : public PhysicsObject
 {
 public:
-	RigidBody(ShapeType shapeID, glm::vec2 position = glm::vec2(0, 0),
+	RigidBody(ShapeTypes shapeID, glm::vec2 position = glm::vec2(0, 0),
 		glm::vec2 velocity = glm::vec2(0, 0), float rotation = 0, float mass = 1);
 	~RigidBody() {};
 
@@ -15,6 +15,7 @@ public:
 	void resolveCollision(RigidBody* actor2, glm::vec2 contact, glm::vec2*
 	collisionNormal = nullptr);
 
+	bool isKinematic() const { return m_isKinematic; }
 	glm::vec2 getPosition() const { return m_position; }
 	glm::vec2 getVelocity() const { return m_velocity; }
 	float getMass() const { return m_mass; }
@@ -25,6 +26,7 @@ public:
 	float getAngularVelocity() const { return m_angularVelocity; }
 	float getMoment() const { return m_moment; }
 
+	void setKinematic(bool b) { m_isKinematic = b; }
 	void setPosition(glm::vec2 position) { m_position = position; }
 	void setVelocity(glm::vec2 velocity) { m_velocity = velocity; }
 	void setMass(float mass) { m_mass = mass; }
@@ -49,6 +51,6 @@ protected:
 	float m_angularVelocity = 0;
 	float m_moment = 0;
 
-	const float MIN_LINEAR_THRESHOLD = 0.1f;
+	const float MIN_LINEAR_THRESHOLD = 0.01f;
 	const float MIN_ROTATION_THRESHOLD = 0.01f;
 };

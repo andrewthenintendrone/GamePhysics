@@ -19,16 +19,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Aabb.cpp" />
     <ClCompile Include="source\Box.cpp" />
     <ClCompile Include="source\PhysicsApp.cpp" />
     <ClCompile Include="source\main.cpp" />
-    <ClCompile Include="source\PhysicsObject.cpp" />
     <ClCompile Include="source\PhysicsScene.cpp" />
     <ClCompile Include="source\Plane.cpp" />
     <ClCompile Include="source\RigidBody.cpp" />
     <ClCompile Include="source\Circle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\Aabb.h" />
     <ClInclude Include="source\Box.h" />
     <ClInclude Include="source\PhysicsApp.h" />
     <ClInclude Include="source\PhysicsObject.h" />

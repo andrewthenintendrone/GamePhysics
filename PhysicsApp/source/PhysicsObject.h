@@ -1,19 +1,18 @@
 #pragma once
 #include <glm\vec2.hpp>
 
-enum ShapeType
+enum ShapeTypes
 {
 	PLANE = 0,
 	CIRCLE,
-	BOX
+	AABB,
+	SHAPECOUNT
 };
-
-const int SHAPE_COUNT = 3;
 
 class PhysicsObject
 {
 protected:
-	PhysicsObject(ShapeType a_shapeID) : m_shapeID(a_shapeID) {};
+	PhysicsObject(ShapeTypes a_shapeID) : m_shapeID(a_shapeID) {};
 
 public:
 
@@ -21,8 +20,8 @@ public:
 	virtual void debug() = 0;
 	virtual void makeGizmo() = 0;
 
-	virtual ShapeType getShapeID();
+	virtual ShapeTypes getShapeID() const{ return m_shapeID; }
 
 protected:
-	ShapeType m_shapeID;
+	ShapeTypes m_shapeID;
 };
