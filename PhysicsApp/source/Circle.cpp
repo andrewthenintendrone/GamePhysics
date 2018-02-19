@@ -1,6 +1,7 @@
 #include "Circle.h"
 #include <Gizmos.h>
 #include <glm\ext.hpp>
+#include <string>
 
 Circle::Circle(glm::vec2 position, glm::vec2 velocity, float mass, float radius, glm::vec4 color) :
 RigidBody(ShapeTypes::CIRCLE, position, velocity, 0, mass)
@@ -20,7 +21,7 @@ void Circle::makeGizmo()
 	glm::vec2 end = glm::vec2(std::cosf(m_rotation), std::sinf(m_rotation)) *
 		m_radius;
 
-	aie::Gizmos::add2DCircle(m_position, m_radius, 12, m_color);
-	aie::Gizmos::add2DLine(m_position, m_position + end, glm::vec4(1));
+	aie::Gizmos::add2DCircle(m_position, m_radius, 6, m_color);
+	//aie::Gizmos::add2DLine(m_position, m_position + end, glm::vec4(1));
 }
 

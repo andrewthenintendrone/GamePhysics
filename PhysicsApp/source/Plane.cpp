@@ -25,7 +25,7 @@ void Plane::fixedUpdate(glm::vec2 gravity, float timeStep)
 
 void Plane::makeGizmo()
 {
-	float lineSegmentLength = 300;
+	float lineSegmentLength = 3000;
 	glm::vec2 centerPoint = m_normal * m_distanceToOrigin;
 	// easy to rotate normal through 90 degrees around z
 	glm::vec2 parallel(m_normal.y, -m_normal.x);

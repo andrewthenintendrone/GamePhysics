@@ -14,9 +14,10 @@ typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 static fn collisionFunctionArray[] =
 {
-	PhysicsScene::plane2Plane, PhysicsScene::plane2Circle, PhysicsScene::plane2AABB,
-	PhysicsScene::circle2Plane, PhysicsScene::circle2Circle, PhysicsScene::circle2AABB,
-	PhysicsScene::AABB2Plane, PhysicsScene::AABB2Circle, PhysicsScene::AABB2AABB
+	PhysicsScene::plane2Plane, PhysicsScene::plane2Circle, PhysicsScene::plane2AABB, PhysicsScene::plane2Box,
+	PhysicsScene::circle2Plane, PhysicsScene::circle2Circle, PhysicsScene::circle2AABB, PhysicsScene::circle2Box,
+	PhysicsScene::AABB2Plane, PhysicsScene::AABB2Circle, PhysicsScene::AABB2AABB, PhysicsScene::AABB2Box,
+	PhysicsScene::box2Plane, PhysicsScene::box2Circle, PhysicsScene::box2AABB, PhysicsScene::box2Box
 };
 
 PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0, 0))
@@ -151,17 +152,23 @@ bool PhysicsScene::circle2Plane(PhysicsObject* a, PhysicsObject* b)
 	{
 		glm::vec2 collisionNormal = plane->getNormal();
 
-		float collisionDistance = glm::dot(circle->getPosition(), collisionNormal) - plane->getDistance();
+		float circleToPlane = glm::dot(circle->getPosition(), collisionNormal) - plane->getDistance();
 
-		// we have collidedwith the back side of the plane
-		if (collisionDistance < 0)
+		// if we are behind plane then we flip the normal
+		if (circleToPlane < 0)
 		{
-			collisionDistance *= -1;
+			collisionNormal *= -1;
+			circleToPlane *= -1;
 		}
 
-		if (collisionDistance <= circle->getRadius())
+		float intersection = circle->getRadius() - circleToPlane;
+		if (intersection > 0)
 		{
-			circle->setVelocity(glm::vec2(0));
+			circle->setPosition(circle->getPosition() +
+				collisionNormal * (circle->getRadius() - circleToPlane));
+
+			glm::vec2 contact = circle->getPosition() + (collisionNormal * -circle->getRadius());
+			plane->resolveCollision(circle, contact);
 			return true;
 		}
 	}
@@ -178,23 +185,24 @@ bool PhysicsScene::circle2Circle(PhysicsObject* a, PhysicsObject* b)
 	// if we are successful then test for collision
 	if (circle1 != nullptr && circle2 != nullptr)
 	{
-		// find the offset of the two circles
-		glm::vec2 offset = circle1->getPosition() - circle2->getPosition();
+		glm::vec2 delta = circle2->getPosition() - circle1->getPosition();
+		float distance = glm::length(delta);
+		float intersection = circle1->getRadius() + circle2->getRadius() - distance;
 
-		// calculate the squared distance (avoids square root)
-		float squaredDistance = (offset.x * offset.x + offset.y * offset.y);
-
-		// combine the radii and square the result
-		float r = circle1->getRadius() + circle2->getRadius();
-		r *= r;
-
-		// if the squared distance is less than the squared radius
-		if (squaredDistance < r)
+		if (intersection > 0)
 		{
-			circle1->setVelocity(glm::vec2(0));
-			circle2->setVelocity(glm::vec2(0));
+			glm::vec2 contactForce = 0.5f * (distance - (circle1->getRadius() +
+				circle2->getRadius())) * delta / distance;
+
+			circle1->setPosition(circle1->getPosition() + contactForce);
+			circle2->setPosition(circle2->getPosition() - contactForce);
+
+			// respond to the collision
+			circle1->resolveCollision(circle2, 0.5f * (circle1->getPosition() +
+				circle2->getPosition()));
 			return true;
 		}
+
 	}
 
 	return false;
@@ -222,7 +230,7 @@ bool PhysicsScene::box2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 	if (box != nullptr && plane != nullptr)
 	{
 		int numContacts = 0;
-		glm::vec2 contact(0, 0);
+		glm::vec2 contact(0);
 		float contactV = 0;
 		float radius = 0.5f * std::fminf(box->getWidth(), box->getHeight());
 		float penetration = 0;
@@ -249,8 +257,8 @@ bool PhysicsScene::box2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 
 				// if this corner is on the opposite side from the COM,
 				// and moving further in, we need to resolve the collision
-				if ((distFromPlane > 0 && comFromPlane < 0 && velocityIntoPlane >= 0) ||
-					(distFromPlane < 0 && comFromPlane > 0 && velocityIntoPlane <= 0))
+				if ((distFromPlane > 0 && comFromPlane < 0 && velocityIntoPlane > 0) ||
+					(distFromPlane < 0 && comFromPlane > 0 && velocityIntoPlane < 0))
 				{
 					numContacts++;
 					contact += p;
@@ -273,6 +281,7 @@ bool PhysicsScene::box2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 				}
 			}
 		}
+
 		// we've had a hit - typically only two corners can contact
 		if (numContacts > 0)
 		{
@@ -320,7 +329,6 @@ bool PhysicsScene::box2Circle(PhysicsObject* a, PhysicsObject* b)
 		float w2 = box->getWidth() / 2, h2 = box->getHeight() / 2;
 
 		int numContacts = 0;
-
 		glm::vec2 contact(0, 0); // contact is in our box coordinates
 
 		// check the four corners to see if any of them are inside the circle
@@ -330,7 +338,7 @@ bool PhysicsScene::box2Circle(PhysicsObject* a, PhysicsObject* b)
 			{
 				glm::vec2 p = x * box->getLocalX() + y * box->getLocalY();
 				glm::vec2 dp = p - circlePos;
-				if (dp.x * dp.x + dp.y * dp.y < circle->getRadius() * circle->getRadius())
+				if (dp.x*dp.x + dp.y*dp.y < circle->getRadius() * circle->getRadius())
 				{
 					numContacts++;
 					contact += glm::vec2(x, y);
@@ -338,9 +346,11 @@ bool PhysicsScene::box2Circle(PhysicsObject* a, PhysicsObject* b)
 			}
 		}
 		glm::vec2* direction = nullptr;
+
 		// get the local position of the circle centre
 		glm::vec2 localPos(glm::dot(box->getLocalX(), circlePos),
 			glm::dot(box->getLocalY(), circlePos));
+
 		if (localPos.y < h2 && localPos.y > -h2)
 		{
 			if (localPos.x > 0 && localPos.x < w2 + circle->getRadius())
@@ -392,22 +402,26 @@ bool PhysicsScene::box2Box(PhysicsObject* a, PhysicsObject* b)
 	if (box1 != nullptr && box2 != nullptr)
 	{
 		glm::vec2 boxPos = box2->getCenter() - box1->getCenter();
+
 		glm::vec2 normal;
 		glm::vec2 contactForce1, contactForce2;
-		glm::vec2 contact(0, 0);
+		glm::vec2 contact(0);
 		int numContacts = 0;
 
 		box1->checkBoxCorners(*box2, contact, numContacts, normal, contactForce1);
+
 		if (box2->checkBoxCorners(*box1, contact, numContacts,
 			normal, contactForce2))
 		{
 			normal = -normal;
 		}
+
 		if (numContacts > 0)
 		{
 			glm::vec2 contactForce = 0.5f * (contactForce1 - contactForce2);
 			box1->setPosition(box1->getPosition() - contactForce);
 			box2->setPosition(box2->getPosition() + contactForce);
+
 			box1->resolveCollision(box2, contact / float(numContacts), &normal);
 			return true;
 		}
@@ -444,7 +458,7 @@ bool PhysicsScene::AABB2Plane(PhysicsObject* a, PhysicsObject* b)
 
 		if (signs[0] != signs[3] || signs[1] != signs[2])
 		{
-			aabb->setVelocity(glm::vec2(0));
+			plane->resolveCollision(aabb, collisionNormal);
 			return true;
 		}
 	}
@@ -461,12 +475,21 @@ bool PhysicsScene::AABB2Circle(PhysicsObject* a, PhysicsObject* b)
 	// if we are successful then test for collision
 	if (aabb != nullptr && circle != nullptr)
 	{
-		glm::vec2 collisionPoint = circle->getPosition() + glm::normalize(aabb->getPosition() - circle->getPosition()) * circle->getRadius();
+		glm::vec2 boxToCircle;
+		boxToCircle.x = circle->getPosition().x - fmaxf(aabb->getPosition().x - aabb->getWidth() / 2, fminf(circle->getPosition().x, aabb->getPosition().x + aabb->getWidth() / 2));
+		boxToCircle.y = circle->getPosition().y - fmaxf(aabb->getPosition().y - aabb->getHeight() / 2, fminf(circle->getPosition().y, aabb->getPosition().y + aabb->getHeight() / 2));
 
-		if (aabb->containsPoint(collisionPoint))
+		if (glm::length(boxToCircle) < circle->getRadius())
 		{
-			aabb->setVelocity(glm::vec2(0));
-			circle->setVelocity(glm::vec2(0));
+			// collsion
+			glm::vec2 collisionNormal = glm::normalize(boxToCircle);
+			float penetration = fabsf(glm::length(boxToCircle) - circle->getRadius());
+
+			aabb->setPosition(aabb->getPosition() - collisionNormal * penetration);
+			circle->setPosition(circle->getPosition() + collisionNormal * penetration);
+
+			glm::vec2 contact = circle->getPosition() - boxToCircle;
+			aabb->resolveCollision(circle, contact);
 			return true;
 		}
 	}
@@ -488,16 +511,11 @@ bool PhysicsScene::AABB2AABB(PhysicsObject* a, PhysicsObject* b)
 
 	if (Aabb1 != nullptr && Aabb2 != nullptr)
 	{
-		// get min / max for both Aabbs
-		glm::vec2 aMin = Aabb1->getMin();
-		glm::vec2 aMax = Aabb1->getMax();
-		glm::vec2 bMin = Aabb2->getMin();
-		glm::vec2 bMax = Aabb2->getMax();
+		float overlapX = (Aabb1->getExtents().x + Aabb2->getExtents().x) - fabsf(Aabb1->getPosition().x - Aabb2->getPosition().x);
+		float overlapY = (Aabb1->getExtents().y + Aabb2->getExtents().y) - fabsf(Aabb1->getPosition().y - Aabb2->getPosition().y);
 
-		// test for intersection
-		if (aMin.x <= bMax.x && aMax.x >= bMin.x && aMin.y <= bMax.y && aMax.y >= bMin.y)
+		if (overlapX > 0 && overlapY > 0)
 		{
-			// collision
 			Aabb1->setVelocity(glm::vec2(0));
 			Aabb2->setVelocity(glm::vec2(0));
 

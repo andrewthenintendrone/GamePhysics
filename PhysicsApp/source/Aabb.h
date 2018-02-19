@@ -14,8 +14,15 @@ public:
 	virtual void makeGizmo();
 
 	glm::vec2 getExtents() const { return m_extents; }
+
+	float getWidth() const { return (m_extents.x * 2); }
+	float getHeight() const { return (m_extents.y * 2); }
+
 	glm::vec2 getMin() const { return m_position - m_extents; }
 	glm::vec2 getMax() const { return m_position + m_extents; }
+
+	bool checkBoxCorners(const Aabb& box, glm::vec2& contact, int& numContacts,
+		glm::vec2& edgeNormal, glm::vec2& contactForce);
 
 	glm::vec2 getCorner(int corner);
 	bool containsPoint(glm::vec2 point);

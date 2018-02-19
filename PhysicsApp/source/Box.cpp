@@ -3,20 +3,14 @@
 #include <Gizmos.h>
 #include <iostream>
 
-//Box::Box(glm::vec2 position, glm::vec2 velocity, float mass, glm::vec2 extents, glm::vec4 color) :
-//	RigidBody(BOX, position, velocity, 0, mass)
-//{
-//	m_extents = extents;
-//	m_color = color;
-//	m_moment = 1.0f / 6.0f * m_mass * (extents.x * 2) * (m_extents.y * 2);
-//}
-
-glm::vec2 Box::getCenter() const
+Box::Box(glm::vec2 position, glm::vec2 velocity, float mass, glm::vec2 extents, glm::vec4 color) :
+	RigidBody(BOX, position, velocity, 0, mass)
 {
-	return (m_localX + m_localY) / 2.0f;
+	m_extents = extents;
+	m_color = color;
+	m_moment = 1.0f / 6.0f * m_mass * (extents.x * 2) * (m_extents.y * 2);
 }
 
-// check if any of the other box's corners are inside this box
 bool Box::checkBoxCorners(const Box& box, glm::vec2& contact, int& numContacts,
 	glm::vec2& edgeNormal, glm::vec2& contactForce)
 {
@@ -33,7 +27,9 @@ bool Box::checkBoxCorners(const Box& box, glm::vec2& contact, int& numContacts,
 			// position in our box's space
 			glm::vec2 p0(glm::dot(p - m_position, m_localX),
 				glm::dot(p - m_position, m_localY));
+
 			float w2 = m_extents.x, h2 = m_extents.y;
+
 			if (p0.y < h2 && p0.y > -h2)
 			{
 				if (p0.x > 0 && p0.x < w2)
@@ -102,10 +98,4 @@ void Box::makeGizmo()
 	glm::vec2 p4 = m_position + m_localX * m_extents.x + m_localY * m_extents.y;
 	aie::Gizmos::add2DTri(p1, p2, p4, m_color);
 	aie::Gizmos::add2DTri(p1, p4, p3, m_color);
-}
-
-// returns true if the point is within the box
-bool Box::containsPoint(glm::vec2 point)
-{
-	return false;
 }

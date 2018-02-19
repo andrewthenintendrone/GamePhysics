@@ -12,8 +12,7 @@ public:
 	virtual void debug();
 	void applyForce(glm::vec2 force, glm::vec2 pos);
 	//void applyForceToActor(RigidBody* actor2, glm::vec2 force);
-	void resolveCollision(RigidBody* actor2, glm::vec2 contact, glm::vec2*
-	collisionNormal = nullptr);
+	void resolveCollision(RigidBody* actor2, glm::vec2 contact, glm::vec2* collisionNormal = nullptr);
 
 	bool isKinematic() const { return m_isKinematic; }
 	glm::vec2 getPosition() const { return m_position; }

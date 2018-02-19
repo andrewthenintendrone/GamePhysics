@@ -14,6 +14,15 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+int pixels[] =
+{
+	1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0,
+	1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1,
+	1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1,
+	1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0,
+	1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0
+};
+
 PhysicsApp::PhysicsApp()
 {
 
@@ -36,25 +45,35 @@ bool PhysicsApp::startup()
 	m_physicsScene->setGravity(glm::vec2(0, -10));
 	m_physicsScene->setTimeStep(0.01f);
 
-	// create plane
-	Plane* floor = new Plane(glm::vec2(0, -1), 50);
-	floor->setKinematic(true);
-	m_physicsScene->addActor(floor);
+	// create planes
+	Plane* plane1 = new Plane(glm::vec2(0, -1), 40);
+	plane1->setKinematic(true);
+	m_physicsScene->addActor(plane1);
 
+	/*Plane* plane2 = new Plane(glm::vec2(-1, 1), 40);
+	plane2->setKinematic(true);
+	m_physicsScene->addActor(plane2);
 
-	for (int x = 0; x < 5; x++)
+	Plane* plane3 = new Plane(glm::vec2(1, -1), 40);
+	plane3->setKinematic(true);
+	m_physicsScene->addActor(plane3);
+
+	Plane* plane4 = new Plane(glm::vec2(-1, -1), 40);
+	plane4->setKinematic(true);
+	m_physicsScene->addActor(plane4);*/
+
+	for (int y = 0, i = 0; y < 5; y++)
 	{
-		for (int y = 0; y < 8; y++)
+		for (int x = 0; x < 15; x++, i++)
 		{
-			if (y % 2 == 0)
+			glm::vec2 position(-25 + x * 2.5f, 25 - y * 2.5f);
+			glm::vec4 randomColor(rand() % 256 / 255.f, rand() % 256 / 255.f, rand() % 256 / 255.f, 1);
+
+			if (pixels[i] == 1)
 			{
-				Circle* ball = new Circle(glm::vec2(-60 + x * 24, -40 + y * 16), glm::vec2(0), 1, 3, glm::vec4(1, 0, 0, 1));
+				Aabb* ball = new Aabb(position, glm::vec2(0, 0), 1, glm::vec2(1, 1), randomColor);
+				ball->setElasticity(0);
 				m_physicsScene->addActor(ball);
-			}
-			else
-			{
-				Aabb* aabb = new Aabb(glm::vec2(-60 + x * 24, -40 + y * 16), glm::vec2(0), 1, glm::vec2(3), glm::vec4(0, 0, 1, 1));
-				m_physicsScene->addActor(aabb);
 			}
 		}
 	}
@@ -104,7 +123,7 @@ void PhysicsApp::draw()
 	aie::Gizmos::draw2D(glm::ortho<float>(-100, 100, -100 / aspectRatio, 100 / aspectRatio, -1.0f, 1.0f));
 
 	// output some text, uses the last used colour
-	//m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
+	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
 
 	// done drawing sprites
 	m_2dRenderer->end();

@@ -6,6 +6,7 @@ enum ShapeTypes
 	PLANE = 0,
 	CIRCLE,
 	AABB,
+	BOX,
 	SHAPECOUNT
 };
 
