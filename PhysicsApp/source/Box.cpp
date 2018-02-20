@@ -8,9 +8,10 @@ Box::Box(glm::vec2 position, glm::vec2 velocity, float mass, glm::vec2 extents, 
 {
 	m_extents = extents;
 	m_color = color;
-	m_moment = 1.0f / 6.0f * m_mass * (extents.x * 2) * (m_extents.y * 2);
+	m_moment = 1.0f / 12.0f * m_mass * (extents.x * 2) * (m_extents.y * 2);
 }
 
+// check if any of the other box's corners are inside this box
 bool Box::checkBoxCorners(const Box& box, glm::vec2& contact, int& numContacts,
 	glm::vec2& edgeNormal, glm::vec2& contactForce)
 {
@@ -78,6 +79,7 @@ bool Box::checkBoxCorners(const Box& box, glm::vec2& contact, int& numContacts,
 	return (penetration != 0);
 }
 
+
 void Box::fixedUpdate(glm::vec2 gravity, float timeStep)
 {
 	RigidBody::fixedUpdate(gravity, timeStep);
@@ -85,12 +87,16 @@ void Box::fixedUpdate(glm::vec2 gravity, float timeStep)
 	// store the local axis
 	float cs = cosf(m_rotation);
 	float sn = sinf(m_rotation);
-	m_localX = glm::normalize(glm::vec2(cs, sn));
-	m_localY = glm::normalize(glm::vec2(-sn, cs));
+	m_localX = glm::vec2(cs, sn);
+	m_localY = glm::vec2(-sn, cs);
 }
 
 void Box::makeGizmo()
 {
+	// if only using rotation
+	// glm::mat4 transform = glm::rotate(m_rotation, glm::vec3(0, 0, 1));
+	// aie::Gizmos::add2DAABBFilled(getCenter(),
+	// m_extents, m_colour, &transform);
 	// draw using local axes
 	glm::vec2 p1 = m_position - m_localX * m_extents.x - m_localY * m_extents.y;
 	glm::vec2 p2 = m_position + m_localX * m_extents.x - m_localY * m_extents.y;

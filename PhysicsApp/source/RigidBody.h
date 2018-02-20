@@ -11,13 +11,14 @@ public:
 	virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
 	virtual void debug();
 	void applyForce(glm::vec2 force, glm::vec2 pos);
-	//void applyForceToActor(RigidBody* actor2, glm::vec2 force);
 	void resolveCollision(RigidBody* actor2, glm::vec2 contact, glm::vec2* collisionNormal = nullptr);
+	void correctPosition(RigidBody* actor2, float penetration, glm::vec2* collisionNormal = nullptr);
 
 	bool isKinematic() const { return m_isKinematic; }
 	glm::vec2 getPosition() const { return m_position; }
 	glm::vec2 getVelocity() const { return m_velocity; }
 	float getMass() const { return m_mass; }
+	float invMass() const { return 1.0f / m_mass; }
 	float getLinearDrag() const { return m_linearDrag; }
 	float getAngularDrag() const { return m_angularDrag; }
 	float getElasticity() const { return m_elasticity; }
@@ -51,5 +52,5 @@ protected:
 	float m_moment = 0;
 
 	const float MIN_LINEAR_THRESHOLD = 0.01f;
-	const float MIN_ROTATION_THRESHOLD = 0.01f;
+	const float MIN_ROTATION_THRESHOLD = 0.1f;
 };

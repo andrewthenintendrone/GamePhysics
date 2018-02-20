@@ -44,20 +44,26 @@ void RigidBody::debug()
 // apply force to the RigidBody at the specified position
 void RigidBody::applyForce(glm::vec2 force, glm::vec2 pos)
 {
-	// F = m * a
-	// therefore a = F / m
+	if (m_isKinematic)
+	{
+		return;
+	}
+
+	// Force = mass * acceleration
+	// therefore acceleration = Force / mass
 	m_velocity += force / m_mass;
+
 	m_angularVelocity += (force.y * pos.x - force.x * pos.y) / (m_moment);
 }
 
 // resolves a collision with another RigidBody
-void RigidBody::resolveCollision(RigidBody* actor2, glm::vec2 contact, glm::vec2*
-collisionNormal)
+void RigidBody::resolveCollision(RigidBody* actor2, glm::vec2 contact,
+	glm::vec2* collisionNormal)
 {
 	// find the vector between their centres, or use the provided direction
 	// of force
 	glm::vec2 normal = collisionNormal ? *collisionNormal : glm::normalize(
-		actor2->m_position - m_position);
+	actor2->m_position - m_position);
 
 	// get the vector perpendicular to the collision normal
 	glm::vec2 perp(normal.y, -normal.x);
@@ -68,6 +74,7 @@ collisionNormal)
 	// 'r' is the radius from axis to application of force
 	float r1 = glm::dot(contact - m_position, -perp);
 	float r2 = glm::dot(contact - actor2->m_position, perp);
+
 	// velocity of the contact point on this object
 	float v1 = glm::dot(m_velocity, normal) - r1 * m_angularVelocity;
 	// velocity of contact point on actor2
@@ -77,10 +84,11 @@ collisionNormal)
 	{
 		// calculate the effective mass at contact point for each object
 		// ie how much the contact point will move due to the force applied.
-		float mass1 = 1.0f / (1.0f / m_mass + (r1 * r1) / m_moment);
-		float mass2 = 1.0f / (1.0f / actor2->m_mass + (r2 * r2) / actor2->m_moment);
+		float mass1 = 1.0f / (invMass() + (r1 * r1) / m_moment);
+		float mass2 = 1.0f / (actor2->invMass() + (r2 * r2) / actor2->m_moment);
 
-		float elasticity = (m_elasticity + actor2->m_elasticity) / 2.0f;
+		float elasticity = (m_elasticity + actor2->getElasticity()) / 2.0f;
+
 		glm::vec2 force = (1.0f + elasticity) * mass1 * mass2 /
 			(mass1 + mass2) * (v1 - v2) * normal;
 
@@ -88,6 +96,24 @@ collisionNormal)
 		applyForce(-force, contact - m_position);
 		actor2->applyForce(force, contact - actor2->m_position);
 	}
+}
 
+void RigidBody::correctPosition(RigidBody* actor2, float penetration, glm::vec2* collisionNormal)
+{
+	glm::vec2 normal = collisionNormal ? *collisionNormal : glm::normalize(actor2->m_position - m_position);
+
+	const float percent = 0.2f;
+	const float slop = 0.01f;
+
+	glm::vec2 correction = fmaxf(penetration - slop, 0.0f) / (invMass() + actor2->invMass()) * percent * normal;
+
+	if (!m_isKinematic)
+	{
+		m_position -= invMass() * correction;
+	}
+	if (!actor2->m_isKinematic)
+	{
+		actor2->m_position += invMass() * correction;
+	}
 }
 

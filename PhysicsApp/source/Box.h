@@ -19,7 +19,7 @@ public:
 
 	glm::vec2 getCenter() const { return m_position; }
 
-	bool checkBoxCorners(const Box& box, glm::vec2& contact, int& numContacts,
+	bool Box::checkBoxCorners(const Box& box, glm::vec2& contact, int& numContacts,
 		glm::vec2& edgeNormal, glm::vec2& contactForce);
 
 	virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
