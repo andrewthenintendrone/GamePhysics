@@ -45,13 +45,11 @@ bool PhysicsApp::startup()
 	m_physicsScene->setGravity(glm::vec2(0, -10));
 	m_physicsScene->setTimeStep(0.01f);
 
-	Plane* plane1 = new Plane(glm::vec2(-0.4f, -1), 50);
-	Plane* plane2 = new Plane(glm::vec2(0.4f, -1), 50);
+	Plane* plane1 = new Plane(glm::vec2(-0.1f, -1), -40);
 
 	m_physicsScene->addActor(plane1);
-	m_physicsScene->addActor(plane2);
 
-	for (int y = 0, i = 0; y < 5; y++)
+	/*for (int y = 0, i = 0; y < 5; y++)
 	{
 		for (int x = 0; x < 5; x++, i++)
 		{
@@ -71,7 +69,10 @@ bool PhysicsApp::startup()
 				m_physicsScene->addActor(box);
 			}
 		}
-	}
+	}*/
+
+	Circle* ball = new Circle(glm::vec2(0), glm::vec2(0, 100), 1, 3);
+	m_physicsScene->addActor(ball);
 
 	return true;
 }
