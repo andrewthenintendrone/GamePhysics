@@ -383,6 +383,27 @@ bool PhysicsScene::box2Circle(PhysicsObject* a, PhysicsObject* b)
 			// average, and convert back into world coords
 			contact = box->getPosition() + (1.0f / numContacts) *
 				(box->getLocalX() * contact.x + box->getLocalY() * contact.y);
+
+			// with the contact point we can find a penetration vector
+			float pen = circle->getRadius() - glm::length(contact -
+				circle->getPosition());
+			glm::vec2 penVec = glm::normalize(contact - circle->getPosition()) * pen;
+
+			// move each shape away in the direction of penitration
+			if (!box->isKinematic() && !circle->isKinematic())
+			{
+				box->setPosition(box->getPosition() + penVec * 0.5f);
+				circle->setPosition(circle->getPosition() - penVec * 0.5f);
+			}
+			else if (!box->isKinematic())
+			{
+				box->setPosition(box->getPosition() + penVec);
+			}
+			else
+			{
+				circle->setPosition(circle->getPosition() - penVec);
+			}
+
 			box->resolveCollision(circle, contact, direction);
 		}
 		delete direction;
@@ -414,8 +435,21 @@ bool PhysicsScene::box2Box(PhysicsObject* a, PhysicsObject* b)
 		if (numContacts > 0)
 		{
 			glm::vec2 contactForce = 0.5f * (contactForce1 - contactForce2);
-			box1->setPosition(box1->getPosition() - contactForce);
-			box2->setPosition(box2->getPosition() + contactForce);
+
+			// move each shape away in the direction of penetration
+			if (!box1->isKinematic() && !box2->isKinematic())
+			{
+				box1->setPosition(box1->getPosition() - contactForce * 0.5f);
+				box2->setPosition(box2->getPosition() + contactForce * 0.5f);
+			}
+			else if (!box1->isKinematic())
+			{
+				box1->setPosition(box1->getPosition() - contactForce);
+			}
+			else
+			{
+				box2->setPosition(box2->getPosition() + contactForce);
+			}
 
 			box1->resolveCollision(box2, contact / float(numContacts), &normal);
 			return true;

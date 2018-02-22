@@ -17,8 +17,8 @@ public:
 	bool isKinematic() const { return m_isKinematic; }
 	glm::vec2 getPosition() const { return m_position; }
 	glm::vec2 getVelocity() const { return m_velocity; }
-	float getMass() const { return m_mass; }
-	float invMass() const { return 1.0f / m_mass; }
+	float getMass() const { return m_isKinematic ? INT_MAX : m_mass; }
+	float invMass() const { return m_isKinematic ? 1.0f / INT_MAX : 1.0f / m_mass; }
 	float getLinearDrag() const { return m_linearDrag; }
 	float getAngularDrag() const { return m_angularDrag; }
 	float getElasticity() const { return m_elasticity; }

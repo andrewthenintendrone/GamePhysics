@@ -1,4 +1,4 @@
-#include "PhysicsApp.h"
+﻿#include "PhysicsApp.h"
 #include "Texture.h"
 #include "Font.h"
 #include "Input.h"
@@ -10,6 +10,7 @@
 #include "Box.h"
 #include "Aabb.h"
 #include <random>
+#include <fstream>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -45,34 +46,22 @@ bool PhysicsApp::startup()
 	m_physicsScene->setGravity(glm::vec2(0, -10));
 	m_physicsScene->setTimeStep(0.01f);
 
-	Plane* plane1 = new Plane(glm::vec2(-0.1f, -1), -40);
+	Plane* floor = new Plane(glm::vec2(0, -1), 50);
+	floor->setKinematic(true);
+	m_physicsScene->addActor(floor);
 
-	m_physicsScene->addActor(plane1);
-
-	/*for (int y = 0, i = 0; y < 5; y++)
+	for (int y = 0, i = 0; y < 5; y++)
 	{
 		for (int x = 0; x < 5; x++, i++)
 		{
-			glm::vec2 position(-25 + x * 20 - y, 25 - y * 20);
+			glm::vec2 position(-25 + x * 20, 25 - y * 20);
 			glm::vec4 randomColor(rand() % 256 / 255.f, rand() % 256 / 255.f, rand() % 256 / 255.f, 1);
 
-			if (x % 2 == 0)
-			{
-				Circle* ball = new Circle(position, glm::vec2(0), 3, 2, randomColor);
-				ball->setElasticity(0.2f);
-				m_physicsScene->addActor(ball);
-			}
-			else
-			{
-				Box* box = new Box(position, glm::vec2(0), 3, glm::vec3(4), randomColor);
-				box->setElasticity(0.2f);
-				m_physicsScene->addActor(box);
-			}
+			Box* box = new Box(position, glm::vec2(0), 3, glm::vec2(2), randomColor);
+			box->setElasticity(0.2f);
+			m_physicsScene->addActor(box);
 		}
-	}*/
-
-	Circle* ball = new Circle(glm::vec2(0), glm::vec2(0, 100), 1, 3);
-	m_physicsScene->addActor(ball);
+	}
 
 	return true;
 }
@@ -107,7 +96,6 @@ void PhysicsApp::update(float deltaTime)
 
 void PhysicsApp::draw()
 {
-
 	// wipe the screen to the background colour
 	clearScreen();
 	//glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -124,3 +112,4 @@ void PhysicsApp::draw()
 	// done drawing sprites
 	m_2dRenderer->end();
 }
+
