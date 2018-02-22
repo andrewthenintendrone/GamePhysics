@@ -3,7 +3,7 @@
 #include <list>
 #include "RigidBody.h"
 #include <iostream>
-#include "Circle.h"
+#include "Sphere.h"
 #include "Plane.h"
 #include "Box.h"
 #include "Aabb.h"
@@ -14,10 +14,10 @@ typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 static fn collisionFunctionArray[] =
 {
-	PhysicsScene::plane2Plane, PhysicsScene::plane2Circle, PhysicsScene::plane2AABB, PhysicsScene::plane2Box,
-	PhysicsScene::circle2Plane, PhysicsScene::circle2Circle, PhysicsScene::circle2AABB, PhysicsScene::circle2Box,
-	PhysicsScene::AABB2Plane, PhysicsScene::AABB2Circle, PhysicsScene::AABB2AABB, PhysicsScene::AABB2Box,
-	PhysicsScene::box2Plane, PhysicsScene::box2Circle, PhysicsScene::box2AABB, PhysicsScene::box2Box
+	PhysicsScene::plane2Plane, PhysicsScene::plane2Sphere, PhysicsScene::plane2AABB, PhysicsScene::plane2Box,
+	PhysicsScene::sphere2Plane, PhysicsScene::sphere2Sphere, PhysicsScene::sphere2AABB, PhysicsScene::sphere2Box,
+	PhysicsScene::AABB2Plane, PhysicsScene::AABB2Sphere, PhysicsScene::AABB2AABB, PhysicsScene::AABB2Box,
+	PhysicsScene::box2Plane, PhysicsScene::box2Sphere, PhysicsScene::box2AABB, PhysicsScene::box2Box
 };
 
 PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0, 0))
@@ -122,10 +122,10 @@ bool PhysicsScene::plane2Plane(PhysicsObject* a, PhysicsObject* b)
 	return false;
 }
 
-// test collision between a plane and a circle
-bool PhysicsScene::plane2Circle(PhysicsObject* a, PhysicsObject* b)
+// test collision between a plane and a sphere
+bool PhysicsScene::plane2Sphere(PhysicsObject* a, PhysicsObject* b)
 {
-	return circle2Plane(b, a);
+	return sphere2Plane(b, a);
 }
 
 // test collision between a plane and a box
@@ -140,66 +140,66 @@ bool PhysicsScene::plane2AABB(PhysicsObject* a, PhysicsObject* b)
 	return AABB2Plane(b, a);
 }
 
-// text collision between a circle and a plane
-bool PhysicsScene::circle2Plane(PhysicsObject* a, PhysicsObject* b)
+// text collision between a sphere and a plane
+bool PhysicsScene::sphere2Plane(PhysicsObject* a, PhysicsObject* b)
 {
-	Circle* circle = dynamic_cast<Circle*>(a);
+	Sphere* sphere = dynamic_cast<Sphere*>(a);
 	Plane* plane = dynamic_cast<Plane*>(b);
 
 	//if we are successful then test for collision
-	if (circle != nullptr && plane != nullptr)
+	if (sphere != nullptr && plane != nullptr)
 	{
 		glm::vec2 collisionNormal = plane->getNormal();
-		float circleToPlane = glm::dot(
-			circle->getPosition(),
+		float sphereToPlane = glm::dot(
+			sphere->getPosition(),
 			plane->getNormal()) - plane->getDistance();
 
 		// if we are behind plane then we flip the normal
-		if (circleToPlane < 0)
+		if (sphereToPlane < 0)
 		{
 			collisionNormal *= -1;
-			circleToPlane *= -1;
+			sphereToPlane *= -1;
 		}
 
-		float intersection = circle->getRadius() - circleToPlane;
+		float intersection = sphere->getRadius() - sphereToPlane;
 
 		if (intersection > 0)
 		{
-			glm::vec2 contact = circle->getPosition() + (collisionNormal * -circle->getRadius());
+			glm::vec2 contact = sphere->getPosition() + (collisionNormal * -sphere->getRadius());
 
 			// contact force
-			circle->setPosition(circle->getPosition() +
-				collisionNormal * (circle->getRadius() - circleToPlane));
+			sphere->setPosition(sphere->getPosition() +
+				collisionNormal * (sphere->getRadius() - sphereToPlane));
 
-			plane->resolveCollision(circle, contact);
+			plane->resolveCollision(sphere, contact);
 			return true;
 		}
 	}
 	return false;
 }
 
-// test collision between 2 circles
-bool PhysicsScene::circle2Circle(PhysicsObject* a, PhysicsObject* b)
+// test collision between 2 spheres
+bool PhysicsScene::sphere2Sphere(PhysicsObject* a, PhysicsObject* b)
 {
-	Circle* circle1 = dynamic_cast<Circle*>(a);
-	Circle* circle2 = dynamic_cast<Circle*>(b);
+	Sphere* sphere1 = dynamic_cast<Sphere*>(a);
+	Sphere* sphere2 = dynamic_cast<Sphere*>(b);
 
-	if (circle1 != nullptr && circle2 != nullptr)
+	if (sphere1 != nullptr && sphere2 != nullptr)
 	{
-		glm::vec2 delta = circle2->getPosition() - circle1->getPosition();
+		glm::vec2 delta = sphere2->getPosition() - sphere1->getPosition();
 		float distance = glm::length(delta);
-		float intersection = circle1->getRadius() + circle2->getRadius() - distance;
+		float intersection = sphere1->getRadius() + sphere2->getRadius() - distance;
 
 		if (intersection > 0)
 		{
-			glm::vec2 contactForce = 0.5f * (distance - (circle1->getRadius() +
-				circle2->getRadius())) * delta / distance;
-			circle1->setPosition(circle1->getPosition() + contactForce);
-			circle2->setPosition(circle2->getPosition() - contactForce);
+			glm::vec2 contactForce = 0.5f * (distance - (sphere1->getRadius() +
+				sphere2->getRadius())) * delta / distance;
+			sphere1->setPosition(sphere1->getPosition() + contactForce);
+			sphere2->setPosition(sphere2->getPosition() - contactForce);
 
 			// respond to the collision
-			circle1->resolveCollision(circle2, 0.5f * (circle1->getPosition() +
-				circle2->getPosition()));
+			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() +
+				sphere2->getPosition()));
 			return true;
 		}
 	}
@@ -207,16 +207,16 @@ bool PhysicsScene::circle2Circle(PhysicsObject* a, PhysicsObject* b)
 	return false;
 }
 
-// test collision between a circle and a box
-bool PhysicsScene::circle2Box(PhysicsObject* a, PhysicsObject* b)
+// test collision between a sphere and a box
+bool PhysicsScene::sphere2Box(PhysicsObject* a, PhysicsObject* b)
 {
-	return box2Circle(b, a);
+	return box2Sphere(b, a);
 }
 
-// test collision between a circle and an axis aligned bounding box
-bool PhysicsScene::circle2AABB(PhysicsObject* a, PhysicsObject* b)
+// test collision between a sphere and an axis aligned bounding box
+bool PhysicsScene::sphere2AABB(PhysicsObject* a, PhysicsObject* b)
 {
-	return AABB2Circle(b, a);
+	return AABB2Sphere(b, a);
 }
 
 // test collision between a box and a plane
@@ -315,27 +315,27 @@ bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
 	return false;
 }
 
-// test collision between a box and a circle
-bool PhysicsScene::box2Circle(PhysicsObject* a, PhysicsObject* b)
+// test collision between a box and a sphere
+bool PhysicsScene::box2Sphere(PhysicsObject* a, PhysicsObject* b)
 {
 	Box* box = dynamic_cast<Box*>(a);
-	Circle* circle = dynamic_cast<Circle*>(b);
+	Sphere* sphere = dynamic_cast<Sphere*>(b);
 
-	if (box != nullptr && circle != nullptr)
+	if (box != nullptr && sphere != nullptr)
 	{
-		glm::vec2 circlePos = circle->getPosition() - box->getPosition();
+		glm::vec2 spherePos = sphere->getPosition() - box->getPosition();
 		float w2 = box->getWidth() / 2, h2 = box->getHeight() / 2;
 		int numContacts = 0;
 		glm::vec2 contact(0, 0); // contact is in our box coordinates
 
-		// check the four corners to see if any of them are inside the circle
+		// check the four corners to see if any of them are inside the sphere
 		for (float x = -w2; x <= w2; x += box->getWidth())
 		{
 			for (float y = -h2; y <= h2; y += box->getHeight())
 			{
 				glm::vec2 p = x * box->getLocalX() + y * box->getLocalY();
-				glm::vec2 dp = p - circlePos;
-				if (dp.x * dp.x + dp.y * dp.y < circle->getRadius() * circle->getRadius())
+				glm::vec2 dp = p - spherePos;
+				if (dp.x * dp.x + dp.y * dp.y < sphere->getRadius() * sphere->getRadius())
 				{
 					numContacts++;
 					contact += glm::vec2(x, y);
@@ -344,19 +344,19 @@ bool PhysicsScene::box2Circle(PhysicsObject* a, PhysicsObject* b)
 		}
 		glm::vec2* direction = nullptr;
 
-		// get the local position of the circle centre
-		glm::vec2 localPos(glm::dot(box->getLocalX(), circlePos),
-			glm::dot(box->getLocalY(), circlePos));
+		// get the local position of the sphere centre
+		glm::vec2 localPos(glm::dot(box->getLocalX(), spherePos),
+			glm::dot(box->getLocalY(), spherePos));
 
 		if (localPos.y < h2 && localPos.y > -h2)
 		{
-			if (localPos.x > 0 && localPos.x < w2 + circle->getRadius())
+			if (localPos.x > 0 && localPos.x < w2 + sphere->getRadius())
 			{
 				numContacts++;
 				contact += glm::vec2(w2, localPos.y);
 				direction = new glm::vec2(box->getLocalX());
 			}
-			if (localPos.x < 0 && localPos.x > -(w2 + circle->getRadius()))
+			if (localPos.x < 0 && localPos.x > -(w2 + sphere->getRadius()))
 			{
 				numContacts++;
 				contact += glm::vec2(-w2, localPos.y);
@@ -365,13 +365,13 @@ bool PhysicsScene::box2Circle(PhysicsObject* a, PhysicsObject* b)
 		}
 		if (localPos.x < w2 && localPos.x > -w2)
 		{
-			if (localPos.y > 0 && localPos.y < h2 + circle->getRadius())
+			if (localPos.y > 0 && localPos.y < h2 + sphere->getRadius())
 			{
 				numContacts++;
 				contact += glm::vec2(localPos.x, h2);
 				direction = new glm::vec2(box->getLocalY());
 			}
-			if (localPos.y < 0 && localPos.y > -(h2 + circle->getRadius()))
+			if (localPos.y < 0 && localPos.y > -(h2 + sphere->getRadius()))
 			{
 				numContacts++;
 				contact += glm::vec2(localPos.x, -h2);
@@ -385,15 +385,15 @@ bool PhysicsScene::box2Circle(PhysicsObject* a, PhysicsObject* b)
 				(box->getLocalX() * contact.x + box->getLocalY() * contact.y);
 
 			// with the contact point we can find a penetration vector
-			float pen = circle->getRadius() - glm::length(contact -
-				circle->getPosition());
-			glm::vec2 penVec = glm::normalize(contact - circle->getPosition()) * pen;
+			float pen = sphere->getRadius() - glm::length(contact -
+				sphere->getPosition());
+			glm::vec2 penVec = glm::normalize(contact - sphere->getPosition()) * pen;
 
 			// move each shape away in the direction of penitration
-			if (!box->isKinematic() && !circle->isKinematic())
+			if (!box->isKinematic() && !sphere->isKinematic())
 			{
 				box->setPosition(box->getPosition() + penVec * 0.5f);
-				circle->setPosition(circle->getPosition() - penVec * 0.5f);
+				sphere->setPosition(sphere->getPosition() - penVec * 0.5f);
 			}
 			else if (!box->isKinematic())
 			{
@@ -401,10 +401,10 @@ bool PhysicsScene::box2Circle(PhysicsObject* a, PhysicsObject* b)
 			}
 			else
 			{
-				circle->setPosition(circle->getPosition() - penVec);
+				sphere->setPosition(sphere->getPosition() - penVec);
 			}
 
-			box->resolveCollision(circle, contact, direction);
+			box->resolveCollision(sphere, contact, direction);
 		}
 		delete direction;
 	}
@@ -494,31 +494,31 @@ bool PhysicsScene::AABB2Plane(PhysicsObject* a, PhysicsObject* b)
 	return false;
 }
 
-// test collision between an axis aligned bounding box and a circle
-bool PhysicsScene::AABB2Circle(PhysicsObject* a, PhysicsObject* b)
+// test collision between an axis aligned bounding box and a sphere
+bool PhysicsScene::AABB2Sphere(PhysicsObject* a, PhysicsObject* b)
 {
-	// try to cast objects to Aabb and circle
+	// try to cast objects to Aabb and sphere
 	Aabb* aabb = dynamic_cast<Aabb*>(a);
-	Circle* circle = dynamic_cast<Circle*>(b);
+	Sphere* sphere = dynamic_cast<Sphere*>(b);
 
 	// if we are successful then test for collision
-	if (aabb != nullptr && circle != nullptr)
+	if (aabb != nullptr && sphere != nullptr)
 	{
-		glm::vec2 boxToCircle;
-		boxToCircle.x = circle->getPosition().x - fmaxf(aabb->getPosition().x - aabb->getWidth() / 2, fminf(circle->getPosition().x, aabb->getPosition().x + aabb->getWidth() / 2));
-		boxToCircle.y = circle->getPosition().y - fmaxf(aabb->getPosition().y - aabb->getHeight() / 2, fminf(circle->getPosition().y, aabb->getPosition().y + aabb->getHeight() / 2));
+		glm::vec2 boxToSphere;
+		boxToSphere.x = sphere->getPosition().x - fmaxf(aabb->getPosition().x - aabb->getWidth() / 2, fminf(sphere->getPosition().x, aabb->getPosition().x + aabb->getWidth() / 2));
+		boxToSphere.y = sphere->getPosition().y - fmaxf(aabb->getPosition().y - aabb->getHeight() / 2, fminf(sphere->getPosition().y, aabb->getPosition().y + aabb->getHeight() / 2));
 
-		if (glm::length(boxToCircle) < circle->getRadius())
+		if (glm::length(boxToSphere) < sphere->getRadius())
 		{
-			// collsion
-			glm::vec2 collisionNormal = glm::normalize(boxToCircle);
-			float penetration = fabsf(glm::length(boxToCircle) - circle->getRadius());
+			// collision
+			glm::vec2 collisionNormal = glm::normalize(boxToSphere);
+			float penetration = fabsf(glm::length(boxToSphere) - sphere->getRadius());
 
 			aabb->setPosition(aabb->getPosition() - collisionNormal * penetration);
-			circle->setPosition(circle->getPosition() + collisionNormal * penetration);
+			sphere->setPosition(sphere->getPosition() + collisionNormal * penetration);
 
-			glm::vec2 contact = circle->getPosition() - boxToCircle;
-			aabb->resolveCollision(circle, glm::vec2(0));
+			glm::vec2 contact = sphere->getPosition() - boxToSphere;
+			aabb->resolveCollision(sphere, glm::vec2(0));
 			return true;
 		}
 	}

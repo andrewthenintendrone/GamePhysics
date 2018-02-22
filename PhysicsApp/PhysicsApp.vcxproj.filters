@@ -33,13 +33,13 @@
     <ClCompile Include="source\Box.cpp">
       <Filter>Source Files\shapes</Filter>
     </ClCompile>
-    <ClCompile Include="source\Circle.cpp">
-      <Filter>Source Files\shapes</Filter>
-    </ClCompile>
     <ClCompile Include="source\Plane.cpp">
       <Filter>Source Files\shapes</Filter>
     </ClCompile>
     <ClCompile Include="source\Aabb.cpp">
+      <Filter>Source Files\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Sphere.cpp">
       <Filter>Source Files\shapes</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,9 +56,6 @@
     <ClInclude Include="source\Box.h">
       <Filter>Source Files\shapes</Filter>
     </ClInclude>
-    <ClInclude Include="source\Circle.h">
-      <Filter>Source Files\shapes</Filter>
-    </ClInclude>
     <ClInclude Include="source\Plane.h">
       <Filter>Source Files\shapes</Filter>
     </ClInclude>
@@ -67,6 +64,9 @@
     </ClInclude>
     <ClInclude Include="source\PhysicsObject.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Sphere.h">
+      <Filter>Source Files\shapes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

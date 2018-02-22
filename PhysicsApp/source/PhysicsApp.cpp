@@ -5,24 +5,14 @@
 #include "gl_core_4_4.h"
 #include <glm\ext.hpp>
 #include <Gizmos.h>
-#include "Circle.h"
+#include "Sphere.h"
 #include "Plane.h"
 #include "Box.h"
 #include "Aabb.h"
 #include <random>
-#include <fstream>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
-
-int pixels[] =
-{
-	1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0,
-	1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1,
-	1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1,
-	1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0,
-	1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0
-};
 
 PhysicsApp::PhysicsApp()
 {

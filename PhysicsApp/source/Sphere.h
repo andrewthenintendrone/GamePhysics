@@ -4,13 +4,13 @@
 
 #include "Renderer2D.h"
 
-class Circle : public RigidBody
+class Sphere : public RigidBody
 {
 public:
-	Circle(glm::vec2 position = glm::vec2(0, 0), glm::vec2 velocity = glm::vec2(0, 0),
+	Sphere(glm::vec2 position = glm::vec2(0, 0), glm::vec2 velocity = glm::vec2(0, 0),
 		float mass = 1, float radius = 1, glm::vec4 color = glm::vec4(1));
 
-	~Circle();
+	~Sphere();
 	virtual void makeGizmo();
 
 	float getRadius() { return m_radius; }
