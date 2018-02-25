@@ -55,6 +55,7 @@ bool Box::checkBoxCorners(const Box& box, glm::vec2& contact, int& numContacts,
 					numContacts++;
 					contact += m_position + p0.x * m_localX + h2 * m_localY;
 					float pen0 = h2 - p0.y;
+
 					if (pen0 < penetration || penetration == 0)
 					{
 						penetration = pen0;
@@ -77,7 +78,7 @@ bool Box::checkBoxCorners(const Box& box, glm::vec2& contact, int& numContacts,
 	}
 	contactForce = penetration * edgeNormal;
 	return (penetration != 0);
-}
+}
 
 
 void Box::fixedUpdate(glm::vec2 gravity, float timeStep)
