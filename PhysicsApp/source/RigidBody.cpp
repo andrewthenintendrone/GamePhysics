@@ -30,7 +30,10 @@ void RigidBody::fixedUpdate(glm::vec2 gravity, float timeStep)
 	{
 		if (length(m_velocity) < length(gravity) * m_linearDrag * timeStep)
 		{
-			m_velocity = glm::vec2(0);		}	}
+			m_velocity = glm::vec2(0);
+		}
+	}
+
 	if (abs(m_angularVelocity) < MIN_ROTATION_THRESHOLD)
 	{
 		m_angularVelocity = 0;

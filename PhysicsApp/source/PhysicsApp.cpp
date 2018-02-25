@@ -9,6 +9,7 @@
 #include "Plane.h"
 #include "Box.h"
 #include "Aabb.h"
+#include "Polygon.h"
 #include <random>
 
 #define _USE_MATH_DEFINES
@@ -33,55 +34,25 @@ bool PhysicsApp::startup()
 	m_font = new aie::Font("./font/consolas.ttf", 32);
 
 	m_physicsScene = new PhysicsScene();
-	m_physicsScene->setGravity(glm::vec2(0, -10));
+	//m_physicsScene->setGravity(glm::vec2(0, -10));
 	m_physicsScene->setTimeStep(0.01f);
 
-	Plane* plane1 = new Plane(glm::vec2(0, -1), 50);
-	plane1->setKinematic(true);
-	m_physicsScene->addActor(plane1);
+	std::vector<glm::vec2> points;
 
-	Plane* plane2 = new Plane(glm::vec2(0, 1), 50);
-	plane2->setKinematic(true);
-	m_physicsScene->addActor(plane2);
+	int numPoints = 10;
 
-	Plane* plane3 = new Plane(glm::vec2(-1, 0), 80);
-	plane3->setKinematic(true);
-	m_physicsScene->addActor(plane3);
-
-	Plane* plane4 = new Plane(glm::vec2(1, 0), 80);
-	plane4->setKinematic(true);
-	m_physicsScene->addActor(plane4);
-
-	/*for (int y = 0; y < 5; y++)
+	for (int i = 0; i < numPoints; i++)
 	{
-		for (int x = 0; x < 10; x++)
-		{
-			glm::vec2 position(-30 + 7.5f * x + y, -30 + 15 * y + x);
+		float angle = glm::radians(i / (float)numPoints * 360.0f);
+		glm::vec2 point(sinf(angle), -cosf(angle));
+		point *= -8;
+		points.push_back(point);
+	}
 
-			glm::vec4 randomColor(rand() % 256 / 255.f, rand() % 256 / 255.f, rand() % 256 / 255.f, 1);
+	abc::Polygon* poly = new abc::Polygon(points);
+	poly->setRotation(glm::radians(45.0f));
 
-			if (x % 2 == 0)
-			{
-				Box* box = new Box(position, glm::vec2(-50, 0), 3, glm::vec2(3), randomColor);
-				box->setRotation(glm::radians((float)(rand() % 360)));
-				m_physicsScene->addActor(box);
-			}
-			else
-			{
-				Sphere* ball = new Sphere(position, glm::vec2(0, 0), 3, 3, randomColor);
-				ball->setRotation(glm::radians((float)(rand() % 360)));
-				ball->setKinematic(true);
-				m_physicsScene->addActor(ball);
-			}
-		}
-	}*/
-
-	Sphere* ball1 = new Sphere(glm::vec2(-40, 0), glm::vec2(0), 1, 3, glm::vec4(0.5f, 0, 1, 1));
-	ball1->setKinematic(true);
-	m_physicsScene->addActor(ball1);
-
-	Sphere* ball2 = new Sphere(glm::vec2(40, 0), glm::vec2(20, 0), 1, 3, glm::vec4(1, 1, 0, 1));
-	m_physicsScene->addActor(ball2);
+	m_physicsScene->addActor(poly);
 
 	return true;
 }

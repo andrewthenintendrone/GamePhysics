@@ -7,6 +7,7 @@ enum ShapeTypes
 	SPHERE,
 	AABB,
 	BOX,
+	POLYGON,
 	SHAPECOUNT
 };
 

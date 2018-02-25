@@ -25,6 +25,7 @@
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\PhysicsScene.cpp" />
     <ClCompile Include="source\Plane.cpp" />
+    <ClCompile Include="source\Polygon.cpp" />
     <ClCompile Include="source\RigidBody.cpp" />
     <ClCompile Include="source\Sphere.cpp" />
   </ItemGroup>
@@ -35,6 +36,7 @@
     <ClInclude Include="source\PhysicsObject.h" />
     <ClInclude Include="source\PhysicsScene.h" />
     <ClInclude Include="source\Plane.h" />
+    <ClInclude Include="source\Polygon.h" />
     <ClInclude Include="source\RigidBody.h" />
     <ClInclude Include="source\Sphere.h" />
   </ItemGroup>

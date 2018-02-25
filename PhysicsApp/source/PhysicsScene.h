@@ -24,7 +24,7 @@ public:
 	void checkForCollison();
 
 	// collision detection funtions
-	static bool plane2Plane(PhysicsObject*, PhysicsObject*);
+	/*static bool plane2Plane(PhysicsObject*, PhysicsObject*);
 	static bool plane2Sphere(PhysicsObject*, PhysicsObject*);
 	static bool plane2Box(PhysicsObject*, PhysicsObject*);
 	static bool plane2AABB(PhysicsObject*, PhysicsObject*);
@@ -39,7 +39,7 @@ public:
 	static bool AABB2Plane(PhysicsObject*, PhysicsObject*);
 	static bool AABB2Sphere(PhysicsObject*, PhysicsObject*);
 	static bool AABB2Box(PhysicsObject*, PhysicsObject*);
-	static bool AABB2AABB(PhysicsObject*, PhysicsObject*);
+	static bool AABB2AABB(PhysicsObject*, PhysicsObject*);*/
 
 protected:
 
