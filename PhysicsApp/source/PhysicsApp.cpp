@@ -39,7 +39,7 @@ bool PhysicsApp::startup()
 
 	std::vector<glm::vec2> points;
 
-	int numPoints = 10;
+	int numPoints = 6;
 
 	for (int i = 0; i < numPoints; i++)
 	{
@@ -50,7 +50,9 @@ bool PhysicsApp::startup()
 	}
 
 	abc::Polygon* poly = new abc::Polygon(points);
-	poly->setRotation(glm::radians(45.0f));
+	poly->setAngularVelocity(90.0f);
+	poly->setAngularDrag(0);
+	poly->setColor(glm::vec4(0.5f, 0, 1, 1));
 
 	m_physicsScene->addActor(poly);
 

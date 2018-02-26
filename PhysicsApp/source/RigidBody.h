@@ -29,9 +29,10 @@ public:
 	void setKinematic(bool b) { m_isKinematic = b; }
 	void setPosition(glm::vec2 position) { m_position = position; }
 	void setVelocity(glm::vec2 velocity) { m_velocity = velocity; }
+	void setAngularVelocity(float angularVelocity) { m_angularVelocity = angularVelocity; }
 	void setMass(float mass) { m_mass = mass; }
 	void setLinearDrag(float linearDrag) { m_linearDrag = linearDrag; }
-	void setAngularDrag(float angularDrag) { m_linearDrag = angularDrag; }
+	void setAngularDrag(float angularDrag) { m_angularDrag = angularDrag; }
 	void setElasticity(float elasticity) { m_elasticity = elasticity; }
 	void setRotation(float rotation) { m_rotation = rotation; }
 
