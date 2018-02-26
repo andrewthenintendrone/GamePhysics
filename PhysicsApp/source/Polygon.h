@@ -14,12 +14,20 @@ namespace abc
 		virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
 		virtual void makeGizmo();
 
+		std::vector<glm::vec2> getLocalNormals() { return m_localNormals; }
+		std::vector<glm::vec2> getLocalPoints() { return m_localPoints; }
+		std::vector<glm::vec2> getLocalPointsInWorldSpace();
+
 		glm::vec4 getColor() const { return m_color; }
 
 		void setColor(glm::vec4 color) { m_color = color; }
 
+		bool checkCollision(Polygon* other);
 
 	private:
+
+		// is this polygon currently colliding
+		bool m_isColliding = false;
 
 		// constant points and normals
 		std::vector<glm::vec2> m_points;

@@ -3,6 +3,7 @@
 #include <Gizmos.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <algorithm>
 
 abc::Polygon::Polygon(std::vector<glm::vec2> points) :
 	RigidBody(POLYGON, glm::vec2(0), glm::vec2(0), 0, 1)
@@ -114,26 +115,123 @@ void abc::Polygon::fixedUpdate(glm::vec2 gravity, float timeStep)
 
 void abc::Polygon::makeGizmo()
 {
+	// draw inverted if colliding
+	glm::vec4 drawColor = m_isColliding ? glm::vec4(1 - m_color.x, 1 - m_color.y, 1 - m_color.z, 1) : m_color;
+
+	// used to keep track of position of the center of each face
 	glm::vec2 faceCenter;
 
-	std::vector<glm::vec2> localPoints;
-
+	// iterate through local points
 	for (int i = 0; i < m_localPoints.size(); i++)
 	{
+		// connect the last point to the first
 		if (i == m_localPoints.size() - 1)
 		{
-			aie::Gizmos::add2DTri(m_position, m_position + m_localPoints[i], m_position + m_localPoints[0], m_color);
+			aie::Gizmos::add2DTri(m_position, m_position + m_localPoints[i], m_position + m_localPoints[0], drawColor);
 
 			faceCenter = (m_position + m_localPoints[i] + m_position + m_localPoints[0]) * 0.5f;
 		}
+		// connect to the next point
 		else
 		{
-			aie::Gizmos::add2DTri(m_position, m_position + m_localPoints[i], m_position + m_localPoints[i + 1], m_color);
+			aie::Gizmos::add2DTri(m_position, m_position + m_localPoints[i], m_position + m_localPoints[i + 1], drawColor);
 
 			faceCenter = (m_position + m_localPoints[i] + m_position + m_localPoints[i + 1]) * 0.5f;
 		}
-
-		// draw normals in the opposite color
-		aie::Gizmos::add2DLine(faceCenter, faceCenter + m_localNormals[i] * 16.0f, glm::vec4(1 - m_color.x, 1 - m_color.y, 1 - m_color.z, 1));
 	}
+}
+
+std::vector<glm::vec2> abc::Polygon::getLocalPointsInWorldSpace()
+{
+	std::vector<glm::vec2> points;
+
+	for (int i = 0; i < m_localPoints.size(); i++)
+	{
+		points.push_back(m_position + m_localPoints[i]);
+	}
+
+	return points;
+}
+
+// returns true if there is a collision between
+// this Polygon and another
+bool abc::Polygon::checkCollision(Polygon* other)
+{
+	// TODO: quick AABB test
+
+	std::vector<glm::vec2> myPoints = getLocalPointsInWorldSpace();
+	std::vector<glm::vec2> otherPoints = other->getLocalPointsInWorldSpace();
+	std::vector<glm::vec2> otherNormals = other->getLocalNormals();
+
+	// combine all normals
+	std::vector<glm::vec2> allNormals = m_localNormals;
+	allNormals.insert(allNormals.end(), otherNormals.begin(), otherNormals.end());
+
+	std::vector<float> shadow1;
+	std::vector<float> shadow2;
+
+	float minA = FLT_MAX;
+	float minB = FLT_MAX;
+	float maxA = -FLT_MAX;
+	float maxB = -FLT_MAX;
+
+	// for each normal
+	for (int i = 0; i < allNormals.size(); i++)
+	{
+		// for each point
+		for (int j = 0; j < myPoints.size(); j++)
+		{
+			// project point onto normal
+			float projectedPoint = glm::dot(allNormals[i], myPoints[j]);
+			shadow1.push_back(projectedPoint);
+
+			if (projectedPoint <= minA)
+			{
+				minA = projectedPoint;
+			}
+			if (projectedPoint >= maxA)
+			{
+				maxA = projectedPoint;
+			}
+		}
+		// for each other point
+		for (int j = 0; j < otherPoints.size(); j++)
+		{
+			// project other point onto normal
+			float projectedPoint = glm::dot(allNormals[i], otherPoints[j]);
+			shadow2.push_back(projectedPoint);
+
+			if (projectedPoint <= minB)
+			{
+				minB = projectedPoint;
+			}
+			if (projectedPoint >= maxB)
+			{
+				maxB = projectedPoint;
+			}
+		}
+
+		// shadows missed there is no collision
+		if(minA > maxB || minB > maxA)
+		{
+			other->m_isColliding = false;
+			m_isColliding = false;
+			return false;
+		}
+
+		minA = FLT_MAX;
+		minB = FLT_MAX;
+		maxA = -FLT_MAX;
+		maxB = -FLT_MAX;
+	}
+
+	// collision happened change color
+	// to make it obvious
+	other->m_isColliding = true;
+	other->setVelocity(glm::vec2(0));
+	other->setAngularVelocity(0);
+	m_isColliding = true;
+	setVelocity(glm::vec2(0));
+	setAngularVelocity(0);
+	return true;
 }

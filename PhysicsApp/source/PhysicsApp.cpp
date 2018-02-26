@@ -37,24 +37,41 @@ bool PhysicsApp::startup()
 	//m_physicsScene->setGravity(glm::vec2(0, -10));
 	m_physicsScene->setTimeStep(0.01f);
 
-	std::vector<glm::vec2> points;
-
-	int numPoints = 6;
-
-	for (int i = 0; i < numPoints; i++)
+	for (int x = 0; x < 5; x++)
 	{
-		float angle = glm::radians(i / (float)numPoints * 360.0f);
-		glm::vec2 point(sinf(angle), -cosf(angle));
-		point *= -8;
-		points.push_back(point);
+		for (int y = 0; y < 3; y++)
+		{
+			int numPoints = rand() % 5 + 3;
+			float scale = (rand() % 1000) / 1000.0f + 3.0f;
+
+			std::vector<glm::vec2> points;
+
+			for (int i = 0; i < numPoints; i++)
+			{
+				float angle = glm::radians(i * 360.0f / (float)numPoints);
+
+				float sn = sinf(angle);
+				float cs = cosf(angle);
+
+				glm::vec2 point(sn, -cs);
+
+				point *= -scale;
+
+				points.push_back(point);
+			}
+
+			glm::vec2 position(-50 + 20 * x, 20 * y);
+
+			abc::Polygon* poly = new abc::Polygon(points);
+			poly->setPosition(position);
+			poly->setVelocity(glm::vec2(rand() % 5, rand() % 5));
+			poly->setLinearDrag(0);
+			poly->setAngularVelocity(rand() % 360);
+			poly->setAngularDrag(0);
+			poly->setColor(glm::vec4(rand() % 256 / 255.0f, rand() % 256 / 255.0f, rand() % 256 / 255.0f, 1));
+			m_physicsScene->addActor(poly);
+		}
 	}
-
-	abc::Polygon* poly = new abc::Polygon(points);
-	poly->setAngularVelocity(90.0f);
-	poly->setAngularDrag(0);
-	poly->setColor(glm::vec4(0.5f, 0, 1, 1));
-
-	m_physicsScene->addActor(poly);
 
 	return true;
 }

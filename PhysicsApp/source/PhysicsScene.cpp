@@ -7,6 +7,7 @@
 #include "Plane.h"
 #include "Box.h"
 #include "Aabb.h"
+#include "Polygon.h"
 #include <glm\ext.hpp>
 
 // function pointer array for doing our collisions
@@ -94,10 +95,16 @@ void PhysicsScene::checkForCollison()
 	{
 		for (int inner = outer + 1; inner < actorCount; inner++)
 		{
-			PhysicsObject* object1 = m_actors[outer];
-			PhysicsObject* object2 = m_actors[inner];
-			int shapeId1 = object1->getShapeID();
-			int shapeId2 = object2->getShapeID();
+			abc::Polygon* object1 = reinterpret_cast<abc::Polygon*>(m_actors[outer]);
+			abc::Polygon* object2 = reinterpret_cast<abc::Polygon*>(m_actors[inner]);
+			//int shapeId1 = object1->getShapeID();
+			//int shapeId2 = object2->getShapeID();
+
+			// do polygon SAT
+			if (object1 != nullptr && object2 != nullptr)
+			{
+				object1->checkCollision(object2);
+			}
 
 			// using function pointers
 			//int functionIdx = (shapeId1 * ShapeTypes::SHAPECOUNT) + shapeId2;
