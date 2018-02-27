@@ -74,5 +74,8 @@
     <ClInclude Include="source\Polygon.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\CollisionResult.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

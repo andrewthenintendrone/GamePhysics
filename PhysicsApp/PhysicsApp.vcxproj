@@ -32,6 +32,7 @@
   <ItemGroup>
     <ClInclude Include="source\Aabb.h" />
     <ClInclude Include="source\Box.h" />
+    <ClInclude Include="source\CollisionResult.h" />
     <ClInclude Include="source\PhysicsApp.h" />
     <ClInclude Include="source\PhysicsObject.h" />
     <ClInclude Include="source\PhysicsScene.h" />

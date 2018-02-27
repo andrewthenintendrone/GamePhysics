@@ -46,7 +46,7 @@ void RigidBody::debug()
 }
 
 // apply force to the RigidBody at the specified position
-void RigidBody::applyForce(glm::vec2 force, glm::vec2 pos)
+void RigidBody::applyForce(glm::vec2 force)
 {
 	if (m_isKinematic)
 	{
@@ -57,7 +57,7 @@ void RigidBody::applyForce(glm::vec2 force, glm::vec2 pos)
 	// therefore acceleration = Force / mass
 	m_velocity += force / m_mass;
 
-	m_angularVelocity += (force.y * pos.x - force.x * pos.y) / (m_moment);
+	//m_angularVelocity += (force.y * pos.x - force.x * pos.y) / (m_moment);
 }
 
 // resolves a collision with another RigidBody
@@ -97,8 +97,8 @@ void RigidBody::resolveCollision(RigidBody* actor2, glm::vec2 contact,
 			(mass1 + mass2) * (v1 - v2) * normal;
 
 		//apply equal and opposite forces
-		applyForce(-force, contact - m_position);
-		actor2->applyForce(force, contact - actor2->m_position);
+		//applyForce(-force, contact - m_position);
+		//actor2->applyForce(force, contact - actor2->m_position);
 	}
 }
 

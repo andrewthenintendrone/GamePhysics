@@ -95,15 +95,15 @@ void PhysicsScene::checkForCollison()
 	{
 		for (int inner = outer + 1; inner < actorCount; inner++)
 		{
-			abc::Polygon* object1 = reinterpret_cast<abc::Polygon*>(m_actors[outer]);
-			abc::Polygon* object2 = reinterpret_cast<abc::Polygon*>(m_actors[inner]);
+			phy::Polygon* object1 = reinterpret_cast<phy::Polygon*>(m_actors[outer]);
+			phy::Polygon* object2 = reinterpret_cast<phy::Polygon*>(m_actors[inner]);
 			//int shapeId1 = object1->getShapeID();
 			//int shapeId2 = object2->getShapeID();
 
 			// do polygon SAT
 			if (object1 != nullptr && object2 != nullptr)
 			{
-				object1->checkCollision(object2);
+				phy::Polygon::checkCollision(object1, object2);
 			}
 
 			// using function pointers

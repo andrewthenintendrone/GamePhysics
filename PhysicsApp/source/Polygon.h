@@ -4,7 +4,7 @@
 #include "RigidBody.h"
 
 // generic Polygon class
-namespace abc
+namespace phy
 {
 	class Polygon : public RigidBody
 	{
@@ -22,7 +22,8 @@ namespace abc
 
 		void setColor(glm::vec4 color) { m_color = color; }
 
-		bool checkCollision(Polygon* other);
+		static bool checkCollisionAABB(Polygon* polygon1, Polygon* polygon2);
+		static glm::vec2 checkCollision(Polygon* polygon1, Polygon* polygon2);
 
 	private:
 
