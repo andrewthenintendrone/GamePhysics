@@ -359,4 +359,34 @@ namespace phy
 
 		return collisionNormal;
 	}
+
+	// check collision between a Polygon and a plane
+	bool Polygon::checkCollisionPlane(Polygon* polygon, Plane* plane)
+	{
+		// cast all points onto the plane
+		std::vector<glm::vec2> points = polygon->getLocalPointsInWorldSpace();
+
+		glm::vec2 planeNormal = plane->getNormal();
+
+		float minA = FLT_MAX;
+		float maxA = -FLT_MAX;
+
+		for (auto iter = points.begin(); iter != points.end(); iter++)
+		{
+			// project point onto normal
+			float distanceFromPlane = glm::dot(*iter, planeNormal) - plane->getDistance();
+
+			minA = std::fminf(distanceFromPlane, minA);
+			maxA = std::fmaxf(distanceFromPlane, maxA);
+		}
+
+		// min and max projections are on different sides (collision)
+		if (std::signbit(minA) != std::signbit(maxA))
+		{
+			polygon->setVelocity(glm::vec2(0));
+			polygon->setAngularVelocity(0);
+			return true;
+		}
+		return false;
+	}
 }

@@ -95,25 +95,14 @@ void PhysicsScene::checkForCollison()
 	{
 		for (int inner = outer + 1; inner < actorCount; inner++)
 		{
-			phy::Polygon* object1 = reinterpret_cast<phy::Polygon*>(m_actors[outer]);
-			phy::Polygon* object2 = reinterpret_cast<phy::Polygon*>(m_actors[inner]);
-			//int shapeId1 = object1->getShapeID();
-			//int shapeId2 = object2->getShapeID();
-
-			// do polygon SAT
-			if (object1 != nullptr && object2 != nullptr)
+			if (m_actors[outer]->getShapeID() == ShapeTypes::POLYGON && m_actors[inner]->getShapeID() == ShapeTypes::POLYGON)
 			{
-				phy::Polygon::checkCollision(object1, object2);
+				phy::Polygon::checkCollision(reinterpret_cast<phy::Polygon*>(m_actors[outer]), reinterpret_cast<phy::Polygon*>(m_actors[inner]));
 			}
-
-			// using function pointers
-			//int functionIdx = (shapeId1 * ShapeTypes::SHAPECOUNT) + shapeId2;
-			//fn collisionFunctionPtr = collisionFunctionArray[functionIdx];
-			//if (collisionFunctionPtr != nullptr)
-			//{
-			//	// did the collision occur?
-			//	collisionFunctionPtr(object1, object2);
-			//}
+			else if (m_actors[outer]->getShapeID() == ShapeTypes::POLYGON && m_actors[inner]->getShapeID() == ShapeTypes::PLANE)
+			{
+				phy::Polygon::checkCollisionPlane(reinterpret_cast<phy::Polygon*>(m_actors[outer]), reinterpret_cast<Plane*>(m_actors[inner]));
+			}
 		}
 	}
 }

@@ -2,6 +2,7 @@
 #include <vector>
 #include <glm\common.hpp>
 #include "RigidBody.h"
+#include "Plane.h"
 
 // generic Polygon class
 namespace phy
@@ -24,6 +25,8 @@ namespace phy
 
 		static bool checkCollisionAABB(Polygon* polygon1, Polygon* polygon2);
 		static glm::vec2 checkCollision(Polygon* polygon1, Polygon* polygon2);
+
+		static bool checkCollisionPlane(Polygon* polygon, Plane* plane);
 
 	private:
 

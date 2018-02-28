@@ -34,7 +34,7 @@ bool PhysicsApp::startup()
 	m_font = new aie::Font("./font/consolas.ttf", 32);
 
 	m_physicsScene = new PhysicsScene();
-	//m_physicsScene->setGravity(glm::vec2(0, -10));
+	m_physicsScene->setGravity(glm::vec2(0, -10));
 	m_physicsScene->setTimeStep(0.01f);
 
 	std::vector<glm::vec2> points;
@@ -80,14 +80,19 @@ bool PhysicsApp::startup()
 	p1->setAngularDrag(0);
 	p2->setAngularDrag(0);
 
-	p1->setElasticity(1);
-	p2->setElasticity(1);
+	p1->setElasticity(0.0f);
+	p2->setElasticity(0.0f);
 
 	p1->setColor(glm::vec4(1, 0, 0, 1));
 	p2->setColor(glm::vec4(0, 0, 1, 1));
 
 	m_physicsScene->addActor(p1);
 	m_physicsScene->addActor(p2);
+
+
+	// plane
+	Plane* plane = new Plane(glm::vec2(0, -1), 40);
+	m_physicsScene->addActor(plane);
 
 	return true;
 }
