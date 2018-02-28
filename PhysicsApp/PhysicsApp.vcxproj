@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="source\Aabb.cpp" />
     <ClCompile Include="source\Box.cpp" />
+    <ClCompile Include="source\CollisionUtils.cpp" />
     <ClCompile Include="source\PhysicsApp.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\PhysicsScene.cpp" />
@@ -33,6 +34,7 @@
     <ClInclude Include="source\Aabb.h" />
     <ClInclude Include="source\Box.h" />
     <ClInclude Include="source\CollisionResult.h" />
+    <ClInclude Include="source\CollisionUtils.h" />
     <ClInclude Include="source\PhysicsApp.h" />
     <ClInclude Include="source\PhysicsObject.h" />
     <ClInclude Include="source\PhysicsScene.h" />

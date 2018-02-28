@@ -45,6 +45,9 @@
     <ClCompile Include="source\Polygon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\CollisionUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\PhysicsApp.h">
@@ -75,6 +78,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="source\CollisionResult.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CollisionUtils.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

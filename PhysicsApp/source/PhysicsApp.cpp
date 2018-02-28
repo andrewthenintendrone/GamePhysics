@@ -54,19 +54,34 @@ bool PhysicsApp::startup()
 	}
 
 	phy::Polygon* p1 = new phy::Polygon(points);
+
+	for (auto iter = points.begin(); iter != points.end(); iter++)
+	{
+		*iter *= 0.5f;
+	}
+
 	phy::Polygon* p2 = new phy::Polygon(points);
 
-	p1->setPosition(glm::vec2(-50, 5));
-	p2->setPosition(glm::vec2(50, 0));
+	p1->setPosition(glm::vec2(-10, 30));
+	p2->setPosition(glm::vec2(50, 30));
 
 	p1->setRotation(45.0f);
 	p2->setRotation(45.0f);
 
-	p1->setVelocity(glm::vec2(10, 0));
+	p1->setVelocity(glm::vec2(35, 0));
 	p2->setVelocity(glm::vec2(-10, 0));
+
+	p1->setAngularVelocity(15);
+	p2->setAngularVelocity(45);
 
 	p1->setLinearDrag(0);
 	p2->setLinearDrag(0);
+
+	p1->setAngularDrag(0);
+	p2->setAngularDrag(0);
+
+	p1->setElasticity(1);
+	p2->setElasticity(1);
 
 	p1->setColor(glm::vec4(1, 0, 0, 1));
 	p2->setColor(glm::vec4(0, 0, 1, 1));
