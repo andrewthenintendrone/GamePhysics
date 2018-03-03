@@ -24,8 +24,7 @@ namespace phy
 		void setColor(glm::vec4 color) { m_color = color; }
 
 		static bool checkCollisionAABB(Polygon* polygon1, Polygon* polygon2);
-		static glm::vec2 checkCollision(Polygon* polygon1, Polygon* polygon2);
-
+		static bool checkCollisionPolygon(Polygon* polygon1, Polygon* polygon2);
 		static bool checkCollisionPlane(Polygon* polygon, Plane* plane);
 
 	private:

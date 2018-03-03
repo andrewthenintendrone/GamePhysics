@@ -5,8 +5,6 @@ enum ShapeTypes
 {
 	PLANE = 0,
 	SPHERE,
-	AABB,
-	BOX,
 	POLYGON,
 	SHAPECOUNT
 };

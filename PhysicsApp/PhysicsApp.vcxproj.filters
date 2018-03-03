@@ -30,23 +30,17 @@
     <ClCompile Include="source\RigidBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Box.cpp">
-      <Filter>Source Files\shapes</Filter>
-    </ClCompile>
     <ClCompile Include="source\Plane.cpp">
-      <Filter>Source Files\shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Aabb.cpp">
       <Filter>Source Files\shapes</Filter>
     </ClCompile>
     <ClCompile Include="source\Sphere.cpp">
       <Filter>Source Files\shapes</Filter>
     </ClCompile>
-    <ClCompile Include="source\Polygon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\CollisionUtils.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Polygon.cpp">
+      <Filter>Source Files\shapes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -59,13 +53,7 @@
     <ClInclude Include="source\RigidBody.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\Box.h">
-      <Filter>Source Files\shapes</Filter>
-    </ClInclude>
     <ClInclude Include="source\Plane.h">
-      <Filter>Source Files\shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Aabb.h">
       <Filter>Source Files\shapes</Filter>
     </ClInclude>
     <ClInclude Include="source\PhysicsObject.h">
@@ -74,14 +62,11 @@
     <ClInclude Include="source\Sphere.h">
       <Filter>Source Files\shapes</Filter>
     </ClInclude>
-    <ClInclude Include="source\Polygon.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\CollisionResult.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\CollisionUtils.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Polygon.h">
+      <Filter>Source Files\shapes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

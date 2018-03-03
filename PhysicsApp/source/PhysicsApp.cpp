@@ -7,8 +7,6 @@
 #include <Gizmos.h>
 #include "Sphere.h"
 #include "Plane.h"
-#include "Box.h"
-#include "Aabb.h"
 #include "Polygon.h"
 #include <random>
 
@@ -39,9 +37,9 @@ bool PhysicsApp::startup()
 
 	std::vector<glm::vec2> points;
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 5; i++)
 	{
-		float theta = glm::radians(i * 360.0f / 4.0f);
+		float theta = glm::radians(i * 360.0f / 5.0f);
 
 		float sn = sinf(theta);
 		float cs = cosf(theta);
@@ -53,45 +51,17 @@ bool PhysicsApp::startup()
 		points.push_back(point);
 	}
 
-	phy::Polygon* p1 = new phy::Polygon(points);
-
-	for (auto iter = points.begin(); iter != points.end(); iter++)
-	{
-		*iter *= 0.5f;
-	}
-
-	phy::Polygon* p2 = new phy::Polygon(points);
-
-	p1->setPosition(glm::vec2(-10, 30));
-	p2->setPosition(glm::vec2(50, 30));
-
-	p1->setRotation(45.0f);
-	p2->setRotation(45.0f);
-
-	p1->setVelocity(glm::vec2(35, 0));
-	p2->setVelocity(glm::vec2(-10, 0));
-
-	p1->setAngularVelocity(15);
-	p2->setAngularVelocity(45);
-
-	p1->setLinearDrag(0);
-	p2->setLinearDrag(0);
-
-	p1->setAngularDrag(0);
-	p2->setAngularDrag(0);
-
-	p1->setElasticity(0.0f);
-	p2->setElasticity(0.0f);
-
-	p1->setColor(glm::vec4(1, 0, 0, 1));
-	p2->setColor(glm::vec4(0, 0, 1, 1));
-
-	m_physicsScene->addActor(p1);
-	m_physicsScene->addActor(p2);
-
+	phy::Polygon* polygon = new phy::Polygon(points);
+	polygon->setPosition(glm::vec2(0));
+	polygon->setColor(glm::vec4(1));
+	polygon->setVelocity(glm::vec2(3, -50));
+	polygon->setAngularVelocity(400);
+	polygon->setRotation(180);
+	m_physicsScene->addActor(polygon);
 
 	// plane
 	Plane* plane = new Plane(glm::vec2(0, -1), 40);
+	plane->setElasticity(0);
 	m_physicsScene->addActor(plane);
 
 	return true;
