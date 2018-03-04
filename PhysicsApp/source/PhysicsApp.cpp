@@ -46,18 +46,28 @@ bool PhysicsApp::startup()
 
 		glm::vec2 point(sn, -cs);
 		
-		point *= 8;
+		point *= 4;
 
 		points.push_back(point);
 	}
 
-	phy::Polygon* polygon = new phy::Polygon(points);
+	/*phy::Polygon* polygon = new phy::Polygon(points);
 	polygon->setPosition(glm::vec2(0));
 	polygon->setColor(glm::vec4(1));
 	polygon->setVelocity(glm::vec2(3, -50));
 	polygon->setAngularVelocity(400);
 	polygon->setRotation(180);
+	m_physicsScene->addActor(polygon);*/
+
+	phy::Polygon* polygon = new phy::Polygon(points);
+	polygon->setRotation(180);
+	polygon->setColor(glm::vec4(1, 0, 0, 1));
+	polygon->setPosition(glm::vec2(0, 25));
 	m_physicsScene->addActor(polygon);
+
+	Sphere* sphere = new Sphere(glm::vec2(0, 10), glm::vec2(0), 1, 4, glm::vec4(0, 0, 1, 1));
+	m_physicsScene->addActor(sphere);
+	sphere->setKinematic(true);
 
 	// plane
 	Plane* plane = new Plane(glm::vec2(0, -1), 40);

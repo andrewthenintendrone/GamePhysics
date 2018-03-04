@@ -2,6 +2,7 @@
 #include <vector>
 #include <glm\common.hpp>
 #include "RigidBody.h"
+#include "Sphere.h"
 #include "Plane.h"
 
 // generic Polygon class
@@ -23,8 +24,11 @@ namespace phy
 
 		void setColor(glm::vec4 color) { m_color = color; }
 
+		bool containsPoint(glm::vec2 point);
+
 		static bool checkCollisionAABB(Polygon* polygon1, Polygon* polygon2);
 		static bool checkCollisionPolygon(Polygon* polygon1, Polygon* polygon2);
+		static bool checkCollisionSphere(Polygon* polygon, Sphere* sphere);
 		static bool checkCollisionPlane(Polygon* polygon, Plane* plane);
 
 	private:

@@ -124,7 +124,7 @@ bool PhysicsScene::plane2Sphere(PhysicsObject* a, PhysicsObject* b)
 // test collision between a plane and a polygon
 bool PhysicsScene::plane2Polygon(PhysicsObject* a, PhysicsObject* b)
 {
-	return polygon2Sphere(b, a);
+	return polygon2Plane(b, a);
 }
 
 // test collision between a sphere and a plane
@@ -152,13 +152,17 @@ bool PhysicsScene::sphere2Plane(PhysicsObject* a, PhysicsObject* b)
 
 		if (intersection > 0)
 		{
-			glm::vec2 contact = sphere->getPosition() + (collisionNormal * -sphere->getRadius());
+			//glm::vec2 contact = sphere->getPosition() + (collisionNormal * -sphere->getRadius());
 
 			// contact force
-			sphere->setPosition(sphere->getPosition() +
-				collisionNormal * (sphere->getRadius() - sphereToPlane));
+			//sphere->setPosition(sphere->getPosition() +
+				//collisionNormal * (sphere->getRadius() - sphereToPlane));
 
-			plane->resolveCollision(sphere, contact);
+			//plane->resolveCollision(sphere, contact);
+
+			sphere->setVelocity(glm::vec2(0));
+			sphere->setAngularVelocity(0);
+
 			return true;
 		}
 	}
@@ -179,15 +183,23 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* a, PhysicsObject* b)
 
 		if (intersection > 0)
 		{
-			glm::vec2 contactForce = 0.5f * (distance - (sphere1->getRadius() +
-				sphere2->getRadius())) * delta / distance;
+			//glm::vec2 contactForce = 0.5f * (distance - (sphere1->getRadius() +
+				//sphere2->getRadius())) * delta / distance;
 
 			//sphere1->setPosition(sphere1->getPosition() + contactForce);
 			//sphere2->setPosition(sphere2->getPosition() - contactForce);
 
 			// respond to the collision
-			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() +
-				sphere2->getPosition()));
+			//sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() +
+				//sphere2->getPosition()));
+
+			sphere1->setVelocity(glm::vec2(0));
+			sphere2->setVelocity(glm::vec2(0));
+
+			sphere1->setAngularVelocity(0);
+			sphere2->setAngularVelocity(0);
+
+
 			return true;
 		}
 	}
@@ -219,6 +231,14 @@ bool PhysicsScene::polygon2Plane(PhysicsObject* a, PhysicsObject* b)
 // test collision between a polygon and a sphere
 bool PhysicsScene::polygon2Sphere(PhysicsObject* a, PhysicsObject* b)
 {
+	phy::Polygon* polygon = dynamic_cast<phy::Polygon*>(a);
+	Sphere* sphere = dynamic_cast<Sphere*>(b);
+
+	if (polygon != nullptr && sphere != nullptr)
+	{
+		return phy::Polygon::checkCollisionSphere(polygon, sphere);
+	}
+
 	return false;
 }
 
