@@ -35,44 +35,14 @@ bool PhysicsApp::startup()
 	m_physicsScene->setGravity(glm::vec2(0, -10));
 	m_physicsScene->setTimeStep(0.01f);
 
-	std::vector<glm::vec2> points;
+	Sphere* sphere1 = new Sphere(glm::vec2(-20, 0), glm::vec2(0), 1, 5, glm::vec4(1, 0, 0, 1));
+	m_physicsScene->addActor(sphere1);
 
-	for (int i = 0; i < 5; i++)
-	{
-		float theta = glm::radians(i * 360.0f / 5.0f);
+	Sphere* sphere2 = new Sphere(glm::vec2(20, 0), glm::vec2(0), 1, 5, glm::vec4(0, 0, 1, 1));
+	m_physicsScene->addActor(sphere2);
 
-		float sn = sinf(theta);
-		float cs = cosf(theta);
-
-		glm::vec2 point(sn, -cs);
-		
-		point *= 4;
-
-		points.push_back(point);
-	}
-
-	/*phy::Polygon* polygon = new phy::Polygon(points);
-	polygon->setPosition(glm::vec2(0));
-	polygon->setColor(glm::vec4(1));
-	polygon->setVelocity(glm::vec2(3, -50));
-	polygon->setAngularVelocity(400);
-	polygon->setRotation(180);
-	m_physicsScene->addActor(polygon);*/
-
-	phy::Polygon* polygon = new phy::Polygon(points);
-	polygon->setRotation(180);
-	polygon->setColor(glm::vec4(1, 0, 0, 1));
-	polygon->setPosition(glm::vec2(0, 25));
-	m_physicsScene->addActor(polygon);
-
-	Sphere* sphere = new Sphere(glm::vec2(0, 10), glm::vec2(0), 1, 4, glm::vec4(0, 0, 1, 1));
-	m_physicsScene->addActor(sphere);
-	sphere->setKinematic(true);
-
-	// plane
-	Plane* plane = new Plane(glm::vec2(0, -1), 40);
-	plane->setElasticity(0);
-	m_physicsScene->addActor(plane);
+	Plane* plane1 = new Plane(glm::vec2(0, -1), 40);
+	m_physicsScene->addActor(plane1);
 
 	return true;
 }

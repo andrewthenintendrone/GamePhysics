@@ -136,21 +136,27 @@ bool PhysicsScene::sphere2Plane(PhysicsObject* a, PhysicsObject* b)
 	//if we are successful then test for collision
 	if (sphere != nullptr && plane != nullptr)
 	{
-		glm::vec2 collisionNormal = plane->getNormal();
+		// store planes normal
+		glm::vec2 planeNormal = plane->getNormal();
+
+		// get dot product of sphere position and plane normal
 		float sphereToPlane = glm::dot(
 			sphere->getPosition(),
-			plane->getNormal()) - plane->getDistance();
+			planeNormal);
 
-		// if we are behind plane then we flip the normal
-		if (sphereToPlane < 0)
-		{
-			collisionNormal *= -1;
-			sphereToPlane *= -1;
-		}
+		// subtract planes distance
+		sphereToPlane -= plane->getDistance();
 
-		float intersection = sphere->getRadius() - sphereToPlane;
+		//// if we are behind plane then we flip the normal
+		//if (sphereToPlane < 0)
+		//{
+		//	collisionNormal *= -1;
+		//	sphereToPlane *= -1;
+		//}
 
-		if (intersection > 0)
+		//float intersection = sphere->getRadius() - sphereToPlane;
+
+		if (fabsf(sphereToPlane) < sphere->getRadius())
 		{
 			//glm::vec2 contact = sphere->getPosition() + (collisionNormal * -sphere->getRadius());
 
@@ -177,11 +183,19 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* a, PhysicsObject* b)
 
 	if (sphere1 != nullptr && sphere2 != nullptr)
 	{
+		// vector between the 2 spheres
 		glm::vec2 delta = sphere2->getPosition() - sphere1->getPosition();
-		float distance = glm::length(delta);
-		float intersection = sphere1->getRadius() + sphere2->getRadius() - distance;
 
-		if (intersection > 0)
+		// squared distance of delta
+		float squaredDistance = delta.x * delta.x + delta.y * delta.y;
+
+		// combined radii of spheres
+		float radius = sphere1->getRadius() + sphere2->getRadius();
+
+		// square radius
+		radius *= radius;
+
+		if (squaredDistance <= radius)
 		{
 			//glm::vec2 contactForce = 0.5f * (distance - (sphere1->getRadius() +
 				//sphere2->getRadius())) * delta / distance;

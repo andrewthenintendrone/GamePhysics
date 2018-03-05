@@ -202,19 +202,20 @@ namespace phy
 	// return whether the polygon contains a point
 	bool Polygon::containsPoint(glm::vec2 point)
 	{
+		// get all points on the polygon
 		std::vector<glm::vec2> points = getLocalPointsInWorldSpace();
 
-		int nvert = points.size();
+		bool contains = false;
 
-		int i, j, c = 0;
-
-		for (i = 0, j = nvert - 1; i < nvert; j = i++)
+		for (int i = 0, j = points.size() - 1; i < points.size(); j = i++)
 		{
 			if (((points[i].y > point.y) != (points[j].y > point.y)) &&
 				(point.x < (points[j].x - points[i].x) * (point.y - points[i].y) / (points[j].y - points[i].y) + points[i].x))
-				c = !c;
+			{
+				contains = !contains;
+			}
 		}
-		return c;
+		return contains;
 	}
 
 	// returns the result of an Axis Aligned Bounding Box check between Polygons
