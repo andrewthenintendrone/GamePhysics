@@ -35,11 +35,47 @@ bool PhysicsApp::startup()
 	m_physicsScene->setGravity(glm::vec2(0, -10));
 	m_physicsScene->setTimeStep(0.01f);
 
-	Sphere* sphere1 = new Sphere(glm::vec2(-20, 0), glm::vec2(0), 1, 5, glm::vec4(1, 0, 0, 1));
-	m_physicsScene->addActor(sphere1);
+	std::vector<glm::vec2> points;
 
-	Sphere* sphere2 = new Sphere(glm::vec2(20, 0), glm::vec2(0), 1, 5, glm::vec4(0, 0, 1, 1));
-	m_physicsScene->addActor(sphere2);
+	int numPoints = 3;
+
+	for (int i = 0; i < numPoints; i++)
+	{
+		float theta = glm::radians(i * 360.0f / (float)numPoints);
+
+		float sn = sinf(theta);
+		float cs = cosf(theta);
+
+		glm::vec2 currentPoint(sn, -cs);
+
+		currentPoint *= -8;
+
+		points.push_back(currentPoint);
+	}
+
+	for (int x = 0; x < 3; x++)
+	{
+		for (int y = 0; y < 3; y++)
+		{
+			glm::vec2 position(-50 + 50 * x, -20 + 20 * y);
+			glm::vec4 randomColor(rand() % 256 / 255.0f, rand() % 256 / 255.0f, rand() % 256 / 255.0f, 1.0f);
+
+			if (x % 2 == 0 ^ y % 2 == 0)
+			{
+				Sphere* sphere = new Sphere(position, glm::vec2(0), 1, 4, randomColor);
+				m_physicsScene->addActor(sphere);
+			}
+			else
+			{
+				phy::Polygon* polygon = new phy::Polygon(points);
+				polygon->setPosition(position);
+				polygon->setRotation(rand() % 360);
+				polygon->setColor(randomColor);
+
+				m_physicsScene->addActor(polygon);
+			}
+		}
+	}
 
 	Plane* plane1 = new Plane(glm::vec2(0, -1), 40);
 	m_physicsScene->addActor(plane1);
@@ -68,10 +104,6 @@ void PhysicsApp::update(float deltaTime)
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 	{
 		quit();
-	}
-	if (input->isKeyDown(aie::INPUT_KEY_SPACE))
-	{
-		m_physicsScene->setGravity(glm::vec2(0, -9.81f));
 	}
 }
 

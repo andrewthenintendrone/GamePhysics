@@ -382,16 +382,13 @@ namespace phy
 	// check collision between a Polygon and a Sphere
 	bool Polygon::checkCollisionSphere(Polygon* polygon, Sphere* sphere)
 	{
-		if (polygon->containsPoint(sphere->getPosition()))
+		std::vector<glm::vec2> normals = polygon->getLocalNormals();
+
+		for (std::vector<glm::vec2>::iterator iter = normals.begin(); iter != normals.end(); iter++)
 		{
-			polygon->setVelocity(glm::vec2(0));
-			polygon->setAngularVelocity(0);
 
-			sphere->setVelocity(glm::vec2(0));
-			sphere->setAngularVelocity(0);
-
-			return true;
 		}
+
 
 		return false;
 	}
