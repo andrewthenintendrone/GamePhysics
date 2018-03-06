@@ -21,7 +21,7 @@ public:
 	void setTimeStep(const float timeStep) { m_timeStep = timeStep; }
 	float getTimeStep() const { return m_timeStep; }
 
-	void checkForCollison();
+	void checkCollisions();
 
 	// collision detection funtions
 	static bool plane2Plane(PhysicsObject*, PhysicsObject*);

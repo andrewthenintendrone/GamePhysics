@@ -60,7 +60,7 @@ void PhysicsScene::update(float dt)
 
 		accumulatedTime -= m_timeStep;
 
-		checkForCollison();
+		checkCollisions();
 	}
 }
 
@@ -84,7 +84,7 @@ void PhysicsScene::debugScene()
 }
 
 // check and resolve collisions between physics objects
-void PhysicsScene::checkForCollison()
+void PhysicsScene::checkCollisions()
 {
 	int actorCount = (int)m_actors.size();
 

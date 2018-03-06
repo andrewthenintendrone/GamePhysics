@@ -35,24 +35,6 @@ bool PhysicsApp::startup()
 	m_physicsScene->setGravity(glm::vec2(0, -10));
 	m_physicsScene->setTimeStep(0.01f);
 
-	std::vector<glm::vec2> points;
-
-	int numPoints = 3;
-
-	for (int i = 0; i < numPoints; i++)
-	{
-		float theta = glm::radians(i * 360.0f / (float)numPoints);
-
-		float sn = sinf(theta);
-		float cs = cosf(theta);
-
-		glm::vec2 currentPoint(sn, -cs);
-
-		currentPoint *= -8;
-
-		points.push_back(currentPoint);
-	}
-
 	for (int x = 0; x < 3; x++)
 	{
 		for (int y = 0; y < 3; y++)
@@ -63,13 +45,15 @@ bool PhysicsApp::startup()
 			if (x % 2 == 0 ^ y % 2 == 0)
 			{
 				Sphere* sphere = new Sphere(position, glm::vec2(0), 1, 4, randomColor);
+				sphere->setAngularVelocity(rand() % 360);
 				m_physicsScene->addActor(sphere);
 			}
 			else
 			{
-				phy::Polygon* polygon = new phy::Polygon(points);
+				phy::Polygon* polygon = new phy::Polygon(5, 8);
 				polygon->setPosition(position);
 				polygon->setRotation(rand() % 360);
+				polygon->setAngularVelocity(rand() % 360);
 				polygon->setColor(randomColor);
 
 				m_physicsScene->addActor(polygon);

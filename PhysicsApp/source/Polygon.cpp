@@ -12,8 +12,31 @@ namespace phy
 		RigidBody(POLYGON, glm::vec2(0), glm::vec2(0), 0, 1)
 	{
 		m_points = points;
-		m_numFaces = m_points.size();
-		m_localPoints.resize(m_numFaces);
+		m_localPoints.resize(m_points.size());
+		m_moment = 3;
+
+		calculateNormals();
+	}
+
+	// constructor (number of points and radius)
+	Polygon::Polygon(int numPoints, float radius) :
+		RigidBody(POLYGON, glm::vec2(0), glm::vec2(0), 0, 1)
+	{
+		for (int i = 0; i < numPoints; i++)
+		{
+			float theta = glm::radians(i * 360.0f / (float)numPoints);
+
+			float sn = sinf(theta);
+			float cs = cosf(theta);
+
+			glm::vec2 currentPoint(sn, -cs);
+
+			currentPoint *= -radius;
+
+			m_points.push_back(currentPoint);
+		}
+
+		m_localPoints.resize(m_points.size());
 		m_moment = 3;
 
 		calculateNormals();
@@ -119,28 +142,18 @@ namespace phy
 
 	void Polygon::makeGizmo()
 	{
-		// draw inverted if colliding
-		glm::vec4 drawColor = m_isColliding ? glm::vec4(1 - m_color.x, 1 - m_color.y, 1 - m_color.z, 1) : m_color;
-
-		// used to keep track of position of the center of each face
-		glm::vec2 faceCenter;
-
 		// iterate through local points
 		for (int i = 0; i < m_localPoints.size(); i++)
 		{
 			// connect the last point to the first
 			if (i == m_localPoints.size() - 1)
 			{
-				aie::Gizmos::add2DTri(m_position, m_position + m_localPoints[i], m_position + m_localPoints[0], drawColor);
-
-				faceCenter = (m_position + m_localPoints[i] + m_position + m_localPoints[0]) * 0.5f;
+				aie::Gizmos::add2DTri(m_position, m_position + m_localPoints[i], m_position + m_localPoints[0], m_color);
 			}
 			// connect to the next point
 			else
 			{
-				aie::Gizmos::add2DTri(m_position, m_position + m_localPoints[i], m_position + m_localPoints[i + 1], drawColor);
-
-				faceCenter = (m_position + m_localPoints[i] + m_position + m_localPoints[i + 1]) * 0.5f;
+				aie::Gizmos::add2DTri(m_position, m_position + m_localPoints[i], m_position + m_localPoints[i + 1], m_color);
 			}
 		}
 	}
@@ -382,13 +395,51 @@ namespace phy
 	// check collision between a Polygon and a Sphere
 	bool Polygon::checkCollisionSphere(Polygon* polygon, Sphere* sphere)
 	{
-		std::vector<glm::vec2> normals = polygon->getLocalNormals();
-
-		for (std::vector<glm::vec2>::iterator iter = normals.begin(); iter != normals.end(); iter++)
+		if (polygon->containsPoint(sphere->getPosition()))
 		{
+			polygon->setVelocity(glm::vec2(0));
+			polygon->setAngularVelocity(0);
 
+			sphere->setVelocity(glm::vec2(0));
+			sphere->setAngularVelocity(0);
+
+			return true;
 		}
 
+		glm::vec2 point = sphere->getPosition();
+
+		std::vector<glm::vec2> points = polygon->getLocalPointsInWorldSpace();
+
+		// iterate through points
+		for (int i = 0; i < points.size(); i++)
+		{
+			// treat edge as a line
+			glm::vec2 lineStart = points[i];
+			glm::vec2 lineEnd = (i == points.size() - 1 ? points[0] : points[i + 1]);
+
+			glm::vec2 line = lineEnd - lineStart;
+			glm::vec2 toStart = point - lineStart;
+
+			float len2 = glm::dot(line, line);
+
+			//t is a number in [0,1] describing 
+			//the closest point on the lineseg as a blend of endpoints.. 
+			float t = fmaxf(0, fminf(len2, glm::dot(line, toStart))) / len2;
+
+			//cp is the position (i.e actual coordinates) of the closest point on the seg
+			glm::vec2 cp = lineStart + t * line;
+
+			if (glm::length(cp - point) <= sphere->getRadius())
+			{
+				polygon->setVelocity(glm::vec2(0));
+				polygon->setAngularVelocity(0);
+
+				sphere->setVelocity(glm::vec2(0));
+				sphere->setAngularVelocity(0);
+
+				return true;
+			}
+		}
 
 		return false;
 	}

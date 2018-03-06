@@ -12,6 +12,7 @@ namespace phy
 	{
 	public:
 		Polygon(std::vector<glm::vec2> points);
+		Polygon(int numPoints = 4, float radius = 8);
 
 		virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
 		virtual void makeGizmo();
@@ -48,8 +49,6 @@ namespace phy
 
 		void calculateLocalPoints();
 		void calculateLocalNormals();
-
-		int m_numFaces = 0;
 
 		// color to draw the polygon in
 		glm::vec4 m_color = glm::vec4(1);
