@@ -13,7 +13,7 @@ namespace phy
 	{
 		m_points = points;
 		m_localPoints.resize(m_points.size());
-		m_moment = 3;
+		m_moment = 1;
 
 		calculateNormals();
 	}
@@ -37,7 +37,7 @@ namespace phy
 		}
 
 		m_localPoints.resize(m_points.size());
-		m_moment = 3;
+		m_moment = 1;
 
 		calculateNormals();
 	}
@@ -288,46 +288,29 @@ namespace phy
 		// for each normal
 		for (int i = 0; i < allNormals.size(); i++)
 		{
-			float minA = FLT_MAX;
-			float minB = FLT_MAX;
-			float maxA = -FLT_MAX;
-			float maxB = -FLT_MAX;
+			Projection p1;
+			Projection p2;
 
 			// for each point
 			for (int j = 0; j < points1.size(); j++)
 			{
-				// project point onto normal
-				Projection currentProjection(points1[j], allNormals[i]);
+				float dot = glm::dot(points1[j], allNormals[i]);
 
-				if (currentProjection.dotAlongNormal <= minA)
-				{
-					minA = currentProjection.dotAlongNormal;
-				}
-				if (currentProjection.dotAlongNormal >= maxA)
-				{
-					maxA = currentProjection.dotAlongNormal;
-				}
+				p1.setMin(std::fminf(p1.getMin(), dot));
+				p1.setMax(std::fmaxf(p1.getMax(), dot));
 			}
 			// for each other point
 			for (int j = 0; j < points2.size(); j++)
 			{
-				// project other point onto normal
-				Projection currentProjection(points2[j], allNormals[i]);
+				float dot = glm::dot(points1[j], allNormals[i]);
 
-				if (currentProjection.dotAlongNormal <= minB)
-				{
-					minB = currentProjection.dotAlongNormal;
-				}
-				if (currentProjection.dotAlongNormal >= maxB)
-				{
-					maxB = currentProjection.dotAlongNormal;
-				}
+				p2.setMin(std::fminf(p2.getMin(), dot));
+				p2.setMax(std::fmaxf(p2.getMax(), dot));
 			}
 
-			float dist = CollisionUtils::getProjectionOverlap(minA, maxA, minB, maxB);
+			float dist = p1.getOverlap(p2);
 
-			// shadows missed there is no collision
-			if (dist < 0)
+			if (!p1.getOverlap(p2))
 			{
 				return false;
 			}
@@ -339,55 +322,39 @@ namespace phy
 			}
 		}
 
-		//aie::Gizmos::add2DLine(glm::vec2(0), glm::normalize(collisionNormal) * 8.0f, glm::vec4(1));
+		aie::Gizmos::add2DLine(glm::vec2(0), glm::normalize(collisionNormal) * 8.0f, glm::vec4(1));
 
 		// now to find the contact point
-		//glm::vec2 contactPoint(0);
+		glm::vec2 contactPoint(0);
 
-		//// one of the collision normals needs to be flipped
-		//// figure out which one
-		//float flipFirst = (std::signbit(glm::dot(polygon1->getPosition(), collisionNormal)) == 1 ? 1.0f : -1.0f);
+		// one of the collision normals needs to be flipped
+		// figure out which one
+		float flipFirst = (std::signbit(glm::dot(polygon1->getPosition(), collisionNormal)) == 1 ? 1.0f : -1.0f);
 
-		//// get support point(s)
-		//std::vector<glm::vec2> supports1 = getSupports(polygon1, collisionNormal * flipFirst);
-		//std::vector<glm::vec2> supports2 = getSupports(polygon2, collisionNormal * -flipFirst);
+		// get support point(s)
+		std::vector<glm::vec2> supports1 = getSupports(polygon1, collisionNormal * flipFirst);
+		std::vector<glm::vec2> supports2 = getSupports(polygon2, collisionNormal * -flipFirst);
 
-		//if (supports1.size() == 1)
-		//{
-		//	contactPoint = supports1[0];
-		//}
-		//else if (supports2.size() == 1)
-		//{
-		//	contactPoint = supports2[0];
-		//}
-		//else
-		//{
-		//	// both supports have 2 points
-		//	// find the average of the middle two points
-		//	// this is the contact point
-		//	std::vector<Projection> projectionsAlongNormal;
+		if (supports1.size() == 1)
+		{
+			contactPoint = supports1[0];
+		}
+		else if (supports2.size() == 1)
+		{
+			contactPoint = supports2[0];
+		}
+		else
+		{
+			
+		}
 
-		//	projectionsAlongNormal.push_back(Projection(supports1[0], glm::vec2(collisionNormal.y, -collisionNormal.x)));
-		//	projectionsAlongNormal.push_back(Projection(supports1[1], glm::vec2(collisionNormal.y, -collisionNormal.x)));
-		//	projectionsAlongNormal.push_back(Projection(supports2[0], glm::vec2(collisionNormal.y, -collisionNormal.x)));
-		//	projectionsAlongNormal.push_back(Projection(supports2[1], glm::vec2(collisionNormal.y, -collisionNormal.x)));
+		 aie::Gizmos::add2DCircle(contactPoint, 3, 8, glm::vec4(1, 1, 0, 1));
 
-		//	// sort by dot along collision normal
-		//	std::sort(projectionsAlongNormal.begin(), projectionsAlongNormal.end(), CollisionUtils::sortByDot);
+		 polygon1->setVelocity(glm::vec2(0));
+		 polygon1->setAngularVelocity(0);
 
-		//	contactPoint = 0.5f * (projectionsAlongNormal[1].point + projectionsAlongNormal[2].point);
-		//}
-
-		//aie::Gizmos::add2DCircle(contactPoint, 10, 36, glm::vec4(1, 1, 0, 1));
-
-		//polygon1->correctPosition(polygon2, minimumPenetration, &collisionNormal);
-		//polygon1->resolveCollision(polygon2, contactPoint, &collisionNormal);
-
-		polygon1->setVelocity(glm::vec2(0));
-		polygon2->setVelocity(glm::vec2(0));
-
-		polygon1->setAngularVelocity(0);
-		polygon2->setAngularVelocity(0);
+		 polygon2->setVelocity(glm::vec2(0));
+		 polygon2->setAngularVelocity(0);
 
 		return true;
 	}
@@ -447,63 +414,43 @@ namespace phy
 	// check collision between a Polygon and a plane
 	bool Polygon::checkCollisionPlane(Polygon* polygon, Plane* plane)
 	{
-		// cast all points onto the plane
-		std::vector<glm::vec2> points = polygon->getLocalPointsInWorldSpace();
-
 		glm::vec2 planeNormal = plane->getNormal();
 
-		Projection minA{ glm::vec2(0), FLT_MAX };
-		Projection maxA{ glm::vec2(0), -FLT_MAX };
-
-		for (auto iter = points.begin(); iter != points.end(); iter++)
-		{
-			// project point onto normal
-			Projection currentProjection{ *iter, planeNormal };
-			currentProjection.dotAlongNormal -= plane->getDistance();
-
-			if (currentProjection.dotAlongNormal <= minA.dotAlongNormal)
-			{
-				minA = currentProjection;
-			}
-			if (currentProjection.dotAlongNormal >= maxA.dotAlongNormal)
-			{
-				maxA = currentProjection;
-			}
-		}
+		Projection proj;
+		proj.projectPolygon(polygon, planeNormal);
 
 		//aie::Gizmos::add2DLine(minA.point, minA.point - planeNormal * minA.dotAlongNormal, glm::vec4(0, 1, 0, 1));
 		//aie::Gizmos::add2DLine(maxA.point, maxA.point - planeNormal * maxA.dotAlongNormal, glm::vec4(1, 0, 0, 1));
 
-		if (std::signbit(minA.dotAlongNormal) == std::signbit(maxA.dotAlongNormal))
+		if (std::signbit(proj.getMin() - plane->getDistance()) == proj.getMax() - plane->getDistance())
 		{
 			return false;
 		}
 
 		// now to find the contact point
-		//glm::vec2 contactPoint(0);
+		glm::vec2 contactPoint(0);
 
 		// one of the collision normals needs to be flipped
 		// figure out which one
-		//float flipFirst = (std::signbit(glm::dot(polygon->getPosition(), planeNormal)) == 1 ? 1.0f : -1.0f);
+		float flipFirst = (std::signbit(glm::dot(polygon->getPosition(), planeNormal)) == 1 ? 1.0f : -1.0f);
 
-		//std::vector<glm::vec2> supports = getSupports(polygon, planeNormal * flipFirst);
+		std::vector<glm::vec2> supports = getSupports(polygon, planeNormal * flipFirst);
 
-		/*if (supports.size() == 1)
+		if (supports.size() == 1)
 		{
 			contactPoint = supports[0];
 		}
 		else if(supports.size() == 2)
 		{
 			contactPoint = 0.5f * (supports[0] + supports[1]);
-		}*/
+		}
 
 		//aie::Gizmos::add2DCircle(contactPoint, 8, 12, glm::vec4(0, 1, 1, 1));
 
-		//polygon->correctPosition(plane, minA.dotAlongNormal, &planeNormal);
-		//plane->resolveCollision(polygon, contactPoint);
+		polygon->setPosition(polygon->getPosition() - planeNormal * proj.getMin());
 
-		polygon->setVelocity(glm::vec2(0));
-		polygon->setAngularVelocity(0);
+		//polygon->setVelocity(glm::vec2(0));
+		//polygon->setAngularVelocity(0);
 
 		return true;
 	}

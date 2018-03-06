@@ -113,11 +113,11 @@ void RigidBody::correctPosition(RigidBody* actor2, float penetration, glm::vec2*
 
 	if (!m_isKinematic)
 	{
-		m_position -= invMass() * correction;
+		m_position += invMass() * correction;
 	}
 	if (!actor2->m_isKinematic)
 	{
-		actor2->m_position += invMass() * correction;
+		actor2->m_position -= invMass() * correction;
 	}
 }
 

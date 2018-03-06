@@ -42,6 +42,9 @@
     <ClCompile Include="source\Polygon.cpp">
       <Filter>Source Files\shapes</Filter>
     </ClCompile>
+    <ClCompile Include="source\Projection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\PhysicsApp.h">
@@ -67,6 +70,9 @@
     </ClInclude>
     <ClInclude Include="source\Polygon.h">
       <Filter>Source Files\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Projection.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

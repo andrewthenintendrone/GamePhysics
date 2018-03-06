@@ -9,6 +9,7 @@
 #include "Plane.h"
 #include "Polygon.h"
 #include <random>
+#include <chrono>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -25,6 +26,9 @@ PhysicsApp::~PhysicsApp()
 
 bool PhysicsApp::startup()
 {
+	// seed rng
+	//srand((int)std::chrono::system_clock::now().time_since_epoch().count());
+
 	// increase the 2d line count to maximize the number of objects we can draw aie::Gizmos::create(255U, 255U, 65535U, 65535U);
 	aie::Gizmos::create(255U, 255U, 65535U, 65535U);
 
@@ -35,31 +39,8 @@ bool PhysicsApp::startup()
 	m_physicsScene->setGravity(glm::vec2(0, -10));
 	m_physicsScene->setTimeStep(0.01f);
 
-	for (int x = 0; x < 3; x++)
-	{
-		for (int y = 0; y < 3; y++)
-		{
-			glm::vec2 position(-50 + 50 * x, -20 + 20 * y);
-			glm::vec4 randomColor(rand() % 256 / 255.0f, rand() % 256 / 255.0f, rand() % 256 / 255.0f, 1.0f);
-
-			if (x % 2 == 0 ^ y % 2 == 0)
-			{
-				Sphere* sphere = new Sphere(position, glm::vec2(0), 1, 4, randomColor);
-				sphere->setAngularVelocity(rand() % 360);
-				m_physicsScene->addActor(sphere);
-			}
-			else
-			{
-				phy::Polygon* polygon = new phy::Polygon(5, 8);
-				polygon->setPosition(position);
-				polygon->setRotation(rand() % 360);
-				polygon->setAngularVelocity(rand() % 360);
-				polygon->setColor(randomColor);
-
-				m_physicsScene->addActor(polygon);
-			}
-		}
-	}
+	phy::Polygon* poly = new phy::Polygon(5, 8);
+	m_physicsScene->addActor(poly);
 
 	Plane* plane1 = new Plane(glm::vec2(0, -1), 40);
 	m_physicsScene->addActor(plane1);
@@ -69,7 +50,6 @@ bool PhysicsApp::startup()
 
 void PhysicsApp::shutdown()
 {
-
 	delete m_font;
 	delete m_2dRenderer;
 }

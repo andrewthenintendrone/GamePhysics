@@ -55,12 +55,11 @@ void PhysicsScene::update(float dt)
 			if (pRigid != nullptr)
 			{
 				pActor->fixedUpdate(m_gravity, m_timeStep);
+				checkCollisions();
 			}
 		}
 
 		accumulatedTime -= m_timeStep;
-
-		checkCollisions();
 	}
 }
 
