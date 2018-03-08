@@ -9,7 +9,7 @@
 namespace phy
 {
 	Polygon::Polygon(std::vector<glm::vec2> points) :
-		RigidBody(POLYGON, glm::vec2(0), glm::vec2(0), 0, 1)
+		RigidBody(POLYGON)
 	{
 		m_points = points;
 		m_localPoints.resize(m_points.size());
@@ -20,7 +20,7 @@ namespace phy
 
 	// constructor (number of points and radius)
 	Polygon::Polygon(int numPoints, float radius) :
-		RigidBody(POLYGON, glm::vec2(0), glm::vec2(0), 0, 1)
+		RigidBody(POLYGON)
 	{
 		for (int i = 0; i < numPoints; i++)
 		{
@@ -140,7 +140,7 @@ namespace phy
 		calculateLocalNormals();
 	}
 
-	void Polygon::makeGizmo()
+	void Polygon::draw()
 	{
 		// iterate through local points
 		for (int i = 0; i < m_localPoints.size(); i++)
@@ -345,16 +345,16 @@ namespace phy
 		}
 		else
 		{
-			
+
 		}
 
-		 aie::Gizmos::add2DCircle(contactPoint, 3, 8, glm::vec4(1, 1, 0, 1));
+		aie::Gizmos::add2DCircle(contactPoint, 3, 8, glm::vec4(1, 1, 0, 1));
 
-		 polygon1->setVelocity(glm::vec2(0));
-		 polygon1->setAngularVelocity(0);
+		polygon1->setVelocity(glm::vec2(0));
+		polygon1->setAngularVelocity(0);
 
-		 polygon2->setVelocity(glm::vec2(0));
-		 polygon2->setAngularVelocity(0);
+		polygon2->setVelocity(glm::vec2(0));
+		polygon2->setAngularVelocity(0);
 
 		return true;
 	}
@@ -440,7 +440,7 @@ namespace phy
 		{
 			contactPoint = supports[0];
 		}
-		else if(supports.size() == 2)
+		else if (supports.size() == 2)
 		{
 			contactPoint = 0.5f * (supports[0] + supports[1]);
 		}

@@ -32,7 +32,6 @@
   <ItemGroup>
     <ClInclude Include="source\CollisionUtils.h" />
     <ClInclude Include="source\PhysicsApp.h" />
-    <ClInclude Include="source\PhysicsObject.h" />
     <ClInclude Include="source\PhysicsScene.h" />
     <ClInclude Include="source\Plane.h" />
     <ClInclude Include="source\Polygon.h" />

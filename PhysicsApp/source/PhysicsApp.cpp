@@ -40,9 +40,11 @@ bool PhysicsApp::startup()
 	m_physicsScene->setTimeStep(0.01f);
 
 	phy::Polygon* poly = new phy::Polygon(5, 8);
+	poly->setColor(glm::vec4(0.5f, 0, 1, 1));
 	m_physicsScene->addActor(poly);
 
-	Plane* plane1 = new Plane(glm::vec2(0, -1), 40);
+	phy::Plane* plane1 = new phy::Plane(glm::vec2(0, -1), 40);
+	plane1->setColor(glm::vec4(0.5f, 0, 1, 1));
 	m_physicsScene->addActor(plane1);
 
 	return true;
@@ -62,7 +64,7 @@ void PhysicsApp::update(float deltaTime)
 	aie::Gizmos::clear();
 
 	m_physicsScene->update(deltaTime);
-	m_physicsScene->updateGizmos();
+	m_physicsScene->draw();
 
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))

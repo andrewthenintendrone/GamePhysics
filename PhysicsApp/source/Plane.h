@@ -1,25 +1,30 @@
 #pragma once
-#include <glm\vec4.hpp>
+#include <glm\ext.hpp>
 #include "RigidBody.h"
 
-class Plane : public RigidBody
+namespace phy
 {
-public:
-	Plane();
-	Plane(glm::vec2 normal, float distance);
-	~Plane() {};
+	class Plane : public RigidBody
+	{
+	public:
 
-	virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
-	virtual void debug() {};
-	virtual void makeGizmo();
+		Plane(const glm::vec2 normal = glm::vec2(0, -1), const float distance = 0);
+		~Plane() {};
 
-	void resolveCollision(RigidBody* actor2, glm::vec2 contact);
+		virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
+		virtual void draw();
+		virtual void debug() {};
 
-	glm::vec2 getPosition() { return m_distanceToOrigin * m_normal; }
-	glm::vec2 getNormal() { return m_normal; }
-	float getDistance() { return m_distanceToOrigin; }
+		void setNormal(const glm::vec2 normal) { m_normal = glm::normalize(normal); }
+		void setNormal(const float x, const float y) { m_normal = glm::normalize(glm::vec2(x, y)); }
+		void setDistance(const float distance) { m_distance = distance; }
 
-protected:
-	glm::vec2 m_normal;
-	float m_distanceToOrigin;
-};
+		glm::vec2 getPosition() const { return m_distance * m_normal; }
+		glm::vec2 getNormal() const { return m_normal; }
+		float getDistance() const { return m_distance; }
+
+	protected:
+		glm::vec2 m_normal;
+		float m_distance;
+	};
+}

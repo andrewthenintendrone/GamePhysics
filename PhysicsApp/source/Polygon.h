@@ -5,7 +5,6 @@
 #include "Sphere.h"
 #include "Plane.h"
 
-// generic Polygon class
 namespace phy
 {
 	class Polygon : public RigidBody
@@ -15,7 +14,7 @@ namespace phy
 		Polygon(int numPoints = 4, float radius = 8);
 
 		virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
-		virtual void makeGizmo();
+		virtual void draw();
 
 		std::vector<glm::vec2> getLocalNormals() { return m_localNormals; }
 		std::vector<glm::vec2> getLocalPoints() { return m_localPoints; }
@@ -49,8 +48,5 @@ namespace phy
 
 		void calculateLocalPoints();
 		void calculateLocalNormals();
-
-		// color to draw the polygon in
-		glm::vec4 m_color = glm::vec4(1);
 	};
 }
