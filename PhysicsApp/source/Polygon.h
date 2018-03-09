@@ -2,8 +2,8 @@
 #include <vector>
 #include <glm\common.hpp>
 #include "RigidBody.h"
-#include "Sphere.h"
-#include "Plane.h"
+//#include "Sphere.h"
+//#include "Plane.h"
 
 namespace phy
 {
@@ -16,6 +16,8 @@ namespace phy
 		virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
 		virtual void draw();
 
+		virtual AABBPoints getBounds();
+
 		std::vector<glm::vec2> getLocalNormals() { return m_localNormals; }
 		std::vector<glm::vec2> getLocalPoints() { return m_localPoints; }
 		std::vector<glm::vec2> getLocalPointsInWorldSpace();
@@ -26,10 +28,10 @@ namespace phy
 
 		bool containsPoint(glm::vec2 point);
 
-		static bool checkCollisionAABB(Polygon* polygon1, Polygon* polygon2);
+		/*static bool checkCollisionAABB(Polygon* polygon1, Polygon* polygon2);
 		static bool checkCollisionPolygon(Polygon* polygon1, Polygon* polygon2);
 		static bool checkCollisionSphere(Polygon* polygon, Sphere* sphere);
-		static bool checkCollisionPlane(Polygon* polygon, Plane* plane);
+		static bool checkCollisionPlane(Polygon* polygon, Plane* plane);*/
 
 	private:
 

@@ -2,6 +2,7 @@
 #include <Gizmos.h>
 #include <glm\ext.hpp>
 #include <string>
+#include "CollisionUtils.h"
 
 namespace phy
 {
@@ -19,5 +20,11 @@ namespace phy
 			m_radius;
 
 		aie::Gizmos::add2DLine(m_position, m_position + end, glm::vec4(1));
+	}
+
+	// Spheres bounding points are just its radius
+	AABBPoints Sphere::getBounds()
+	{
+		return AABBPoints{ m_position.x - m_radius, m_position.x + m_radius, m_position.y + m_radius, m_position.y - m_radius };
 	}
 }

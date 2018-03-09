@@ -1,6 +1,7 @@
 #include "Plane.h"
 #include <Gizmos.h>
 #include <glm\ext.hpp>
+#include "CollisionUtils.h"
 
 namespace phy
 {
@@ -26,5 +27,11 @@ namespace phy
 		glm::vec2 start = centerPoint + (parallel * lineSegmentLength);
 		glm::vec2 end = centerPoint - (parallel * lineSegmentLength);
 		aie::Gizmos::add2DLine(start, end, m_color);
+	}
+
+	// an infinite plane has infinite bounding points
+	AABBPoints Plane::getBounds()
+	{
+		return AABBPoints{ -FLT_MAX, FLT_MAX, FLT_MAX, -FLT_MAX };
 	}
 }

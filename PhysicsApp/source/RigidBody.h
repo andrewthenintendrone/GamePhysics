@@ -1,5 +1,6 @@
 #pragma once
 #include <glm\common.hpp>
+#include "AABBPoints.h"
 #include <limits.h>
 
 enum ShapeTypes
@@ -20,6 +21,7 @@ namespace phy
 		virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
 		virtual void draw() = 0;
 
+		virtual AABBPoints getBounds() = 0;
 
 		void applyForce(glm::vec2 force, glm::vec2 pos);
 		void resolveCollision(RigidBody* actor2, glm::vec2 contact, glm::vec2* collisionNormal = nullptr);

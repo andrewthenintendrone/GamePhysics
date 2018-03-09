@@ -11,6 +11,8 @@ namespace phy
 		~Sphere() {};
 		virtual void draw();
 
+		virtual AABBPoints getBounds();
+
 		void setRadius(const float radius) { m_radius = radius; }
 		float getRadius() const { return m_radius; }
 

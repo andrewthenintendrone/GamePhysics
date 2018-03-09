@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\AABBPoints.cpp" />
     <ClCompile Include="source\CollisionUtils.cpp" />
     <ClCompile Include="source\PhysicsApp.cpp" />
     <ClCompile Include="source\main.cpp" />
@@ -30,6 +31,7 @@
     <ClCompile Include="source\Sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\AABBPoints.h" />
     <ClInclude Include="source\CollisionUtils.h" />
     <ClInclude Include="source\PhysicsApp.h" />
     <ClInclude Include="source\PhysicsScene.h" />

@@ -13,7 +13,8 @@ namespace phy
 
 		virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
 		virtual void draw();
-		virtual void debug() {};
+
+		virtual AABBPoints getBounds();
 
 		void setNormal(const glm::vec2 normal) { m_normal = glm::normalize(normal); }
 		void setNormal(const float x, const float y) { m_normal = glm::normalize(glm::vec2(x, y)); }

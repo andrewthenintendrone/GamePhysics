@@ -7,6 +7,7 @@
 #include "Plane.h"
 #include "Polygon.h"
 #include <glm\ext.hpp>
+#include "CollisionUtils.h"
 
 // function pointer array for doing our collisions
 //typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
@@ -74,6 +75,8 @@ void PhysicsScene::checkCollisions()
 		{
 			ShapeTypes type1 = m_actors[outer]->getShapeID();
 			ShapeTypes type2 = m_actors[inner]->getShapeID();
+
+			CollisionUtils::checkCollision(m_actors[outer], m_actors[inner]);
 
 			// fn collisionFunction = collisionFunctionArray[(int)type1 * ShapeTypes::SHAPECOUNT + (int)type2];
 
