@@ -22,17 +22,6 @@ public:
 	void setTimeStep(const float timeStep) { m_timeStep = timeStep; }
 	const float getTimeStep() { return m_timeStep; }
 
-	// collision detection funtions
-	/*static bool plane2Plane(RigidBody*, RigidBody*);
-	static bool plane2Sphere(RigidBody*, RigidBody*);
-	static bool plane2Polygon(RigidBody*, RigidBody*);
-	static bool sphere2Plane(RigidBody*, RigidBody*);
-	static bool sphere2Sphere(RigidBody*, RigidBody*);
-	static bool sphere2Polygon(RigidBody*, RigidBody*);
-	static bool polygon2Plane(RigidBody*, RigidBody*);
-	static bool polygon2Sphere(RigidBody*, RigidBody*);
-	static bool polygon2Polygon(RigidBody*, RigidBody*);*/
-
 protected:
 
 	void checkCollisions();

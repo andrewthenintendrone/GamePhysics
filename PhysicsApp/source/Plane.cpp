@@ -10,12 +10,8 @@ namespace phy
 	{
 		m_normal = glm::normalize(normal);
 		m_distance = distance;
+		// planes are always kinematic
 		m_isKinematic = true;
-	}
-
-	void Plane::fixedUpdate(glm::vec2 gravity, float timeStep)
-	{
-
 	}
 
 	void Plane::draw()
@@ -33,5 +29,11 @@ namespace phy
 	AABBPoints Plane::getBounds()
 	{
 		return AABBPoints{ -FLT_MAX, FLT_MAX, FLT_MAX, -FLT_MAX };
+	}
+
+	// calculate moment of inertia
+	void Plane::calculateMoment()
+	{
+		m_moment = 1;
 	}
 }

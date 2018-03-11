@@ -10,6 +10,7 @@ namespace phy
 		RigidBody(ShapeTypes::SPHERE)
 	{
 		m_radius = radius;
+		calculateMoment();
 	}
 
 	void Sphere::draw()
@@ -25,6 +26,18 @@ namespace phy
 	// Spheres bounding points are just its radius
 	AABBPoints Sphere::getBounds()
 	{
-		return AABBPoints{ m_position.x - m_radius, m_position.x + m_radius, m_position.y + m_radius, m_position.y - m_radius };
+		float left = m_position.x - m_radius;
+		float right = m_position.x + m_radius;
+		float top = m_position.y + m_radius;
+		float bottom = m_position.y - m_radius;
+
+		return AABBPoints{ left, right, top, bottom };
+	}
+
+	// calculate moment of inertia
+	void Sphere::calculateMoment()
+	{
+		// moment of inertia for a sphere is 2/5 mr^2
+		m_moment = 0.4f * m_mass * (m_radius * m_radius);
 	}
 }

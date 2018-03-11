@@ -1,6 +1,6 @@
 #pragma once
 #include <glm\common.hpp>
-//#include "Polygon.h"
+#include "Polygon.h"
 
 // represents a projection of a vec2 along a normal
 class Projection
@@ -13,7 +13,7 @@ public:
 	// constructor with min and max
 	Projection(float min, float max);
 
-	//void projectPolygon(phy::Polygon* polygon, glm::vec2 axis);
+	void projectPolygon(phy::Polygon* polygon, glm::vec2 axis);
 
 	bool overlaps(const Projection other);
 	float getOverlap(const Projection other);

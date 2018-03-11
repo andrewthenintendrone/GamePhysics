@@ -22,6 +22,7 @@ namespace phy
 		virtual void draw() = 0;
 
 		virtual AABBPoints getBounds() = 0;
+		virtual void calculateMoment() = 0;
 
 		void applyForce(glm::vec2 force, glm::vec2 pos);
 		void resolveCollision(RigidBody* actor2, glm::vec2 contact, glm::vec2* collisionNormal = nullptr);
@@ -30,8 +31,8 @@ namespace phy
 		bool isKinematic() const { return m_isKinematic; }
 		glm::vec2 getPosition() const { return m_position; }
 		glm::vec2 getVelocity() const { return m_velocity; }
-		float getMass() const { return m_isKinematic ? INT_MAX : m_mass; }
-		float invMass() const { return m_isKinematic ? 1.0f / INT_MAX : 1.0f / m_mass; }
+		float getMass() const { return m_isKinematic ? FLT_MAX : m_mass; }
+		float invMass() const { return m_isKinematic ? 1.0f / FLT_MAX : 1.0f / m_mass; }
 		float getLinearDrag() const { return m_linearDrag; }
 		float getAngularDrag() const { return m_angularDrag; }
 		float getElasticity() const { return m_elasticity; }
@@ -41,9 +42,11 @@ namespace phy
 		virtual ShapeTypes getShapeID() const { return m_shapeID; }
 		glm::vec4 getColor() const { return m_color; }
 
-		void setKinematic(bool b) { m_isKinematic = b; }
-		void setPosition(glm::vec2 position) { m_position = position; }
-		void setVelocity(glm::vec2 velocity) { m_velocity = velocity; }
+		void setKinematic(const bool b) { m_isKinematic = b; }
+		void setPosition(const glm::vec2 position) { m_position = position; }
+		void setPosition(const float x, const float y) { m_position = glm::vec2(x, y); }
+		void setVelocity(const glm::vec2 velocity) { m_velocity = velocity; }
+		void setVelocity(const float x, const float y) { m_velocity = glm::vec2(x, y); }
 		void setAngularVelocity(float angularVelocity) { m_angularVelocity = angularVelocity; }
 		void setMass(float mass) { m_mass = mass; }
 		void setLinearDrag(float linearDrag) { m_linearDrag = linearDrag; }
@@ -51,6 +54,7 @@ namespace phy
 		void setElasticity(float elasticity) { m_elasticity = elasticity; }
 		void setRotation(float rotation) { m_rotation = rotation; }
 		void setColor(const glm::vec4 color) { m_color = color; }
+		void setColor(const float r, const float g, const float b, const float a) { m_color = glm::vec4(r, g, b, a); }
 
 	protected:
 
@@ -63,7 +67,7 @@ namespace phy
 		// linear
 		glm::vec2 m_position = glm::vec2(0);
 		glm::vec2 m_velocity = glm::vec2(0);
-		float m_mass = 0;
+		float m_mass = 1;
 		float m_linearDrag = 0.3f;
 
 		// angular

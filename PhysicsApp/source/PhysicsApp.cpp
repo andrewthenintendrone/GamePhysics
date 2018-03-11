@@ -39,13 +39,17 @@ bool PhysicsApp::startup()
 	m_physicsScene->setGravity(glm::vec2(0, -10));
 	m_physicsScene->setTimeStep(0.01f);
 
-	phy::Polygon* poly = new phy::Polygon(5, 8);
-	poly->setColor(glm::vec4(0.5f, 0, 1, 1));
-	m_physicsScene->addActor(poly);
+	phy::Sphere* p1 = new phy::Sphere(8);
+	p1->setPosition(-30, 0);
+	p1->setColor(1, 0, 0, 1);
+	p1->setRotation(45);
+	p1->setElasticity(0.0f);
 
-	phy::Plane* plane1 = new phy::Plane(glm::vec2(0, -1), 40);
-	plane1->setColor(glm::vec4(0.5f, 0, 1, 1));
-	m_physicsScene->addActor(plane1);
+	phy::Plane* p2 = new phy::Plane(glm::vec2(0, 1), -40);
+	p2->setColor(0, 1, 0, 1);
+
+	m_physicsScene->addActor(p1);
+	m_physicsScene->addActor(p2);
 
 	return true;
 }

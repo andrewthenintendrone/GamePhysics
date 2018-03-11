@@ -18,6 +18,8 @@ namespace phy
 
 	protected:
 
+		virtual void calculateMoment();
+
 		float m_radius;
 	};
 }

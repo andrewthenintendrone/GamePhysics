@@ -11,10 +11,10 @@ namespace phy
 		Plane(const glm::vec2 normal = glm::vec2(0, -1), const float distance = 0);
 		~Plane() {};
 
-		virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
 		virtual void draw();
 
 		virtual AABBPoints getBounds();
+		virtual void calculateMoment();
 
 		void setNormal(const glm::vec2 normal) { m_normal = glm::normalize(normal); }
 		void setNormal(const float x, const float y) { m_normal = glm::normalize(glm::vec2(x, y)); }

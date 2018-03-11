@@ -13,7 +13,6 @@ namespace phy
 	{
 		m_points = points;
 		m_localPoints.resize(m_points.size());
-		m_moment = 1;
 
 		calculateNormals();
 	}
@@ -36,8 +35,9 @@ namespace phy
 			m_points.push_back(currentPoint);
 		}
 
+		calculateMoment();
+
 		m_localPoints.resize(m_points.size());
-		m_moment = 1;
 
 		calculateNormals();
 	}
@@ -71,6 +71,32 @@ namespace phy
 				m_normals.push_back(normal);
 				m_localNormals.push_back(normal);
 			}
+		}
+	}
+
+	// calculate the moment of inertia
+	void Polygon::calculateMoment()
+	{
+		// kind of cheat on this
+
+		// calculate side distance
+		float side = glm::distance(m_points[0], m_points[1]);
+
+		// triangle
+		if (m_points.size() == 3)
+		{
+			m_moment = 0.05f * m_mass * (side * side);
+		}
+		// square
+		else if (m_points.size() == 4)
+		{
+			m_moment = 0.166f * m_mass * (side * side);
+		}
+		// treat as a circle
+		else
+		{
+			float radius = glm::distance(m_position, m_points[0]);
+			m_moment = 0.4f * m_mass * (radius * radius);
 		}
 	}
 
@@ -110,6 +136,9 @@ namespace phy
 
 	void Polygon::fixedUpdate(glm::vec2 gravity, float timeStep)
 	{
+		calculateLocalPoints();
+		calculateLocalNormals();
+
 		if (m_isKinematic)
 		{
 			return;
@@ -135,9 +164,6 @@ namespace phy
 		{
 			m_angularVelocity = 0;
 		}
-
-		calculateLocalPoints();
-		calculateLocalNormals();
 	}
 
 	void Polygon::draw()
@@ -165,11 +191,16 @@ namespace phy
 
 		for (std::vector<glm::vec2>::iterator iter = m_localPoints.begin(); iter != m_localPoints.end(); iter++)
 		{
-			extents.left = std::min(extents.left, iter->x);
-			extents.right = std::max(extents.right, iter->x);
-			extents.top = std::max(extents.top, iter->y);
-			extents.bottom = std::min(extents.bottom, iter->y);
+			extents.left = std::min(extents.left, m_position.x + iter->x);
+			extents.right = std::max(extents.right, m_position.x + iter->x);
+			extents.top = std::max(extents.top, m_position.y + iter->y);
+			extents.bottom = std::min(extents.bottom, m_position.y + iter->y);
 		}
+
+		//aie::Gizmos::add2DLine(glm::vec2(extents.left, extents.top), glm::vec2(extents.right, extents.top), glm::vec4(1));
+		//aie::Gizmos::add2DLine(glm::vec2(extents.right, extents.top), glm::vec2(extents.right, extents.bottom), glm::vec4(1));
+		//aie::Gizmos::add2DLine(glm::vec2(extents.right, extents.bottom), glm::vec2(extents.left, extents.bottom), glm::vec4(1));
+		//aie::Gizmos::add2DLine(glm::vec2(extents.left, extents.bottom), glm::vec2(extents.left, extents.top), glm::vec4(1));
 
 		return extents;
 	}

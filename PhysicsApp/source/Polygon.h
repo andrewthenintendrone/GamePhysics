@@ -22,10 +22,6 @@ namespace phy
 		std::vector<glm::vec2> getLocalPoints() { return m_localPoints; }
 		std::vector<glm::vec2> getLocalPointsInWorldSpace();
 
-		glm::vec4 getColor() const { return m_color; }
-
-		void setColor(glm::vec4 color) { m_color = color; }
-
 		bool containsPoint(glm::vec2 point);
 
 		/*static bool checkCollisionAABB(Polygon* polygon1, Polygon* polygon2);
@@ -48,6 +44,7 @@ namespace phy
 
 		void calculateNormals();
 
+		virtual void calculateMoment();
 		void calculateLocalPoints();
 		void calculateLocalNormals();
 	};
