@@ -6,12 +6,11 @@
 class Aabb : public RigidBody
 {
 public:
-	Aabb(glm::vec2 position = glm::vec2(0), glm::vec2 velocity = glm::vec2(0), float mass = 1,
-		glm::vec2 extents = glm::vec2(1), glm::vec4 color = glm::vec4(1));
+	Aabb();
 
 	~Aabb() {};
 
-	virtual void makeGizmo();
+	virtual void draw();
 
 	glm::vec2 getExtents() const { return m_extents; }
 
@@ -27,5 +26,4 @@ public:
 protected:
 
 	glm::vec2 m_extents = glm::vec2(0);
-	glm::vec4 m_color = glm::vec4(1);
 };

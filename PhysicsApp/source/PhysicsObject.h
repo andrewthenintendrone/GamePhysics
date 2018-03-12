@@ -1,5 +1,5 @@
 #pragma once
-#include <glm\vec2.hpp>
+#include <glm\glm.hpp>
 
 enum ShapeTypes
 {
@@ -18,8 +18,7 @@ protected:
 public:
 
 	virtual void fixedUpdate(glm::vec2 gravity, float timeStep) = 0;
-	virtual void debug() = 0;
-	virtual void makeGizmo() = 0;
+	virtual void draw() = 0;
 
 	virtual ShapeTypes getShapeID() const{ return m_shapeID; }
 

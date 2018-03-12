@@ -1,13 +1,10 @@
 #include "RigidBody.h"
 #include <glm\ext.hpp>
 
-RigidBody::RigidBody(ShapeTypes shapeID, glm::vec2 position,
-	glm::vec2 velocity, float rotation, float mass) :
+RigidBody::RigidBody(ShapeTypes shapeID) :
 	PhysicsObject(shapeID)
 {
-	m_mass = mass;
-	m_velocity = velocity;
-	m_position = position;
+	
 }
 
 // updates the RigidBody using a fixed timestep
@@ -22,9 +19,9 @@ void RigidBody::fixedUpdate(glm::vec2 gravity, float timeStep)
 	m_velocity += gravity * timeStep;
 	m_position += m_velocity * timeStep;
 
-	m_velocity -= m_velocity * m_linearDrag * timeStep;
+	m_velocity -= m_velocity * m_friction * timeStep;
 	m_rotation += m_angularVelocity * timeStep;
-	m_angularVelocity -= m_angularVelocity * m_angularDrag * timeStep;
+	m_angularVelocity -= m_angularVelocity * m_friction * timeStep;
 
 	if (length(m_velocity) < MIN_LINEAR_THRESHOLD)
 	{
@@ -34,11 +31,6 @@ void RigidBody::fixedUpdate(glm::vec2 gravity, float timeStep)
 	{
 		m_angularVelocity = 0;
 	}
-}
-
-void RigidBody::debug()
-{
-
 }
 
 // apply force to the RigidBody at the specified position

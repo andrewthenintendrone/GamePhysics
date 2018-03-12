@@ -66,22 +66,11 @@ void PhysicsScene::update(float dt)
 	}
 }
 
-void PhysicsScene::updateGizmos()
+void PhysicsScene::draw()
 {
 	for (auto pActor : m_actors)
 	{
-		pActor->makeGizmo();
-	}
-}
-
-void PhysicsScene::debugScene()
-{
-	int count = 0;
-	for (auto pActor : m_actors)
-	{
-		std::cout << count << " : ";
-		pActor->debug();
-		count++;
+		pActor->draw();
 	}
 }
 

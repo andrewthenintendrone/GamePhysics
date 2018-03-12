@@ -33,25 +33,53 @@ bool PhysicsApp::startup()
 	m_font = new aie::Font("./font/consolas.ttf", 32);
 
 	m_physicsScene = new PhysicsScene();
-	m_physicsScene->setGravity(glm::vec2(0, -10));
+	m_physicsScene->setGravity(glm::vec2(0, -20));
 	m_physicsScene->setTimeStep(0.01f);
 
-	Plane* floor = new Plane(glm::vec2(0, -1), 50);
-	floor->setKinematic(true);
-	m_physicsScene->addActor(floor);
+	Plane* plane1 = new Plane();
+	plane1->setNormal(1, 2);
+	plane1->setDistance(-50);
+	m_physicsScene->addActor(plane1);
 
-	for (int y = 0, i = 0; y < 5; y++)
+	Plane* plane2 = new Plane();
+	plane2->setNormal(-1, 2);
+	plane2->setDistance(-50);
+	m_physicsScene->addActor(plane2);
+
+	// spawn balls
+	for (int x = 0; x < 10; x++)
 	{
-		for (int x = 0; x < 5; x++, i++)
+		for (int y = 0; y < 10; y++)
 		{
-			glm::vec2 position(-25 + x * 20, 25 - y * 20);
-			glm::vec4 randomColor(rand() % 256 / 255.f, rand() % 256 / 255.f, rand() % 256 / 255.f, 1);
+			glm::vec2 position(-50 + x * 12.5f, y * 10);
+			glm::vec4 randomColor(rand() % 256 / 255.0f, rand() % 256 / 255.0f, rand() % 256 / 255.0f, 1);
 
-			Box* box = new Box(position, glm::vec2(0), 3, glm::vec2(2), randomColor);
-			box->setElasticity(0.2f);
-			m_physicsScene->addActor(box);
+			float mass;
+			glm::vec4 color;
+
+			if (x % 2 == 0 ^ y % 2 == 0)
+			{
+				color = glm::vec4(0.5f, 0, 1, 1);
+				mass = 1;
+			}
+			else
+			{
+				color = glm::vec4(1, 1, 0, 1);
+				mass = 10;
+			}
+
+			Sphere* ball = new Sphere();
+			ball->setPosition(position);
+			ball->setVelocity(glm::vec2(20, 5));
+			ball->setRadius(4);
+			ball->setElasticity(0.3f);
+			ball->setMass(mass);
+			ball->setColor(randomColor);
+			ball->calculateMoment();
+			m_physicsScene->addActor(ball);
 		}
 	}
+
 
 	return true;
 }
@@ -71,7 +99,7 @@ void PhysicsApp::update(float deltaTime)
 	aie::Gizmos::clear();
 
 	m_physicsScene->update(deltaTime);
-	m_physicsScene->updateGizmos();
+	m_physicsScene->draw();
 
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))

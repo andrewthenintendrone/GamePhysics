@@ -7,15 +7,18 @@
 class Sphere : public RigidBody
 {
 public:
-	Sphere(glm::vec2 position = glm::vec2(0, 0), glm::vec2 velocity = glm::vec2(0, 0),
-		float mass = 1, float radius = 1, glm::vec4 color = glm::vec4(1));
+	Sphere();
 
 	~Sphere();
-	virtual void makeGizmo();
+	virtual void draw();
 
-	float getRadius() { return m_radius; }
+	float getRadius() const { return m_radius; }
+
+	void setRadius(const float radius) { m_radius = radius; }
+
+	void calculateMoment();
 
 protected:
+
 	float m_radius;
-	glm::vec4 m_color;
 };

@@ -3,30 +3,16 @@
 #include <glm\ext.hpp>
 
 Plane::Plane() :
-	RigidBody(ShapeTypes::PLANE, glm::vec2(0), glm::vec2(0), 0, 1)
+	RigidBody(ShapeTypes::PLANE)
 {
-	m_distanceToOrigin = 0;
-	m_normal = glm::vec2(0, 1);
+	// planes are always kinematic
 	m_isKinematic = true;
 }
 
-Plane::Plane(glm::vec2 normal, float distance) :
-	RigidBody(ShapeTypes::PLANE, glm::vec2(0), glm::vec2(0), 0, 1)
-{
-	m_normal = glm::normalize(normal);
-	m_distanceToOrigin = distance;
-	m_isKinematic = true;
-}
-
-void Plane::fixedUpdate(glm::vec2 gravity, float timeStep)
-{
-
-}
-
-void Plane::makeGizmo()
+void Plane::draw()
 {
 	float lineSegmentLength = 3000;
-	glm::vec2 centerPoint = m_normal * m_distanceToOrigin;
+	glm::vec2 centerPoint = m_normal * m_distance;
 	// easy to rotate normal through 90 degrees around z
 	glm::vec2 parallel(m_normal.y, -m_normal.x);
 	glm::vec4 color(1, 1, 1, 1);

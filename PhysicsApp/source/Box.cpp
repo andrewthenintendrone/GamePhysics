@@ -3,12 +3,10 @@
 #include <Gizmos.h>
 #include <iostream>
 
-Box::Box(glm::vec2 position, glm::vec2 velocity, float mass, glm::vec2 extents, glm::vec4 color) :
-	RigidBody(BOX, position, velocity, 0, mass)
+Box::Box() :
+	RigidBody(BOX)
 {
-	m_extents = extents;
-	m_color = color;
-	m_moment = 1.0f / 12.0f * m_mass * (extents.x * 2) * (m_extents.y * 2);
+	// m_moment = 1.0f / 12.0f * m_mass * (extents.x * 2) * (m_extents.y * 2);
 }
 
 // check if any of the other box's corners are inside this box
@@ -91,7 +89,7 @@ void Box::fixedUpdate(glm::vec2 gravity, float timeStep)
 	m_localY = glm::vec2(-sn, cs);
 }
 
-void Box::makeGizmo()
+void Box::draw()
 {
 	// if only using rotation
 	// glm::mat4 transform = glm::rotate(m_rotation, glm::vec3(0, 0, 1));

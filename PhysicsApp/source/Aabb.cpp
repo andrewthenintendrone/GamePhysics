@@ -3,16 +3,14 @@
 #include <iostream>
 #include <glm\ext.hpp>
 
-Aabb::Aabb(glm::vec2 position, glm::vec2 velocity, float mass, glm::vec2 extents, glm::vec4 color) :
-	RigidBody(ShapeTypes::AABB, position, velocity, 0, mass)
+Aabb::Aabb() :
+	RigidBody(ShapeTypes::AABB)
 {
-	m_extents = extents;
-	m_color = color;
-	//m_moment = 1.0f / 6.0f * m_mass * (extents.x * 2) * (m_extents.y * 2);
+	// m_moment = 1.0f / 6.0f * m_mass * (extents.x * 2) * (m_extents.y * 2);
 }
 
 // adds an AIE Gizmo to the scene
-void Aabb::makeGizmo()
+void Aabb::draw()
 {
 	aie::Gizmos::add2DAABBFilled(m_position, m_extents, m_color);
 }
