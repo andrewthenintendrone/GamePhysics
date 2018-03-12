@@ -1,10 +1,15 @@
-#include "Sphere.h"
+#include "Circle.h"
 #include <Gizmos.h>
 #include <glm\ext.hpp>
 #include <string>
 #include "CollisionUtils.h"
 
+<<<<<<< HEAD:PhysicsApp/source/Sphere.cpp
 namespace phy
+=======
+Circle::Circle(glm::vec2 position, glm::vec2 velocity, float mass, float radius, glm::vec4 color) :
+RigidBody(ShapeTypes::CIRCLE, position, velocity, 0, mass)
+>>>>>>> parent of 89a0f71... done changing circle back to sphere:PhysicsApp/source/Circle.cpp
 {
 	Sphere::Sphere(const float radius) :
 		RigidBody(ShapeTypes::SPHERE)
@@ -13,15 +18,27 @@ namespace phy
 		calculateMoment();
 	}
 
+<<<<<<< HEAD:PhysicsApp/source/Sphere.cpp
 	void Sphere::draw()
 	{
 		aie::Gizmos::add2DCircle(m_position, m_radius, 12, m_color);
+=======
+Circle::~Circle()
+{
+>>>>>>> parent of 89a0f71... done changing circle back to sphere:PhysicsApp/source/Circle.cpp
 
 		glm::vec2 end = glm::vec2(std::cosf(m_rotation), std::sinf(m_rotation)) *
 			m_radius;
 
+<<<<<<< HEAD:PhysicsApp/source/Sphere.cpp
 		aie::Gizmos::add2DLine(m_position, m_position + end, glm::vec4(1));
 	}
+=======
+void Circle::makeGizmo()
+{
+	glm::vec2 end = glm::vec2(std::cosf(m_rotation), std::sinf(m_rotation)) *
+		m_radius;
+>>>>>>> parent of 89a0f71... done changing circle back to sphere:PhysicsApp/source/Circle.cpp
 
 	// Spheres bounding points are just its radius
 	AABBPoints Sphere::getBounds()

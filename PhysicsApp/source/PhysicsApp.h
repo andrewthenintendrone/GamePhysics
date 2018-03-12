@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "Renderer2D.h"
 #include "PhysicsScene.h"
+#include "Circle.h"
 
 class PhysicsApp : public aie::Application
 {

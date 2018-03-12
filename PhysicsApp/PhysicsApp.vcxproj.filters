@@ -30,6 +30,7 @@
     <ClCompile Include="source\RigidBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="source\Plane.cpp">
       <Filter>Source Files\shapes</Filter>
     </ClCompile>
@@ -40,6 +41,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\Polygon.cpp">
+=======
+    <ClCompile Include="source\Box.cpp">
+      <Filter>Source Files\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Circle.cpp">
+      <Filter>Source Files\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Plane.cpp">
+      <Filter>Source Files\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Aabb.cpp">
+>>>>>>> parent of 89a0f71... done changing circle back to sphere
       <Filter>Source Files\shapes</Filter>
     </ClCompile>
     <ClCompile Include="source\Projection.cpp">
@@ -59,6 +72,15 @@
     <ClInclude Include="source\RigidBody.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
+=======
+    <ClInclude Include="source\Box.h">
+      <Filter>Source Files\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Circle.h">
+      <Filter>Source Files\shapes</Filter>
+    </ClInclude>
+>>>>>>> parent of 89a0f71... done changing circle back to sphere
     <ClInclude Include="source\Plane.h">
       <Filter>Source Files\shapes</Filter>
     </ClInclude>
@@ -68,6 +90,7 @@
     <ClInclude Include="source\CollisionUtils.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="source\Polygon.h">
       <Filter>Source Files\shapes</Filter>
     </ClInclude>
@@ -80,5 +103,7 @@
     <ClInclude Include="source\Collision.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+=======
+>>>>>>> parent of 89a0f71... done changing circle back to sphere
   </ItemGroup>
 </Project>

@@ -28,7 +28,7 @@
     <ClCompile Include="source\Polygon.cpp" />
     <ClCompile Include="source\Projection.cpp" />
     <ClCompile Include="source\RigidBody.cpp" />
-    <ClCompile Include="source\Sphere.cpp" />
+    <ClCompile Include="source\Circle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\AABBPoints.h" />
@@ -40,7 +40,7 @@
     <ClInclude Include="source\Polygon.h" />
     <ClInclude Include="source\Projection.h" />
     <ClInclude Include="source\RigidBody.h" />
-    <ClInclude Include="source\Sphere.h" />
+    <ClInclude Include="source\Circle.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DEA49362-B428-4215-8D64-4EA0B4FF0858}</ProjectGuid>

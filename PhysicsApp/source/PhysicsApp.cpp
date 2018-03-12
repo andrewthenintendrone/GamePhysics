@@ -4,14 +4,27 @@
 #include "gl_core_4_4.h"
 #include <glm\ext.hpp>
 #include <Gizmos.h>
-#include "Sphere.h"
+#include "Circle.h"
 #include "Plane.h"
 #include "Polygon.h"
 #include <random>
+<<<<<<< HEAD
 #include <chrono>
+=======
+#include <fstream>
+>>>>>>> parent of 89a0f71... done changing circle back to sphere
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+
+int pixels[] =
+{
+	1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0,
+	1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1,
+	1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1,
+	1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0,
+	1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0
+};
 
 PhysicsApp::PhysicsApp()
 {
