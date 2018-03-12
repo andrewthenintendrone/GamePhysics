@@ -13,97 +13,72 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\shapes">
-      <UniqueIdentifier>{223fe334-5fab-4aa8-a838-c5e029a308dc}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\PhysicsApp.cpp">
+    <ClCompile Include="source\AABBPoints.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\CollisionUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\PhysicsApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="source\PhysicsScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Plane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Polygon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Projection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\RigidBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-<<<<<<< HEAD
-    <ClCompile Include="source\Plane.cpp">
-      <Filter>Source Files\shapes</Filter>
-    </ClCompile>
     <ClCompile Include="source\Sphere.cpp">
-      <Filter>Source Files\shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\CollisionUtils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Polygon.cpp">
-=======
-    <ClCompile Include="source\Box.cpp">
-      <Filter>Source Files\shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Circle.cpp">
-      <Filter>Source Files\shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Plane.cpp">
-      <Filter>Source Files\shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Aabb.cpp">
->>>>>>> parent of 89a0f71... done changing circle back to sphere
-      <Filter>Source Files\shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Projection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\AABBPoints.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\PhysicsApp.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\PhysicsScene.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\RigidBody.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-<<<<<<< HEAD
-=======
-    <ClInclude Include="source\Box.h">
-      <Filter>Source Files\shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Circle.h">
-      <Filter>Source Files\shapes</Filter>
-    </ClInclude>
->>>>>>> parent of 89a0f71... done changing circle back to sphere
-    <ClInclude Include="source\Plane.h">
-      <Filter>Source Files\shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Sphere.h">
-      <Filter>Source Files\shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\CollisionUtils.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-<<<<<<< HEAD
-    <ClInclude Include="source\Polygon.h">
-      <Filter>Source Files\shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Projection.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\AABBPoints.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="source\Collision.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-=======
->>>>>>> parent of 89a0f71... done changing circle back to sphere
+    <ClInclude Include="source\CollisionUtils.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\PhysicsApp.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\PhysicsObject.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\PhysicsScene.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Plane.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Polygon.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Projection.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\RigidBody.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Sphere.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

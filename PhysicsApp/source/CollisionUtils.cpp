@@ -86,7 +86,7 @@ bool CollisionUtils::checkCollision(phy::RigidBody* a, phy::RigidBody* b)
 	
 	if (a->getShapeID() == POLYGON && b->getShapeID() == POLYGON)
 	{
-		if(checkCollisionSAT(a, b, collisionNormal, collisionPoint));
+		if(checkCollisionSAT(a, b, collisionNormal, collisionPoint))
 		{
 			if (glm::dot(a->getVelocity() - b->getVelocity(), collisionNormal) < 0)
 			{
