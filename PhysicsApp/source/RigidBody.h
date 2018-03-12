@@ -13,6 +13,8 @@ enum ShapeTypes
 
 namespace phy
 {
+	
+
 	class RigidBody
 	{
 	public:
@@ -24,7 +26,8 @@ namespace phy
 		virtual AABBPoints getBounds() = 0;
 		virtual void calculateMoment() = 0;
 
-		void applyForce(glm::vec2 force, glm::vec2 pos);
+		void applyForce(const glm::vec2& force);
+		void applyImpulseForce(const glm::vec2& impulseForce);
 		void resolveCollision(RigidBody* actor2, glm::vec2 contact, glm::vec2* collisionNormal = nullptr);
 		void correctPosition(RigidBody* actor2, float penetration, glm::vec2* collisionNormal = nullptr);
 
@@ -33,8 +36,7 @@ namespace phy
 		glm::vec2 getVelocity() const { return m_velocity; }
 		float getMass() const { return m_isKinematic ? FLT_MAX : m_mass; }
 		float invMass() const { return m_isKinematic ? 1.0f / FLT_MAX : 1.0f / m_mass; }
-		float getLinearDrag() const { return m_linearDrag; }
-		float getAngularDrag() const { return m_angularDrag; }
+		float getFriction() const { return m_friction; }
 		float getElasticity() const { return m_elasticity; }
 		float getRotation() const { return m_rotation; }
 		float getAngularVelocity() const { return m_angularVelocity; }
@@ -49,8 +51,7 @@ namespace phy
 		void setVelocity(const float x, const float y) { m_velocity = glm::vec2(x, y); }
 		void setAngularVelocity(float angularVelocity) { m_angularVelocity = angularVelocity; }
 		void setMass(float mass) { m_mass = mass; }
-		void setLinearDrag(float linearDrag) { m_linearDrag = linearDrag; }
-		void setAngularDrag(float angularDrag) { m_angularDrag = angularDrag; }
+		void setFriction(float friction) { m_friction = friction; }
 		void setElasticity(float elasticity) { m_elasticity = elasticity; }
 		void setRotation(float rotation) { m_rotation = rotation; }
 		void setColor(const glm::vec4 color) { m_color = color; }
@@ -68,13 +69,12 @@ namespace phy
 		glm::vec2 m_position = glm::vec2(0);
 		glm::vec2 m_velocity = glm::vec2(0);
 		float m_mass = 1;
-		float m_linearDrag = 0.3f;
+		float m_friction = 0.3f;
 
 		// angular
 		float m_rotation = 0; // 2D so we only need a single float to represent our rotation
 		float m_angularVelocity = 0;
 		float m_moment = 0;
-		float m_angularDrag = 0.3f;
 
 		float m_elasticity = 1;
 		glm::vec4 m_color = glm::vec4(1);

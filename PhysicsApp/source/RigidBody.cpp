@@ -20,13 +20,13 @@ namespace phy
 		m_velocity += gravity * timeStep;
 		m_position += m_velocity * timeStep;
 
-		m_velocity -= m_velocity * m_linearDrag * timeStep;
+		m_velocity -= m_velocity * m_friction * timeStep;
 		m_rotation += m_angularVelocity * timeStep;
-		m_angularVelocity -= m_angularVelocity * m_angularDrag * timeStep;
+		m_angularVelocity -= m_angularVelocity * m_friction * timeStep;
 
 		if (length(m_velocity) < MIN_LINEAR_THRESHOLD)
 		{
-			if (length(m_velocity) < length(gravity) * m_linearDrag * timeStep)
+			if (length(m_velocity) < length(gravity) * m_friction * timeStep)
 			{
 				m_velocity = glm::vec2(0);
 			}
@@ -39,18 +39,26 @@ namespace phy
 	}
 
 	// apply force to the RigidBody at the specified position
-	void RigidBody::applyForce(glm::vec2 force, glm::vec2 pos)
+	void RigidBody::applyForce(const glm::vec2& force)
 	{
+		// don't bother if the RigidBody is Kinematic
 		if (m_isKinematic)
 		{
 			return;
 		}
 
-		// Force = mass * acceleration
-		// therefore acceleration = Force / mass
 		m_velocity += force / m_mass;
+	}
 
-		m_angularVelocity += (force.y * pos.x - force.x * pos.y) / (m_moment);
+	void RigidBody::applyImpulseForce(const glm::vec2& impulseForce)
+	{
+		// don't bother if the RigidBody is Kinematic
+		if (m_isKinematic)
+		{
+			return;
+		}
+
+		m_velocity += impulseForce;
 	}
 
 	// resolves a collision with another RigidBody
@@ -90,8 +98,8 @@ namespace phy
 				(mass1 + mass2) * (v1 - v2) * normal;
 
 			//apply equal and opposite forces
-			applyForce(-force, contact - m_position);
-			actor2->applyForce(force, contact - actor2->m_position);
+			applyForce(-force);
+			actor2->applyForce(force);
 		}
 	}
 

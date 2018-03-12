@@ -77,5 +77,8 @@
     <ClInclude Include="source\AABBPoints.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\Collision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
