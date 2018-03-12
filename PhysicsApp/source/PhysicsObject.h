@@ -4,7 +4,7 @@
 enum ShapeTypes
 {
 	PLANE = 0,
-	CIRCLE,
+	SPHERE,
 	AABB,
 	BOX,
 	SHAPECOUNT

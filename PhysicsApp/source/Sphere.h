@@ -1,25 +1,21 @@
 #pragma once
 #include "RigidBody.h"
+#include <glm\vec4.hpp>
 
-namespace phy
+#include "Renderer2D.h"
+
+class Sphere : public RigidBody
 {
-	class Sphere : public RigidBody
-	{
-	public:
-		Sphere(const float radius = 1);
+public:
+	Sphere(glm::vec2 position = glm::vec2(0, 0), glm::vec2 velocity = glm::vec2(0, 0),
+		float mass = 1, float radius = 1, glm::vec4 color = glm::vec4(1));
 
-		~Sphere() {};
-		virtual void draw();
+	~Sphere();
+	virtual void makeGizmo();
 
-		virtual AABBPoints getBounds();
+	float getRadius() { return m_radius; }
 
-		void setRadius(const float radius) { m_radius = radius; }
-		float getRadius() const { return m_radius; }
-
-	protected:
-
-		virtual void calculateMoment();
-
-		float m_radius;
-	};
-}
+protected:
+	float m_radius;
+	glm::vec4 m_color;
+};

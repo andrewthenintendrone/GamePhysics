@@ -1,8 +1,7 @@
 #pragma once
 #include <glm\vec2.hpp>
 #include <vector>
-#include "RigidBody.h"
-#include <algorithm>
+#include "PhysicsObject.h"
 
 class PhysicsScene
 {
@@ -10,23 +9,41 @@ public:
 	PhysicsScene();
 	~PhysicsScene();
 
-	void addActor(phy::RigidBody* actor) { m_actors.push_back(actor); }
-	void removeActor(phy::RigidBody* actor) { m_actors.erase(std::remove(m_actors.begin(), m_actors.end(), actor), m_actors.end()); }
-	void update(float deltaTime);
-	void draw();
+	void addActor(PhysicsObject* actor);
+	void removeActor(PhysicsObject* actor);
+	void update(float dt);
+	void updateGizmos();
+	void debugScene();
 
 	void setGravity(const glm::vec2 gravity) { m_gravity = gravity; }
-	void setGravity(const float x = 0, const float y = 0) { m_gravity = glm::vec2(x, y); }
 	glm::vec2 getGravity() const { return m_gravity; }
 
 	void setTimeStep(const float timeStep) { m_timeStep = timeStep; }
-	const float getTimeStep() { return m_timeStep; }
+	float getTimeStep() const { return m_timeStep; }
+
+	void checkForCollison();
+
+	// collision detection funtions
+	static bool plane2Plane(PhysicsObject*, PhysicsObject*);
+	static bool plane2Sphere(PhysicsObject*, PhysicsObject*);
+	static bool plane2Box(PhysicsObject*, PhysicsObject*);
+	static bool plane2AABB(PhysicsObject*, PhysicsObject*);
+	static bool sphere2Plane(PhysicsObject*, PhysicsObject*);
+	static bool sphere2Sphere(PhysicsObject*, PhysicsObject*);
+	static bool sphere2Box(PhysicsObject*, PhysicsObject*);
+	static bool sphere2AABB(PhysicsObject*, PhysicsObject*);
+	static bool box2Plane(PhysicsObject*, PhysicsObject*);
+	static bool box2Sphere(PhysicsObject*, PhysicsObject*);
+	static bool box2Box(PhysicsObject*, PhysicsObject*);
+	static bool box2AABB(PhysicsObject*, PhysicsObject*);
+	static bool AABB2Plane(PhysicsObject*, PhysicsObject*);
+	static bool AABB2Sphere(PhysicsObject*, PhysicsObject*);
+	static bool AABB2Box(PhysicsObject*, PhysicsObject*);
+	static bool AABB2AABB(PhysicsObject*, PhysicsObject*);
 
 protected:
 
-	void checkCollisions();
-
 	glm::vec2 m_gravity;
 	float m_timeStep;
-	std::vector<phy::RigidBody*>m_actors;
+	std::vector<PhysicsObject*>m_actors;
 };
