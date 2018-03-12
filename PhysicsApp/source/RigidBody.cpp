@@ -36,11 +36,6 @@ void RigidBody::fixedUpdate(glm::vec2 gravity, float timeStep)
 // apply force to the RigidBody at the specified position
 void RigidBody::applyForce(glm::vec2 force, glm::vec2 pos)
 {
-	if (m_isKinematic)
-	{
-		return;
-	}
-
 	// Force = mass * acceleration
 	// therefore acceleration = Force / mass
 	m_velocity += force / m_mass;

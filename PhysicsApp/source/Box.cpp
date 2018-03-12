@@ -6,7 +6,7 @@
 Box::Box() :
 	RigidBody(BOX)
 {
-	// m_moment = 1.0f / 12.0f * m_mass * (extents.x * 2) * (m_extents.y * 2);
+	
 }
 
 // check if any of the other box's corners are inside this box
@@ -23,12 +23,12 @@ bool Box::checkBoxCorners(const Box& box, glm::vec2& contact, int& numContacts,
 		{
 			// pos in worldspace
 			glm::vec2 p = box.m_position + x * box.m_localX + y * box.m_localY;
+
 			// position in our box's space
 			glm::vec2 p0(glm::dot(p - m_position, m_localX),
 				glm::dot(p - m_position, m_localY));
 
 			float w2 = m_extents.x, h2 = m_extents.y;
-
 			if (p0.y < h2 && p0.y > -h2)
 			{
 				if (p0.x > 0 && p0.x < w2)
@@ -102,4 +102,10 @@ void Box::draw()
 	glm::vec2 p4 = m_position + m_localX * m_extents.x + m_localY * m_extents.y;
 	aie::Gizmos::add2DTri(p1, p2, p4, m_color);
 	aie::Gizmos::add2DTri(p1, p4, p3, m_color);
+}
+
+// calculate moment of inertia
+void Box::calculateMoment()
+{
+	m_moment = 1.0f / 12.0f * m_mass * (m_extents.x * 2) * (m_extents.y * 2);
 }

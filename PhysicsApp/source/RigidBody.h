@@ -25,8 +25,10 @@ public:
 	glm::vec4 getColor() const { return m_color; }
 
 	void setKinematic(bool b) { m_isKinematic = b; }
-	void setPosition(glm::vec2 position) { m_position = position; }
-	void setVelocity(glm::vec2 velocity) { m_velocity = velocity; }
+	void setPosition(const glm::vec2 position) { m_position = position; }
+	void setPosition(const float x, const float y) { m_position = glm::vec2(x, y); }
+	void setVelocity(const glm::vec2 velocity) { m_velocity = velocity; }
+	void setVelocity(const float x, const float y) { m_velocity = glm::vec2(x, y); }
 	void setRotation(float rotation) { m_rotation = rotation; }
 	void setAngularVelocity(float angularVelocity) { m_angularVelocity = angularVelocity; }
 	void setMass(float mass) { m_mass = mass; }

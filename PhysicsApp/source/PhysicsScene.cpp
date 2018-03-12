@@ -293,7 +293,7 @@ bool PhysicsScene::box2Plane(PhysicsObject* a, PhysicsObject* b)
 			// work out the "effective mass" - this is a combination of moment of
 			// inertia and mass, and tells us how much the contact point velocity
 			// will change with the force we're applying
-			float mass0 = 1.0f / (1.0f / box->getMass() + (r*r) / box->getMoment());
+			float mass0 = 1.0f / (box->invMass() + (r * r) / box->getMoment());
 
 			// and apply the force
 			box->applyForce(acceleration * mass0, localContact);
@@ -401,45 +401,29 @@ bool PhysicsScene::box2Sphere(PhysicsObject* a, PhysicsObject* b)
 }
 
 // test collision between 2 boxes
-bool PhysicsScene::box2Box(PhysicsObject* a, PhysicsObject* b)
+bool PhysicsScene::box2Box(PhysicsObject* obj1, PhysicsObject* obj2)
 {
-	Box* box1 = dynamic_cast<Box*>(a);
-	Box* box2 = dynamic_cast<Box*>(b);
-
+	Box* box1 = dynamic_cast<Box*>(obj1);
+	Box* box2 = dynamic_cast<Box*>(obj2);
 	if (box1 != nullptr && box2 != nullptr)
 	{
-		glm::vec2 boxPos = box2->getCenter() - box1->getCenter();
 		glm::vec2 normal;
 		glm::vec2 contactForce1, contactForce2;
 		glm::vec2 contact(0, 0);
 		int numContacts = 0;
 
 		box1->checkBoxCorners(*box2, contact, numContacts, normal, contactForce1);
-
 		if (box2->checkBoxCorners(*box1, contact, numContacts,
 			normal, contactForce2))
 		{
 			normal = -normal;
 		}
+
 		if (numContacts > 0)
 		{
 			glm::vec2 contactForce = 0.5f * (contactForce1 - contactForce2);
-
-			// move each shape away in the direction of penetration
-			if (!box1->isKinematic() && !box2->isKinematic())
-			{
-				box1->setPosition(box1->getPosition() - contactForce * 0.5f);
-				box2->setPosition(box2->getPosition() + contactForce * 0.5f);
-			}
-			else if (!box1->isKinematic())
-			{
-				box1->setPosition(box1->getPosition() - contactForce);
-			}
-			else
-			{
-				box2->setPosition(box2->getPosition() + contactForce);
-			}
-
+			box1->setPosition(box1->getPosition() - contactForce);
+			box2->setPosition(box2->getPosition() + contactForce);
 			box1->resolveCollision(box2, contact / float(numContacts), &normal);
 			return true;
 		}
