@@ -35,7 +35,14 @@ PhysicsScene::~PhysicsScene()
 
 void PhysicsScene::addActor(PhysicsObject* actor)
 {
-	m_actors.push_back(actor);
+	if (m_actors.size() < 100)
+	{
+		m_actors.push_back(actor);
+	}
+	else
+	{
+		delete actor;
+	}
 }
 
 void PhysicsScene::removeActor(PhysicsObject* actor)
@@ -43,7 +50,7 @@ void PhysicsScene::removeActor(PhysicsObject* actor)
 	m_actors.erase(std::remove(m_actors.begin(), m_actors.end(), actor), m_actors.end());
 }
 
-void PhysicsScene::update(float dt)
+void PhysicsScene::update(const float dt)
 {
 	// update physics at a fixed time step
 	static float accumulatedTime = 0.0f;
@@ -158,7 +165,7 @@ bool PhysicsScene::sphere2Plane(PhysicsObject* a, PhysicsObject* b)
 
 			// contact force
 			sphere->setPosition(sphere->getPosition() +
-				collisionNormal * (sphere->getRadius() - sphereToPlane));
+				collisionNormal * intersection);
 
 			plane->resolveCollision(sphere, contact);
 			return true;
@@ -175,14 +182,20 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* a, PhysicsObject* b)
 
 	if (sphere1 != nullptr && sphere2 != nullptr)
 	{
+		// vector from 1 to 2
 		glm::vec2 delta = sphere2->getPosition() - sphere1->getPosition();
-		float distance = glm::length(delta);
-		float intersection = sphere1->getRadius() + sphere2->getRadius() - distance;
+		// squared distance of delta
+		float sqrDist = glm::dot(delta, delta);
 
-		if (intersection > 0)
+		// combined radii
+		float r = sphere1->getRadius() + sphere2->getRadius();
+
+		if (sqrDist <= (r * r))
 		{
-			glm::vec2 contactForce = 0.5f * (distance - (sphere1->getRadius() +
-				sphere2->getRadius())) * delta / distance;
+			float distance = std::sqrt(sqrDist);
+
+			// apply contact forces
+			glm::vec2 contactForce = (distance - r) * delta / distance * 0.5f;
 			sphere1->setPosition(sphere1->getPosition() + contactForce);
 			sphere2->setPosition(sphere2->getPosition() - contactForce);
 
@@ -401,10 +414,10 @@ bool PhysicsScene::box2Sphere(PhysicsObject* a, PhysicsObject* b)
 }
 
 // test collision between 2 boxes
-bool PhysicsScene::box2Box(PhysicsObject* obj1, PhysicsObject* obj2)
+bool PhysicsScene::box2Box(PhysicsObject* a, PhysicsObject* b)
 {
-	Box* box1 = dynamic_cast<Box*>(obj1);
-	Box* box2 = dynamic_cast<Box*>(obj2);
+	Box* box1 = dynamic_cast<Box*>(a);
+	Box* box2 = dynamic_cast<Box*>(b);
 	if (box1 != nullptr && box2 != nullptr)
 	{
 		glm::vec2 normal;

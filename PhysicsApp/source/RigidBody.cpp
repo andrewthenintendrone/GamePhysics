@@ -8,7 +8,7 @@ RigidBody::RigidBody(ShapeTypes shapeID) :
 }
 
 // updates the RigidBody using a fixed timestep
-void RigidBody::fixedUpdate(glm::vec2 gravity, float timeStep)
+void RigidBody::fixedUpdate(const glm::vec2 gravity, const float timeStep)
 {
 	if (m_isKinematic)
 	{
@@ -34,7 +34,7 @@ void RigidBody::fixedUpdate(glm::vec2 gravity, float timeStep)
 }
 
 // apply force to the RigidBody at the specified position
-void RigidBody::applyForce(glm::vec2 force, glm::vec2 pos)
+void RigidBody::applyForce(const glm::vec2 force, const glm::vec2 pos)
 {
 	// Force = mass * acceleration
 	// therefore acceleration = Force / mass
@@ -44,7 +44,7 @@ void RigidBody::applyForce(glm::vec2 force, glm::vec2 pos)
 }
 
 // resolves a collision with another RigidBody
-void RigidBody::resolveCollision(RigidBody* actor2, glm::vec2 contact,
+void RigidBody::resolveCollision(RigidBody* actor2, const glm::vec2 contact,
 	glm::vec2* collisionNormal)
 {
 	// find the vector between their centres, or use the provided direction

@@ -21,12 +21,7 @@ void Plane::draw()
 	aie::Gizmos::add2DLine(start, end, color);
 }
 
-void Plane::resetPosition()
-{
-
-}
-
-void Plane::resolveCollision(RigidBody* actor2, glm::vec2 contact)
+void Plane::resolveCollision(RigidBody* actor2, const glm::vec2 contact)
 {
 	// the plane isn't moving, so the relative velocity is just actor2's velocity
 	glm::vec2 vRel = actor2->getVelocity();

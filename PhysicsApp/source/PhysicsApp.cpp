@@ -127,7 +127,7 @@ void PhysicsApp::draw()
 	m_2dRenderer->begin();
 
 	float aspectRatio = 16 / 9.f;
-	aie::Gizmos::draw2D(glm::ortho<float>(0, getWindowWidth(), 0, getWindowHeight(), -1.0f, 1.0f));
+	aie::Gizmos::draw2D(glm::ortho<float>(0, (float)getWindowWidth(), 0, (float)getWindowHeight(), -1.0f, 1.0f));
 
 	// output some text, uses the last used colour
 	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);

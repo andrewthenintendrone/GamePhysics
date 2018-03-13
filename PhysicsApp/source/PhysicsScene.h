@@ -11,10 +11,11 @@ public:
 
 	void addActor(PhysicsObject* actor);
 	void removeActor(PhysicsObject* actor);
-	void update(float dt);
+	void update(const float dt);
 	void draw();
 
 	void setGravity(const glm::vec2 gravity) { m_gravity = gravity; }
+	void setGravity(const float x, const float y) { m_gravity = glm::vec2(x, y); }
 	glm::vec2 getGravity() const { return m_gravity; }
 
 	void setTimeStep(const float timeStep) { m_timeStep = timeStep; }
@@ -23,22 +24,22 @@ public:
 	void checkForCollison();
 
 	// collision detection funtions
-	static bool plane2Plane(PhysicsObject*, PhysicsObject*);
-	static bool plane2Sphere(PhysicsObject*, PhysicsObject*);
-	static bool plane2Box(PhysicsObject*, PhysicsObject*);
-	static bool plane2AABB(PhysicsObject*, PhysicsObject*);
-	static bool sphere2Plane(PhysicsObject*, PhysicsObject*);
-	static bool sphere2Sphere(PhysicsObject*, PhysicsObject*);
-	static bool sphere2Box(PhysicsObject*, PhysicsObject*);
-	static bool sphere2AABB(PhysicsObject*, PhysicsObject*);
-	static bool box2Plane(PhysicsObject*, PhysicsObject*);
-	static bool box2Sphere(PhysicsObject*, PhysicsObject*);
-	static bool box2Box(PhysicsObject*, PhysicsObject*);
-	static bool box2AABB(PhysicsObject*, PhysicsObject*);
-	static bool AABB2Plane(PhysicsObject*, PhysicsObject*);
-	static bool AABB2Sphere(PhysicsObject*, PhysicsObject*);
-	static bool AABB2Box(PhysicsObject*, PhysicsObject*);
-	static bool AABB2AABB(PhysicsObject*, PhysicsObject*);
+	static bool plane2Plane(PhysicsObject* a, PhysicsObject* b);
+	static bool plane2Sphere(PhysicsObject* a, PhysicsObject* b);
+	static bool plane2Box(PhysicsObject* a, PhysicsObject* b);
+	static bool plane2AABB(PhysicsObject* a, PhysicsObject* b);
+	static bool sphere2Plane(PhysicsObject* a, PhysicsObject* b);
+	static bool sphere2Sphere(PhysicsObject* a, PhysicsObject* b);
+	static bool sphere2Box(PhysicsObject* a, PhysicsObject* b);
+	static bool sphere2AABB(PhysicsObject* a, PhysicsObject* b);
+	static bool box2Plane(PhysicsObject* a, PhysicsObject* b);
+	static bool box2Sphere(PhysicsObject* a, PhysicsObject* b);
+	static bool box2Box(PhysicsObject* a, PhysicsObject* b);
+	static bool box2AABB(PhysicsObject* a, PhysicsObject* b);
+	static bool AABB2Plane(PhysicsObject* a, PhysicsObject* b);
+	static bool AABB2Sphere(PhysicsObject* a, PhysicsObject* b);
+	static bool AABB2Box(PhysicsObject* a, PhysicsObject* b);
+	static bool AABB2AABB(PhysicsObject* a, PhysicsObject* b);
 
 protected:
 

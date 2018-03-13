@@ -7,9 +7,9 @@ public:
 	RigidBody(ShapeTypes shapeID);
 	~RigidBody() {};
 
-	virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
-	void applyForce(glm::vec2 force, glm::vec2 pos);
-	void resolveCollision(RigidBody* actor2, glm::vec2 contact, glm::vec2* collisionNormal = nullptr);
+	virtual void fixedUpdate(const glm::vec2 gravity, const float timeStep);
+	void applyForce(const glm::vec2 force, const glm::vec2 pos);
+	void resolveCollision(RigidBody* actor2, const glm::vec2 contact, glm::vec2* collisionNormal = nullptr);
 	void correctPosition(RigidBody* actor2, float penetration, glm::vec2* collisionNormal = nullptr);
 
 	bool isKinematic() const { return m_isKinematic; }
@@ -24,16 +24,16 @@ public:
 	float getFriction() const { return m_friction; }
 	glm::vec4 getColor() const { return m_color; }
 
-	void setKinematic(bool b) { m_isKinematic = b; }
+	void setKinematic(const bool b) { m_isKinematic = b; }
 	void setPosition(const glm::vec2 position) { m_position = position; }
 	void setPosition(const float x, const float y) { m_position = glm::vec2(x, y); }
 	void setVelocity(const glm::vec2 velocity) { m_velocity = velocity; }
 	void setVelocity(const float x, const float y) { m_velocity = glm::vec2(x, y); }
-	void setRotation(float rotation) { m_rotation = rotation; }
-	void setAngularVelocity(float angularVelocity) { m_angularVelocity = angularVelocity; }
-	void setMass(float mass) { m_mass = mass; }
-	void setElasticity(float elasticity) { m_elasticity = elasticity; }
-	void setFriction(float friction) { m_friction = friction; }
+	void setRotation(const float rotation) { m_rotation = rotation; }
+	void setAngularVelocity(const float angularVelocity) { m_angularVelocity = angularVelocity; }
+	void setMass(const float mass) { m_mass = mass; }
+	void setElasticity(const float elasticity) { m_elasticity = elasticity; }
+	void setFriction(const float friction) { m_friction = friction; }
 	void setColor(const glm::vec4 color) { m_color = color; }
 
 protected:

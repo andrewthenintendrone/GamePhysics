@@ -16,7 +16,7 @@ void Aabb::draw()
 }
 
 // returns the corner position
-glm::vec2 Aabb::getCorner(int corner)
+glm::vec2 Aabb::getCorner(const int corner) const
 {
 	glm::vec2 cornerPos = m_position;
 
@@ -45,7 +45,7 @@ glm::vec2 Aabb::getCorner(int corner)
 	return cornerPos;
 }
 
-bool Aabb::containsPoint(glm::vec2 point)
+bool Aabb::containsPoint(const glm::vec2 point) const
 {
 	if (point.x > m_position.x + m_extents.x || point.x < m_position.x - m_extents.x)
 	{

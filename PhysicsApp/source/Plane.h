@@ -9,7 +9,6 @@ public:
 	~Plane() {};
 
 	virtual void draw();
-	virtual void resetPosition();
 
 	glm::vec2 getPosition() const { return m_distance * m_normal; }
 	glm::vec2 getNormal() const { return m_normal; }
@@ -19,8 +18,7 @@ public:
 	void setNormal(const float x, const float y) { m_normal = glm::normalize(glm::vec2(x, y)); }
 	void setDistance(const float distance) { m_distance = distance; }
 
-
-	void resolveCollision(RigidBody* actor2, glm::vec2 contact);
+	void resolveCollision(RigidBody* actor2, const glm::vec2 contact);
 
 protected:
 	glm::vec2 m_normal = glm::vec2(0, 1);

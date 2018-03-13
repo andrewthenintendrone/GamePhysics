@@ -20,8 +20,13 @@ public:
 	glm::vec2 getMin() const { return m_position - m_extents; }
 	glm::vec2 getMax() const { return m_position + m_extents; }
 
-	glm::vec2 getCorner(int corner);
-	bool containsPoint(glm::vec2 point);
+	glm::vec2 getCorner(const int corner) const;
+	bool containsPoint(const glm::vec2 point) const;
+
+	void setExtents(const glm::vec2 extents) { m_extents = extents; }
+	void setExtents(const float x, const float y) { m_extents = glm::vec2(x * 0.5f, y * 0.5f); }
+	void setWidth(const float width) { m_extents.x = width * 0.5f; }
+	void setHeight(const float height) { m_extents.y = height * 0.5f; }
 
 protected:
 

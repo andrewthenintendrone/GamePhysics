@@ -13,7 +13,7 @@ enum ShapeTypes
 class PhysicsObject
 {
 protected:
-	PhysicsObject(ShapeTypes a_shapeID) : m_shapeID(a_shapeID) {};
+	PhysicsObject(ShapeTypes shapeID) : m_shapeID(shapeID) {};
 
 public:
 
